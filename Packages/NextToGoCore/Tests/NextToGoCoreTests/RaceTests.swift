@@ -14,7 +14,7 @@ struct RaceTests {
         #expect(race.raceName == "Test Race")
         #expect(race.raceNumber == 1)
         #expect(race.meetingName == "Test Meeting")
-        #expect(race.categoryId == RaceCategory.horse.id)
+        #expect(race.category == .horse)
         #expect(race.advertisedStart == date)
     }
 
@@ -64,61 +64,74 @@ struct RaceTests {
         #expect(race.raceName == "Melbourne Cup")
         #expect(race.raceNumber == 7)
         #expect(race.meetingName == "Flemington")
-        #expect(race.categoryId == "4a2788f8-e825-4d36-9894-efd4baf1cfae")
+        #expect(race.category == .horse)
         #expect(race.advertisedStart.timeIntervalSince1970 == 1704067200)
     }
 
-    @Test("Race category mapping for horse racing")
-    func testHorseCategoryMapping() {
+    @Test("Race decodes horse category correctly")
+    func testHorseCategoryDecoding() throws {
         let race = Race(
             raceId: "test-id",
             raceName: "Test Race",
             raceNumber: 1,
             meetingName: "Test Meeting",
-            categoryId: "4a2788f8-e825-4d36-9894-efd4baf1cfae",
+            category: .horse,
             advertisedStart: Date.now
         )
 
-        let category = RaceCategory(id: race.categoryId)
-        #expect(category == .horse)
+        #expect(race.category == .horse)
     }
 
-    @Test("Race category mapping for greyhound racing")
-    func testGreyhoundCategoryMapping() {
+    @Test("Race decodes greyhound category correctly")
+    func testGreyhoundCategoryDecoding() throws {
         let race = Race(
             raceId: "test-id",
             raceName: "Test Race",
             raceNumber: 1,
             meetingName: "Test Meeting",
-            categoryId: "9daef0d7-bf3c-4f50-921d-8e818c60fe61",
+            category: .greyhound,
             advertisedStart: Date.now
         )
 
-        let category = RaceCategory(id: race.categoryId)
-        #expect(category == .greyhound)
+        #expect(race.category == .greyhound)
     }
 
-    @Test("Race category mapping for harness racing")
-    func testHarnessCategoryMapping() {
+    @Test("Race decodes harness category correctly")
+    func testHarnessCategoryDecoding() throws {
         let race = Race(
             raceId: "test-id",
             raceName: "Test Race",
             raceNumber: 1,
             meetingName: "Test Meeting",
-            categoryId: "161d9be2-e909-4326-8c2c-35ed71fb460b",
+            category: .harness,
             advertisedStart: Date.now
         )
 
-        let category = RaceCategory(id: race.categoryId)
-        #expect(category == .harness)
+        #expect(race.category == .harness)
     }
 
-    @Test("Race category returns nil for unsupported category ID")
-    func testUnsupportedCategoryMapping() {
-        let unsupportedId = "00000000-0000-0000-0000-000000000000"
-        let category = RaceCategory(id: unsupportedId)
+    @Test("Race decoding fails for unsupported category ID")
+    func testUnsupportedCategoryDecodingFails() throws {
+        let json = """
+        {
+            "race_id": "test-id",
+            "race_name": "Test Race",
+            "race_number": 1,
+            "meeting_name": "Test Meeting",
+            "category_id": "00000000-0000-0000-0000-000000000000",
+            "advertised_start": {
+                "seconds": 1704067200
+            }
+        }
+        """
 
-        #expect(category == nil)
+        let data = json.data(using: .utf8)!
+        let decoder = JSONDecoder()
+
+        // Should throw decoding error for unknown category
+        #expect(throws: DecodingError.self) {
+            try decoder.decode(Race.self, from: data)
+        }
     }
 }
 
@@ -132,7 +145,7 @@ private extension RaceTests {
     ///   - raceName: The race name (default: "Test Race")
     ///   - raceNumber: The race number (default: 1)
     ///   - meetingName: The meeting name (default: "Test Meeting")
-    ///   - categoryId: The category identifier (default: horse)
+    ///   - category: The race category (default: horse)
     ///   - advertisedStart: The advertised start time (default: Date.now)
     /// - Returns: A Race instance with the specified or default values
     static func makeRace(
@@ -140,7 +153,7 @@ private extension RaceTests {
         raceName: String = "Test Race",
         raceNumber: Int = 1,
         meetingName: String = "Test Meeting",
-        categoryId: String = RaceCategory.horse.id,
+        category: RaceCategory = .horse,
         advertisedStart: Date = Date.now
     ) -> Race {
 
@@ -149,7 +162,7 @@ private extension RaceTests {
             raceName: raceName,
             raceNumber: raceNumber,
             meetingName: meetingName,
-            categoryId: categoryId,
+            category: category,
             advertisedStart: advertisedStart
         )
 

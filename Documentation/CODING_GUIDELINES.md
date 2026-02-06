@@ -301,6 +301,153 @@ class ProductListViewModel {
 }
 ```
 
+### View Layer Principles (CRITICAL)
+
+**Views MUST be completely dumb - they only render data from the ViewModel layer.**
+
+#### Rule 1: No Literal Strings in Views
+
+```swift
+// ❌ NEVER do this
+struct MyView: View {
+    var body: some View {
+        Text("Loading...")  // ❌ Hardcoded string
+        Button("Retry") { }  // ❌ Hardcoded string
+    }
+}
+
+// ✅ CORRECT - All strings from ViewModel
+struct MyView: View {
+    let viewModel: MyViewModel
+
+    var body: some View {
+        Text(viewModel.loadingMessage)  // ✅ From ViewModel
+        Button(viewModel.retryButtonText) { }  // ✅ From ViewModel
+    }
+}
+```
+
+#### Rule 2: No Logic or Calculations in Views
+
+```swift
+// ❌ NEVER do this
+struct CountdownBadge: View {
+    let advertisedStart: Date
+    let currentTime: Date
+
+    private var isUrgent: Bool {
+        let interval = advertisedStart.timeIntervalSince(currentTime)
+        return interval <= 300  // ❌ Logic in View
+    }
+
+    var body: some View {
+        Text(advertisedStart.countdownString(from: currentTime))  // ❌ Calculation in View
+            .background(isUrgent ? .red : .gray)
+    }
+}
+
+// ✅ CORRECT - All logic in ViewModel
+struct CountdownBadge: View {
+    let text: String  // Pre-computed by ViewModel
+    let isUrgent: Bool  // Pre-computed by ViewModel
+    let accessibilityLabel: String  // Pre-computed by ViewModel
+
+    var body: some View {
+        Text(text)
+            .background(isUrgent ? .red : .gray)
+            .accessibilityLabel(accessibilityLabel)
+    }
+}
+```
+
+#### Rule 3: All User-Facing Text in Localizable.strings
+
+```swift
+// ❌ NEVER do this
+struct ErrorView: View {
+    var body: some View {
+        Text("Something went wrong")  // ❌ Not localized
+        Button("Retry") { }  // ❌ Not localized
+    }
+}
+
+// ✅ CORRECT - Localized strings in ViewModel
+// In Localizable.strings:
+// "error.title" = "Something went wrong";
+// "error.retry" = "Retry";
+
+// In ViewModel:
+enum LocalizedString {
+    static let errorTitle = localized("error.title")
+    static let errorRetry = localized("error.retry")
+
+    private static func localized(_ key: String) -> String {
+        NSLocalizedString(key, bundle: .module, comment: "")
+    }
+}
+
+@Observable
+class MyViewModel {
+    var errorTitle: String { LocalizedString.errorTitle }
+    var errorRetryText: String { LocalizedString.errorRetry }
+}
+
+// In View:
+struct ErrorView: View {
+    let viewModel: MyViewModel
+
+    var body: some View {
+        Text(viewModel.errorTitle)
+        Button(viewModel.errorRetryText) { }
+    }
+}
+```
+
+#### Rule 4: All Accessibility Labels from ViewModel
+
+```swift
+// ❌ NEVER do this
+struct RaceRowView: View {
+    let race: Race
+
+    var body: some View {
+        HStack {
+            Text(race.meetingName)
+            Text("R\(race.raceNumber)")  // ❌ String interpolation in View
+        }
+        .accessibilityLabel("\(race.category.rawValue) racing, \(race.meetingName)")  // ❌ Logic in View
+    }
+}
+
+// ✅ CORRECT - All from ViewModel
+struct RaceRowView: View {
+    let race: Race
+    let viewModel: RacesViewModel
+
+    var body: some View {
+        HStack {
+            Text(race.meetingName)
+            Text(viewModel.raceNumberText(for: race))  // ✅ From ViewModel
+        }
+        .accessibilityLabel(viewModel.raceAccessibilityLabel(for: race))  // ✅ From ViewModel
+    }
+}
+```
+
+#### Summary: ViewModel Responsibilities
+
+**ViewModel MUST provide:**
+- All display strings (titles, labels, messages)
+- All calculated values (countdown urgency, formatted numbers)
+- All accessibility labels and hints
+- All localized text
+
+**Views MUST only:**
+- Layout components
+- Apply styling
+- Bind to ViewModel properties
+- Forward user interactions to ViewModel
+
 ## SwiftUI Performance Best Practices
 
 ### Rule 1: Keep View Bodies Fast
@@ -388,19 +535,65 @@ ChildView(scrollOffset: scrollOffset)
   - **NextToGoViewModel** - for presentation-level strings
 - Never add localisation to other packages
 
-```swift
-// Correct - using localised strings
-let format = NSLocalizedString("countdown.minutes.only", bundle: .module, comment: "Countdown format for minutes only")
+### Centralised Localisation Helper
 
-// Incorrect - hardcoded user-facing string
+**ALWAYS use the `Localization.string()` helper from NextToGoCore** for accessing localised strings:
+
+```swift
+import NextToGoCore
+
+// ✅ CORRECT - Use Localization.string() helper
+let format = Localization.string(
+    forKey: "countdown.minutes.only",
+    bundle: .module,
+    comment: "Countdown format for minutes only"
+)
+
+// ❌ WRONG - Never use NSLocalizedString directly
+let format = NSLocalizedString("countdown.minutes.only", bundle: .module, comment: "...")
+
+// ❌ WRONG - Never hardcode user-facing strings
 let format = "%dm"
 ```
 
+**Benefits of using `Localization.string()`:**
+- Single source of truth for localisation logic
+- Consistent API across all packages
+- Easier to mock/test localisation
+- Centralised place to add logging or fallback logic if needed
+
+### Package-Specific Localisation Helpers
+
+Each package should create a type-safe helper enum that wraps `Localization.string()`:
+
+```swift
+import NextToGoCore
+
+enum LocalizedString {
+    static let errorTitle = localised("error.title")
+    static let errorRetry = localised("error.retry")
+
+    private static func localised(_ key: String) -> String {
+        Localization.string(forKey: key, bundle: .module)
+    }
+}
+
+// Usage in ViewModel
+@Observable
+class MyViewModel {
+    var errorTitle: String { LocalizedString.errorTitle }
+    var errorRetryText: String { LocalizedString.errorRetry }
+}
+```
+
 ### Countdown String Formats
+
 User-facing countdown strings must use these localised keys:
 - `countdown.minutes.only` - Format: "%dm"
 - `countdown.minutes.seconds` - Format: "%dm %ds"
 - `countdown.seconds.only` - Format: "%ds"
+
+All countdown formatting is handled in `Date+Extensions.swift` using `Localization.string()`.
 
 ## Testing
 
@@ -572,6 +765,55 @@ Follow clean architecture principles with these dependency rules:
 - Prefix test functions with descriptive sentences
 - Use `make` prefix for test helper factory functions (e.g., `makeRace()`)
 - Boolean properties should read like questions: `isExpired`, `hasAward`
+
+### Optional Handling
+
+**Always use shorthand `if let` syntax (Swift 5.7+)**:
+
+```swift
+// ✅ Correct: Shorthand if let
+if let name {
+    print(name)
+}
+
+// ✅ Correct: Multiple bindings
+if let name, let email {
+    print("\(name): \(email)")
+}
+
+// ❌ Wrong: Redundant binding
+if let name = name {
+    print(name)
+}
+
+// ❌ Wrong: Unnecessary shadowing
+if let unwrappedName = name {
+    print(unwrappedName)
+}
+```
+
+**Exception**: Use explicit binding when you need a different variable name for clarity:
+
+```swift
+// ✅ Acceptable: Different name adds clarity
+if let firstName = user.name.components(separatedBy: " ").first {
+    print(firstName)
+}
+```
+
+**Guard statements** follow the same pattern:
+
+```swift
+// ✅ Correct: Shorthand guard let
+guard let user else {
+    return
+}
+
+// ❌ Wrong: Redundant binding
+guard let user = user else {
+    return
+}
+```
 
 ### File Organisation
 - One type per file (exceptions for tightly-coupled types)

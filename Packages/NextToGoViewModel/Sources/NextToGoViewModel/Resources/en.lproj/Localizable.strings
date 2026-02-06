@@ -1,0 +1,40 @@
+/* Next To Go - Localized Strings */
+
+/* MARK: - Navigation */
+"navigation.title" = "Next To Go";
+
+/* MARK: - Loading States */
+"loading.races" = "Loading races...";
+
+/* MARK: - Empty States */
+"empty.title" = "No races available";
+"empty.message" = "Try selecting different categories";
+"empty.accessibility" = "No races available. Try selecting different categories.";
+
+/* MARK: - Error States */
+"error.title" = "Something went wrong";
+"error.retry" = "Retry";
+"error.retry.accessibility" = "Retry loading races";
+
+/* MARK: - Countdown */
+"countdown.started" = "Race started";
+"countdown.starting_soon" = "Race starting soon";
+"countdown.starts_in" = "Race starts in";
+
+/* MARK: - Race Display */
+"race.number.prefix" = "R";
+
+/* MARK: - Category Labels */
+"category.horse" = "Horse";
+"category.harness" = "Harness";
+"category.greyhound" = "Greyhound";
+"category.horse.racing" = "Horse racing";
+"category.harness.racing" = "Harness racing";
+"category.greyhound.racing" = "Greyhound racing";
+
+/* MARK: - Category Accessibility */
+"category.selected.hint" = "Selected, tap to deselect";
+"category.not_selected.hint" = "Not selected, tap to select";
+
+/* MARK: - Race Accessibility */
+"race.accessibility.format" = "%@ racing, %@, Race %d, %@, starts in %@";
