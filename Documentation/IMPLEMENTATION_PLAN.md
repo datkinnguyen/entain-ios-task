@@ -33,16 +33,22 @@ Build a native iOS app that displays the next 5 upcoming races from a racing API
 
 ### Branch Strategy
 - **Main branch:** `main` (protected)
-- **Feature branches:** `feature/task-N-description`
+- **Feature branches:** Use descriptive names that reflect the work
+  - For specific tasks: `feature/task-N-description` (e.g., `feature/task-2-core-package`)
+  - For other work: `feature/descriptive-name` (e.g., `feature/documentation-enhancement`, `feature/fix-memory-leak`)
+  - For bug fixes: `fix/descriptive-name`
+  - For refactoring: `refactor/descriptive-name`
 - **PR required for all merges**
 
-### PR Workflow for Each Task
-1. Create feature branch from main
-2. Implement task
+**Philosophy:** Branch names should clearly communicate what work is being done. The `task-N` format is useful for tracking planned tasks, but not required for all work.
+
+### PR Workflow
+1. Create feature branch from main with descriptive name
+2. Implement changes
 3. Run tests and SwiftLint
 4. Create PR with descriptive title
-5. Self-review changes
-6. Fix any issues
+5. Self-review changes (MANDATORY - see CODING_GUIDELINES.md)
+6. Fix any issues found
 7. Report PR URL and await approval
 8. **DO NOT MERGE** - wait for manual approval
 

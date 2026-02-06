@@ -135,7 +135,7 @@ We welcome contributions! Please read [Documentation/CONTRIBUTING.md](./Document
 
 ### Quick Start
 1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/task-N-description`
+2. Create a feature branch with descriptive name: `git checkout -b feature/your-feature-name`
 3. Make your changes following [Documentation/CODING_GUIDELINES.md](./Documentation/CODING_GUIDELINES.md)
 4. **Self-review all changes** (mandatory before creating PR)
 5. Run tests: `swift test`

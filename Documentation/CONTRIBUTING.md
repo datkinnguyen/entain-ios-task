@@ -32,9 +32,14 @@ Thank you for contributing to the Next To Go iOS racing app! This guide will hel
 
 ### Branch Strategy
 - **main** - Protected branch, always stable
-- **feature/task-N-description** - Feature branches for each task
-- **fix/description** - Bug fix branches
-- **refactor/description** - Refactoring branches
+- **Feature branches** - Use descriptive names that reflect the work:
+  - `feature/task-N-description` - For specific planned tasks
+  - `feature/descriptive-name` - For other features (e.g., `feature/documentation-enhancement`)
+  - `fix/description` - For bug fixes
+  - `refactor/description` - For refactoring work
+  - `docs/description` - For documentation-only changes
+
+**Philosophy:** Branch names should clearly communicate what work is being done.
 
 ### Creating a Feature Branch
 ```bash
@@ -42,8 +47,14 @@ Thank you for contributing to the Next To Go iOS racing app! This guide will hel
 git checkout main
 git pull origin main
 
-# Create feature branch
-git checkout -b feature/task-N-description
+# Create feature branch with descriptive name
+git checkout -b feature/your-descriptive-name
+
+# Examples:
+# git checkout -b feature/task-3-repository-package
+# git checkout -b feature/add-dark-mode-support
+# git checkout -b fix/memory-leak-in-cache
+# git checkout -b docs/update-architecture-guide
 ```
 
 ### Making Changes
@@ -106,7 +117,7 @@ Before creating any PR, you MUST:
 
 5. **Only then create the PR**
    ```bash
-   git push -u origin feature/task-N-description
+   git push -u origin <your-branch-name>
    gh pr create --title "feat: Add feature description" --body "$(cat <<'EOF'
    ## Summary
    - Brief description of changes
@@ -382,7 +393,7 @@ Button("Filter") {
 **Issue:** Merge conflicts
 **Fix:** Merge main into feature branch and resolve conflicts
 ```bash
-git checkout feature/task-N-description
+git checkout <your-branch-name>
 git merge main
 # Resolve conflicts
 git commit
