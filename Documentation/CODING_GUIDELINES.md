@@ -573,6 +573,55 @@ Follow clean architecture principles with these dependency rules:
 - Use `make` prefix for test helper factory functions (e.g., `makeRace()`)
 - Boolean properties should read like questions: `isExpired`, `hasAward`
 
+### Optional Handling
+
+**Always use shorthand `if let` syntax (Swift 5.7+)**:
+
+```swift
+// ✅ Correct: Shorthand if let
+if let name {
+    print(name)
+}
+
+// ✅ Correct: Multiple bindings
+if let name, let email {
+    print("\(name): \(email)")
+}
+
+// ❌ Wrong: Redundant binding
+if let name = name {
+    print(name)
+}
+
+// ❌ Wrong: Unnecessary shadowing
+if let unwrappedName = name {
+    print(unwrappedName)
+}
+```
+
+**Exception**: Use explicit binding when you need a different variable name for clarity:
+
+```swift
+// ✅ Acceptable: Different name adds clarity
+if let firstName = user.name.components(separatedBy: " ").first {
+    print(firstName)
+}
+```
+
+**Guard statements** follow the same pattern:
+
+```swift
+// ✅ Correct: Shorthand guard let
+guard let user else {
+    return
+}
+
+// ❌ Wrong: Redundant binding
+guard let user = user else {
+    return
+}
+```
+
 ### File Organisation
 - One type per file (exceptions for tightly-coupled types)
 - Group related files in directories
