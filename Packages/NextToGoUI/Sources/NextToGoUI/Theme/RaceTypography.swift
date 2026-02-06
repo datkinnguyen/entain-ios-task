@@ -1,29 +1,32 @@
 import SwiftUI
 
 /// Centralised typography styles for the Next To Go racing app.
+///
+/// Uses semantic text styles for proper Dynamic Type support and accessibility.
+/// All fonts automatically scale based on user's preferred text size settings.
 public enum RaceTypography {
 
     // MARK: - Text Styles
 
-    /// Bold 17pt font for meeting name
-    public static let meetingName: Font = .system(size: 17, weight: .bold)
+    /// Headline style for meeting name (automatically scales with Dynamic Type)
+    public static let meetingName: Font = .headline
 
-    /// Regular 14pt font for location
-    public static let location: Font = .system(size: 14, weight: .regular)
+    /// Subheadline style for location text (automatically scales with Dynamic Type)
+    public static let location: Font = .subheadline
 
-    /// Monospaced 15pt font for countdown timer
-    public static let countdown: Font = .system(size: 15, weight: .regular).monospacedDigit()
+    /// Monospaced subheadline for countdown timer (automatically scales with Dynamic Type)
+    public static let countdown: Font = .subheadline.monospacedDigit()
 
-    /// Bold 14pt font for category chip labels
-    public static let categoryChip: Font = .system(size: 14, weight: .semibold)
+    /// Semibold footnote for category chip labels (automatically scales with Dynamic Type)
+    public static let categoryChip: Font = .footnote.weight(.semibold)
 
-    /// Bold 16pt font for race number
-    public static let raceNumber: Font = .system(size: 16, weight: .bold)
+    /// Bold callout for race number (automatically scales with Dynamic Type)
+    public static let raceNumber: Font = .callout.bold()
 
-    /// Regular 15pt font for error messages
-    public static let errorMessage: Font = .system(size: 15, weight: .regular)
+    /// Subheadline for error messages (automatically scales with Dynamic Type)
+    public static let errorMessage: Font = .subheadline
 
-    /// Bold 17pt font for section headers
-    public static let sectionHeader: Font = .system(size: 17, weight: .bold)
+    /// Headline style for section headers (automatically scales with Dynamic Type)
+    public static let sectionHeader: Font = .headline
 
 }
