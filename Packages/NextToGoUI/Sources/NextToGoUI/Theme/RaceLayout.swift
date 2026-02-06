@@ -38,8 +38,8 @@ public enum RaceLayout {
     /// Race row height (70-80pt)
     public static let raceRowHeight: CGFloat = 75
 
-    /// Category icon size (32x32pt)
-    public static let categoryIconSize: CGFloat = 32
+    /// Category icon size (24x24pt) - smaller for better visual balance
+    public static let categoryIconSize: CGFloat = 24
 
     /// Race flag icon size (24x24pt)
     public static let raceFlagSize: CGFloat = 24
@@ -49,6 +49,9 @@ public enum RaceLayout {
 
     /// Minimum height for countdown badge
     public static let countdownMinHeight: CGFloat = 28
+
+    /// Fixed width for countdown badge to prevent layout shifts
+    public static let countdownWidth: CGFloat = 70
 
     /// Corner radius for cards
     public static let cardCornerRadius: CGFloat = 12

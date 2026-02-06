@@ -66,20 +66,27 @@ public struct RacesListView: View {
     // MARK: - Subviews
 
     private var racesList: some View {
-        List {
-            ForEach(viewModel.races, id: \.raceId) { race in
-                RaceRowView(race: race, viewModel: viewModel)
-                    .listRowInsets(EdgeInsets(
-                        top: RaceLayout.spacingS,
-                        leading: RaceLayout.spacingL,
-                        bottom: RaceLayout.spacingS,
-                        trailing: RaceLayout.spacingL
-                    ))
-                    .listRowBackground(Color.clear)
+        ScrollView {
+            VStack(spacing: 0) {
+                ForEach(viewModel.races, id: \.raceId) { race in
+                    RaceRowView(race: race, viewModel: viewModel)
+
+                    if race.raceId != viewModel.races.last?.raceId {
+                        Divider()
+                            .padding(.horizontal, RaceLayout.cardPadding)
+                    }
+                }
             }
+            .background(RaceColors.raceCardBackground)
+            .clipShape(RoundedRectangle(cornerRadius: RaceLayout.cardCornerRadius))
+            .shadow(
+                color: .black.opacity(RaceLayout.cardShadowOpacity),
+                radius: RaceLayout.cardShadowRadius,
+                y: RaceLayout.cardShadowY
+            )
+            .padding(.horizontal, RaceLayout.spacingL)
+            .padding(.top, RaceLayout.spacingM)
         }
-        .listStyle(.plain)
-        .scrollContentBackground(.hidden)
     }
 
     private var loadingStateView: some View {

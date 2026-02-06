@@ -29,60 +29,45 @@ public struct RaceRowView: View {
 
     public var body: some View {
         HStack(spacing: RaceLayout.spacingM) {
-            // Category icon
+            // Category icon (left side, black/dark color)
             Image(systemName: race.category.iconName)
                 .font(.system(size: RaceLayout.categoryIconSize))
-                .foregroundStyle(RaceColors.selectedChipBackground)
+                .foregroundStyle(RaceColors.categoryIcon)
                 .frame(width: RaceLayout.categoryIconSize, height: RaceLayout.categoryIconSize)
                 .accessibilityHidden(true)
 
-            // Meeting info and race number
+            // Meeting info and race details
             VStack(alignment: .leading, spacing: RaceLayout.spacingXS) {
-                HStack(spacing: RaceLayout.spacingS) {
-                    // Race flag
-                    Image(systemName: "flag.fill")
-                        .font(.system(size: RaceLayout.raceFlagSize))
-                        .foregroundStyle(RaceColors.raceFlagBlue)
-                        .accessibilityHidden(true)
+                // Meeting name (bold, prominent)
+                Text(race.meetingName)
+                    .font(RaceTypography.meetingName)
+                    .foregroundStyle(RaceColors.meetingNameText)
+                    .lineLimit(1)
 
-                    // Meeting name
-                    Text(race.meetingName)
-                        .font(RaceTypography.meetingName)
-                        .foregroundStyle(RaceColors.meetingNameText)
-                        .lineLimit(1)
-                }
-
-                // Race number
-                HStack(spacing: RaceLayout.spacingXS) {
-                    Text(viewModel.raceNumberText(for: race))
-                        .font(RaceTypography.raceNumber)
-                        .foregroundStyle(RaceColors.meetingNameText)
-
-                    Text(race.raceName)
-                        .font(RaceTypography.location)
-                        .foregroundStyle(RaceColors.locationText)
-                        .lineLimit(1)
-                }
+                // Race name as subtitle (since we don't have venue_state/distance yet)
+                Text(race.raceName)
+                    .font(RaceTypography.location)
+                    .foregroundStyle(RaceColors.locationText)
+                    .lineLimit(1)
             }
+            .fixedSize(horizontal: false, vertical: true)
 
             Spacer()
 
-            // Countdown badge
+            // Race number (right side)
+            Text(viewModel.raceNumberText(for: race))
+                .font(RaceTypography.raceNumber)
+                .foregroundStyle(RaceColors.meetingNameText)
+
+            // Countdown badge (far right)
             CountdownBadge(
-                text: viewModel.countdownText(for: race, at: viewModel.currentTime),
-                isUrgent: viewModel.isCountdownUrgent(for: race, at: viewModel.currentTime),
-                accessibilityLabel: viewModel.countdownAccessibilityLabel(for: race, at: viewModel.currentTime)
+                text: viewModel.countdownText(for: race),
+                isUrgent: viewModel.isCountdownUrgent(for: race),
+                accessibilityLabel: viewModel.countdownAccessibilityLabel(for: race)
             )
         }
         .padding(RaceLayout.cardPadding)
         .frame(height: RaceLayout.raceRowHeight)
-        .background(RaceColors.raceCardBackground)
-        .clipShape(RoundedRectangle(cornerRadius: RaceLayout.cardCornerRadius))
-        .shadow(
-            color: .black.opacity(RaceLayout.cardShadowOpacity),
-            radius: RaceLayout.cardShadowRadius,
-            y: RaceLayout.cardShadowY
-        )
         .accessibilityElement(children: .combine)
         .accessibilityLabel(accessibilityLabel)
     }
@@ -90,7 +75,7 @@ public struct RaceRowView: View {
     // MARK: - Accessibility
 
     private var accessibilityLabel: String {
-        viewModel.raceAccessibilityLabel(for: race, at: viewModel.currentTime)
+        viewModel.raceAccessibilityLabel(for: race)
     }
 
 }
