@@ -30,15 +30,19 @@ extension Date {
         // < 5 minutes with minutes > 0: show minutes and seconds, but omit seconds if 0 (e.g., "4m 59s" or "1m")
         // < 1 minute: show only seconds (e.g., "45s")
         if minutes >= 5 {
-            return "\(sign)\(minutes)m"
+            let format = NSLocalizedString("countdown.minutes.only", bundle: .module, comment: "Countdown format for minutes only")
+            return "\(sign)\(String(format: format, minutes))"
         } else if minutes > 0 {
             if seconds == 0 {
-                return "\(sign)\(minutes)m"
+                let format = NSLocalizedString("countdown.minutes.only", bundle: .module, comment: "Countdown format for minutes only")
+                return "\(sign)\(String(format: format, minutes))"
             } else {
-                return "\(sign)\(minutes)m \(seconds)s"
+                let format = NSLocalizedString("countdown.minutes.seconds", bundle: .module, comment: "Countdown format for minutes and seconds")
+                return "\(sign)\(String(format: format, minutes, seconds))"
             }
         } else {
-            return "\(sign)\(seconds)s"
+            let format = NSLocalizedString("countdown.seconds.only", bundle: .module, comment: "Countdown format for seconds only")
+            return "\(sign)\(String(format: format, seconds))"
         }
     }
 
