@@ -37,24 +37,20 @@ public struct RacesListView: View {
 
                 Divider()
 
-                // Main content
-                Group {
-                    if viewModel.isLoading && viewModel.races.isEmpty {
-                        LoadingView(message: "Loading races...")
-                    } else if let error = viewModel.error, viewModel.races.isEmpty {
-                        ErrorView(error: error) {
-                            Task {
-                                await viewModel.refreshRaces()
-                            }
-                        }
-                    } else if viewModel.races.isEmpty {
-                        emptyStateView
+                // Main content - check empty first, then loading/error/success
+                if viewModel.races.isEmpty {
+                    if viewModel.isLoading {
+                        LoadingView(message: viewModel.loadingMessage)
+                    } else if let error = viewModel.error {
+                        ErrorView(configuration: viewModel.errorConfiguration(for: error), viewModel: viewModel)
                     } else {
-                        racesList
+                        EmptyStateView(configuration: viewModel.emptyConfiguration)
                     }
+                } else {
+                    racesList
                 }
             }
-            .navigationTitle("Next To Go")
+            .navigationTitle(viewModel.navigationTitle)
             #if os(iOS)
             .navigationBarTitleDisplayMode(.large)
             #endif
@@ -72,39 +68,22 @@ public struct RacesListView: View {
     // MARK: - Subviews
 
     private var racesList: some View {
-        ScrollView {
-            LazyVStack(spacing: RaceLayout.spacingM) {
-                ForEach(viewModel.races, id: \.raceId) { race in
-                    RaceRowView(race: race, currentTime: currentTime)
-                        .padding(.horizontal, RaceLayout.spacingL)
-                }
+        List {
+            ForEach(viewModel.races, id: \.raceId) { race in
+                RaceRowView(race: race, viewModel: viewModel, currentTime: currentTime)
+                    .listRowInsets(EdgeInsets(
+                        top: RaceLayout.spacingS,
+                        leading: RaceLayout.spacingL,
+                        bottom: RaceLayout.spacingS,
+                        trailing: RaceLayout.spacingL
+                    ))
+                    .listRowBackground(Color.clear)
             }
-            .padding(.vertical, RaceLayout.spacingM)
         }
-        .refreshable {
-            await viewModel.refreshRaces()
-        }
+        .listStyle(.plain)
+        .scrollContentBackground(.hidden)
     }
 
-    private var emptyStateView: some View {
-        VStack(spacing: RaceLayout.spacingL) {
-            Image(systemName: "flag.checkered")
-                .font(.system(size: 48))
-                .foregroundStyle(.gray)
-                .accessibilityHidden(true)
-
-            Text("No races available")
-                .font(RaceTypography.meetingName)
-                .foregroundStyle(RaceColors.meetingNameText)
-
-            Text("Try selecting different categories")
-                .font(RaceTypography.location)
-                .foregroundStyle(RaceColors.locationText)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel("No races available. Try selecting different categories.")
-    }
 
     // MARK: - Private Methods
 

@@ -54,7 +54,7 @@ struct RaceRepositoryImplTests {
 
         // Should return only horse races (excluding expired)
         #expect(result.count == 2)
-        #expect(result.allSatisfy { $0.categoryId == RaceCategory.horse.id })
+        #expect(result.allSatisfy { $0.category == .horse })
 
         // Should be sorted by advertised start time
         let sortedIds = result.map { $0.raceId }
@@ -81,8 +81,8 @@ struct RaceRepositoryImplTests {
         // Should return horse and harness races (excluding expired)
         #expect(result.count == 3)
 
-        let categoryIds = Set(result.map { $0.categoryId })
-        #expect(categoryIds == Set([RaceCategory.horse.id, RaceCategory.harness.id]))
+        let categories = Set(result.map { $0.category })
+        #expect(categories == Set([RaceCategory.horse, RaceCategory.harness]))
 
         // Should be sorted by advertised start time
         let sortedIds = result.map { $0.raceId }
@@ -101,7 +101,7 @@ struct RaceRepositoryImplTests {
                 raceName: "Race 1",
                 raceNumber: 1,
                 meetingName: "Meeting A",
-                categoryId: RaceCategory.horse.id,
+                category: .horse,
                 advertisedStart: Date.now.addingTimeInterval(300)
             )
         ]
@@ -190,7 +190,7 @@ struct RaceRepositoryImplTests {
                 raceName: "Race 3",
                 raceNumber: 3,
                 meetingName: "Meeting C",
-                categoryId: RaceCategory.horse.id,
+                category: .horse,
                 advertisedStart: now.addingTimeInterval(900) // 15 min
             ),
             Race(
@@ -198,7 +198,7 @@ struct RaceRepositoryImplTests {
                 raceName: "Race 1",
                 raceNumber: 1,
                 meetingName: "Meeting A",
-                categoryId: RaceCategory.horse.id,
+                category: .horse,
                 advertisedStart: now.addingTimeInterval(150) // 2.5 min
             ),
             Race(
@@ -206,7 +206,7 @@ struct RaceRepositoryImplTests {
                 raceName: "Race 2",
                 raceNumber: 2,
                 meetingName: "Meeting B",
-                categoryId: RaceCategory.horse.id,
+                category: .horse,
                 advertisedStart: now.addingTimeInterval(300) // 5 min
             )
         ]
@@ -245,7 +245,7 @@ private extension RaceRepositoryImplTests {
             raceName: name,
             raceNumber: number,
             meetingName: meeting,
-            categoryId: category.id,
+            category: category,
             advertisedStart: Date.now.addingTimeInterval(offset)
         )
     }

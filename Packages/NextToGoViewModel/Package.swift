@@ -3,6 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "NextToGoViewModel",
+    defaultLocalization: "en",
     platforms: [
         .iOS(.v18),
         .macOS(.v14)
@@ -23,6 +24,9 @@ let package = Package(
             dependencies: [
                 "NextToGoCore",
                 .product(name: "AsyncAlgorithms", package: "swift-async-algorithms")
+            ],
+            resources: [
+                .process("Resources")
             ],
             swiftSettings: [
                 .swiftLanguageMode(.v6)

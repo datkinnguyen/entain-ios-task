@@ -29,8 +29,9 @@ public actor RaceRepositoryImpl: RaceRepositoryProtocol {
         let response: RaceResponse = try await apiClient.fetch(endpoint)
 
         // Filter races by category (client-side validation)
+        // Note: Races with unknown categories are already filtered out during decoding
         let validRaces = response.races.filter { race in
-            categoryIds.contains(race.categoryId)
+            categoryIds.contains(race.category.id)
         }
 
         // Filter out expired races and sort by start time

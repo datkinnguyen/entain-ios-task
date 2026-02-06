@@ -42,17 +42,6 @@ public struct CategoryChip: View {
         isSelected ? RaceColors.selectedChipIcon : RaceColors.unselectedChipIcon
     }
 
-    private var categoryLabel: String {
-        switch category {
-        case .horse:
-            return "Horse"
-        case .harness:
-            return "Harness"
-        case .greyhound:
-            return "Greyhound"
-        }
-    }
-
     // MARK: - Body
 
     public var body: some View {
@@ -62,7 +51,7 @@ public struct CategoryChip: View {
                     .font(.system(size: 16, weight: .semibold))
                     .foregroundStyle(iconColor)
 
-                Text(categoryLabel)
+                Text(category.accessibleLabel)
                     .font(RaceTypography.categoryChip)
                     .foregroundStyle(iconColor)
             }
@@ -73,9 +62,11 @@ public struct CategoryChip: View {
             .clipShape(RoundedRectangle(cornerRadius: RaceLayout.chipCornerRadius))
         }
         .buttonStyle(.plain)
-        .accessibilityLabel("\(categoryLabel) racing")
-        .accessibilityHint(isSelected ? "Selected, tap to deselect" : "Not selected, tap to select")
-        .accessibilityAddTraits(isSelected ? .isSelected : [])
+        .accessibilityConfiguration(
+            label: "\(category.accessibleLabel) racing",
+            hint: isSelected ? "Selected, tap to deselect" : "Not selected, tap to select",
+            traits: isSelected ? [.isButton, .isSelected] : [.isButton]
+        )
     }
 
 }

@@ -33,6 +33,8 @@ let package = Package(
             name: "NextToGoUITests",
             dependencies: [
                 "NextToGoUI",
+                // TODO: Implement snapshot tests for visual regression testing
+                // SnapshotTesting is configured but tests are not yet implemented
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing")
             ],
             swiftSettings: [

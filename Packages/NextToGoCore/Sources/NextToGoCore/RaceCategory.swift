@@ -31,6 +31,18 @@ public enum RaceCategory: String, Codable, CaseIterable, Sendable {
         }
     }
 
+    /// The accessible label for this category (used in VoiceOver)
+    public var accessibleLabel: String {
+        switch self {
+        case .greyhound:
+            return "Greyhound"
+        case .harness:
+            return "Harness"
+        case .horse:
+            return "Horse"
+        }
+    }
+
     /// Initialize from a category ID
     /// - Parameter id: The category UUID string
     /// - Returns: The matching RaceCategory, or nil if the ID is not recognised (unsupported categories are ignored)

@@ -123,7 +123,7 @@ private extension RacesViewModelTests {
                 raceName: "Race \(index + 1)",
                 raceNumber: index + 1,
                 meetingName: "Meeting \(index + 1)",
-                categoryId: RaceCategory.allCases[index % 3].id,
+                category: RaceCategory.allCases[index % 3],
                 advertisedStart: now.addingTimeInterval(TimeInterval((index + 1) * 60))
             )
         }

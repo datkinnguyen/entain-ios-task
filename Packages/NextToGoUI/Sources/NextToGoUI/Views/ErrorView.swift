@@ -1,66 +1,54 @@
+import NextToGoViewModel
 import SwiftUI
 
-/// A view displaying an error state with a retry button.
+/// A view displaying an error state with a retry button using ContentUnavailableView.
 ///
 /// Shows an error icon, message, and a button to retry the failed operation.
 public struct ErrorView: View {
 
     // MARK: - Properties
 
-    private let error: Error
-    private let retryAction: () -> Void
+    private let configuration: RacesViewModel.ErrorConfiguration
+    private let viewModel: RacesViewModel
 
     // MARK: - Initialisation
 
     /// Creates an error view.
     ///
     /// - Parameters:
-    ///   - error: The error to display
-    ///   - retryAction: Closure called when the retry button is tapped
-    public init(error: Error, retryAction: @escaping () -> Void) {
-        self.error = error
-        self.retryAction = retryAction
+    ///   - configuration: The error state configuration
+    ///   - viewModel: The view model for triggering retry
+    public init(configuration: RacesViewModel.ErrorConfiguration, viewModel: RacesViewModel) {
+        self.configuration = configuration
+        self.viewModel = viewModel
     }
 
     // MARK: - Body
 
     public var body: some View {
-        VStack(spacing: RaceLayout.spacingL) {
-            Image(systemName: "exclamationmark.triangle.fill")
-                .font(.system(size: 48))
-                .foregroundStyle(.orange)
-                .accessibilityHidden(true)
-
-            VStack(spacing: RaceLayout.spacingS) {
-                Text("Something went wrong")
-                    .font(RaceTypography.meetingName)
-                    .foregroundStyle(RaceColors.meetingNameText)
-
-                Text(error.localizedDescription)
-                    .font(RaceTypography.errorMessage)
-                    .foregroundStyle(RaceColors.locationText)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, RaceLayout.spacingXL)
+        ContentUnavailableView(
+            label: {
+                Label(configuration.title, systemImage: configuration.iconName)
+            },
+            description: {
+                Text(configuration.message)
+            },
+            actions: {
+                Button(
+                    action: {
+                        Task {
+                            await viewModel.refreshRaces()
+                        }
+                    },
+                    label: {
+                        Text(configuration.retryButtonText)
+                    }
+                )
+                .buttonStyle(.borderedProminent)
+                .accessibilityLabel(configuration.retryAccessibilityLabel)
             }
-
-            Button(action: retryAction) {
-                HStack(spacing: RaceLayout.spacingS) {
-                    Image(systemName: "arrow.clockwise")
-                    Text("Retry")
-                }
-                .font(RaceTypography.categoryChip)
-                .foregroundStyle(.white)
-                .padding(.horizontal, RaceLayout.spacingXL)
-                .padding(.vertical, RaceLayout.spacingM)
-                .background(RaceColors.selectedChipBackground)
-                .clipShape(RoundedRectangle(cornerRadius: RaceLayout.chipCornerRadius))
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel("Retry loading races")
-        }
+        )
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(RaceColors.listBackground)
-        .accessibilityElement(children: .contain)
     }
 
 }
@@ -68,16 +56,28 @@ public struct ErrorView: View {
 // MARK: - Previews
 
 #Preview("Network Error") {
-    ErrorView(error: URLError(.notConnectedToInternet)) {}
+    let mockRepository = MockRaceRepository()
+    let viewModel = RacesViewModel(repository: mockRepository)
+    let error = URLError(.notConnectedToInternet)
+    let configuration = viewModel.errorConfiguration(for: error)
+    return ErrorView(configuration: configuration, viewModel: viewModel)
 }
 
 #Preview("Generic Error") {
-    ErrorView(error: NSError(domain: "TestError", code: -1, userInfo: [
+    let mockRepository = MockRaceRepository()
+    let viewModel = RacesViewModel(repository: mockRepository)
+    let error = NSError(domain: "TestError", code: -1, userInfo: [
         NSLocalizedDescriptionKey: "Failed to load races. Please try again."
-    ])) {}
+    ])
+    let configuration = viewModel.errorConfiguration(for: error)
+    return ErrorView(configuration: configuration, viewModel: viewModel)
 }
 
 #Preview("Dark Mode") {
-    ErrorView(error: URLError(.timedOut)) {}
+    let mockRepository = MockRaceRepository()
+    let viewModel = RacesViewModel(repository: mockRepository)
+    let error = URLError(.timedOut)
+    let configuration = viewModel.errorConfiguration(for: error)
+    return ErrorView(configuration: configuration, viewModel: viewModel)
         .preferredColorScheme(.dark)
 }

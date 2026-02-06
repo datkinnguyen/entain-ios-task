@@ -43,7 +43,7 @@ actor MockRaceRepository: RaceRepositoryProtocol {
             raceName: "Melbourne Cup",
             raceNumber: 7,
             meetingName: "Flemington",
-            categoryId: RaceCategory.horse.id,
+            category: .horse,
             advertisedStart: Date.now.addingTimeInterval(600)
         ),
         Race(
@@ -51,7 +51,7 @@ actor MockRaceRepository: RaceRepositoryProtocol {
             raceName: "Final Sprint",
             raceNumber: 3,
             meetingName: "Wentworth Park",
-            categoryId: RaceCategory.greyhound.id,
+            category: .greyhound,
             advertisedStart: Date.now.addingTimeInterval(240)
         ),
         Race(
@@ -59,7 +59,7 @@ actor MockRaceRepository: RaceRepositoryProtocol {
             raceName: "Trotters Special",
             raceNumber: 5,
             meetingName: "Menangle",
-            categoryId: RaceCategory.harness.id,
+            category: .harness,
             advertisedStart: Date.now.addingTimeInterval(420)
         ),
         Race(
@@ -67,7 +67,7 @@ actor MockRaceRepository: RaceRepositoryProtocol {
             raceName: "Derby Stakes",
             raceNumber: 8,
             meetingName: "Randwick",
-            categoryId: RaceCategory.horse.id,
+            category: .horse,
             advertisedStart: Date.now.addingTimeInterval(900)
         ),
         Race(
@@ -75,7 +75,7 @@ actor MockRaceRepository: RaceRepositoryProtocol {
             raceName: "Night Race",
             raceNumber: 2,
             meetingName: "Sandown Park",
-            categoryId: RaceCategory.greyhound.id,
+            category: .greyhound,
             advertisedStart: Date.now.addingTimeInterval(150)
         )
     ]

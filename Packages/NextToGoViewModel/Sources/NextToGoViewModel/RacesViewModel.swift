@@ -34,6 +34,77 @@ public final class RacesViewModel {
     /// Current error state, if any
     public private(set) var error: Error?
 
+    // MARK: - Display Configurations
+
+    /// Configuration for empty state display
+    public struct EmptyConfiguration {
+        public let title: String
+        public let message: String
+        public let iconName: String
+        public let accessibilityLabel: String
+
+        public init(title: String, message: String, iconName: String, accessibilityLabel: String) {
+            self.title = title
+            self.message = message
+            self.iconName = iconName
+            self.accessibilityLabel = accessibilityLabel
+        }
+    }
+
+    /// Configuration for error state display
+    public struct ErrorConfiguration {
+        public let title: String
+        public let message: String
+        public let iconName: String
+        public let retryButtonText: String
+        public let retryAccessibilityLabel: String
+
+        public init(
+            title: String,
+            message: String,
+            iconName: String,
+            retryButtonText: String,
+            retryAccessibilityLabel: String
+        ) {
+            self.title = title
+            self.message = message
+            self.iconName = iconName
+            self.retryButtonText = retryButtonText
+            self.retryAccessibilityLabel = retryAccessibilityLabel
+        }
+    }
+
+    // MARK: - Display Strings
+
+    /// Navigation title for the races list
+    public var navigationTitle: String { LocalizedString.navigationTitle }
+
+    /// Loading message
+    public var loadingMessage: String { LocalizedString.loadingRaces }
+
+    /// Empty state configuration
+    public var emptyConfiguration: EmptyConfiguration {
+        EmptyConfiguration(
+            title: LocalizedString.emptyTitle,
+            message: LocalizedString.emptyMessage,
+            iconName: "flag.checkered",
+            accessibilityLabel: LocalizedString.emptyAccessibility
+        )
+    }
+
+    /// Error state configuration
+    /// - Parameter error: The error that occurred
+    /// - Returns: Configuration for displaying the error
+    public func errorConfiguration(for error: Error) -> ErrorConfiguration {
+        ErrorConfiguration(
+            title: LocalizedString.errorTitle,
+            message: error.localizedDescription,
+            iconName: "exclamationmark.triangle.fill",
+            retryButtonText: LocalizedString.errorRetry,
+            retryAccessibilityLabel: LocalizedString.errorRetryAccessibility
+        )
+    }
+
     // MARK: - Dependencies
 
     private let repository: RaceRepositoryProtocol
@@ -108,6 +179,91 @@ public final class RacesViewModel {
         }
 
         isLoading = false
+    }
+
+    // MARK: - Race Display Methods
+
+    /// Returns the race number display string (e.g., "R7")
+    /// - Parameter race: The race
+    /// - Returns: Formatted race number string
+    public func raceNumberText(for race: Race) -> String {
+        "\(LocalizedString.raceNumberPrefix)\(race.raceNumber)"
+    }
+
+    /// Returns the countdown display string for a race
+    /// - Parameters:
+    ///   - race: The race
+    ///   - currentTime: The current time
+    /// - Returns: Formatted countdown string
+    public func countdownText(for race: Race, at currentTime: Date) -> String {
+        race.advertisedStart.countdownString(from: currentTime)
+    }
+
+    /// Returns whether the countdown should show urgent state (≤5 minutes)
+    /// - Parameters:
+    ///   - race: The race
+    ///   - currentTime: The current time
+    /// - Returns: True if countdown is urgent
+    public func isCountdownUrgent(for race: Race, at currentTime: Date) -> Bool {
+        let interval = race.advertisedStart.timeIntervalSince(currentTime)
+        return interval <= 300 // 5 minutes in seconds
+    }
+
+    /// Returns the accessibility label for a countdown badge
+    /// - Parameters:
+    ///   - race: The race
+    ///   - currentTime: The current time
+    /// - Returns: Accessibility label
+    public func countdownAccessibilityLabel(for race: Race, at currentTime: Date) -> String {
+        let interval = race.advertisedStart.timeIntervalSince(currentTime)
+        if interval < 0 {
+            return LocalizedString.countdownStarted
+        } else if isCountdownUrgent(for: race, at: currentTime) {
+            return LocalizedString.countdownStartingSoon
+        } else {
+            return LocalizedString.countdownStartsIn
+        }
+    }
+
+    /// Returns the accessibility label for a race row
+    /// - Parameters:
+    ///   - race: The race
+    ///   - currentTime: The current time
+    /// - Returns: Complete accessibility label
+    public func raceAccessibilityLabel(for race: Race, at currentTime: Date) -> String {
+        let categoryName = categoryDisplayName(for: race.category, withRacingSuffix: true)
+        let countdown = countdownText(for: race, at: currentTime)
+        return LocalizedString.raceAccessibility(
+            category: categoryName,
+            meeting: race.meetingName,
+            raceNumber: race.raceNumber,
+            raceName: race.raceName,
+            countdown: countdown
+        )
+    }
+
+    /// Returns the category display name
+    /// - Parameters:
+    ///   - category: The race category
+    ///   - withRacingSuffix: Whether to include "racing" suffix
+    /// - Returns: Category display name
+    public func categoryDisplayName(for category: RaceCategory, withRacingSuffix: Bool = false) -> String {
+        if withRacingSuffix {
+            switch category {
+            case .horse: return LocalizedString.categoryHorseRacing
+            case .harness: return LocalizedString.categoryHarnessRacing
+            case .greyhound: return LocalizedString.categoryGreyhoundRacing
+            }
+        } else {
+            return category.accessibleLabel
+        }
+    }
+
+    /// Returns the accessibility hint for a category chip
+    /// - Parameter isSelected: Whether the category is selected
+    /// - Returns: Accessibility hint
+    public func categoryAccessibilityHint(isSelected: Bool) -> String {
+        isSelected ? LocalizedString.categorySelectedHint : LocalizedString.categoryNotSelectedHint
     }
 
     // MARK: - Private Methods
