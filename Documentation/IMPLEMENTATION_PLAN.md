@@ -569,16 +569,33 @@ Final testing and verification.
 - [ ] Test on iPad (large screen)
 
 **Accessibility Testing:**
-- [ ] VoiceOver navigation
+- [ ] VoiceOver navigation (test all interactive elements)
+- [ ] VoiceOver announcements for countdown updates
 - [ ] Voice Control commands
-- [ ] Dynamic Type (all sizes)
-- [ ] Reduced Motion
-- [ ] Color contrast (WCAG AA)
+- [ ] Dynamic Type (all sizes from -3 to +12)
+- [ ] Reduced Motion (verify animations respect system setting)
+- [ ] Color contrast (WCAG AA compliance)
+
+**Performance Profiling:**
+- [ ] Profile with Instruments (Time Profiler)
+- [ ] Check countdown timer performance impact
+- [ ] Verify no excessive CPU usage during auto-refresh
+- [ ] Profile memory usage over time
+- [ ] Check for memory leaks with Memory Graph Debugger
+- [ ] Verify proper Task lifecycle management
+
+**Code Review:**
+- [ ] Review Task usage in RacesViewModel
+- [ ] Verify all Tasks are necessary
+- [ ] Check for proper Task cancellation on cleanup
+- [ ] Audit for potential race conditions
+- [ ] Review actor isolation patterns
 
 **Action Items:**
 - Generate code coverage report
 - Fix any issues found
 - Document test results
+- Document performance metrics
 
 ---
 

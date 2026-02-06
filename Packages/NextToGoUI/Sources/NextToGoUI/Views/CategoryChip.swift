@@ -46,20 +46,12 @@ public struct CategoryChip: View {
 
     public var body: some View {
         Button(action: action) {
-            HStack(spacing: RaceLayout.spacingS) {
-                Image(systemName: category.iconName)
-                    .font(.system(size: 16, weight: .semibold))
-                    .foregroundStyle(iconColor)
-
-                Text(category.accessibleLabel)
-                    .font(RaceTypography.categoryChip)
-                    .foregroundStyle(iconColor)
-            }
-            .padding(.horizontal, RaceLayout.chipPaddingHorizontal)
-            .padding(.vertical, RaceLayout.chipPaddingVertical)
-            .frame(minHeight: AccessibilityConstants.minimumTouchTarget)
-            .background(backgroundColor)
-            .clipShape(RoundedRectangle(cornerRadius: RaceLayout.chipCornerRadius))
+            Image(systemName: category.iconName)
+                .font(.system(size: 28, weight: .semibold))
+                .foregroundStyle(iconColor)
+                .frame(width: 60, height: 60)
+                .background(backgroundColor)
+                .clipShape(RoundedRectangle(cornerRadius: RaceLayout.chipCornerRadius))
         }
         .buttonStyle(.plain)
         .accessibilityConfiguration(
