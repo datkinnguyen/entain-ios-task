@@ -53,13 +53,23 @@ struct RacesViewModelTests {
         let repository = MockRaceRepository(racesToReturn: mockRaces)
         let viewModel = RacesViewModel(repository: repository)
 
-        // Initial state - all categories
+        // Start the background tasks to enable debouncing
+        viewModel.startTasks()
+
+        // Wait for initial refresh to complete
+        try? await Task.sleep(for: .milliseconds(600))
+
+        let initialFetchCount = repository.fetchCount
+
+        // Change categories to trigger a new refresh
         viewModel.selectedCategories = [.horse, .greyhound]
 
-        // Wait for async refresh to complete
-        try? await Task.sleep(for: .milliseconds(100))
+        // Wait for debounced refresh to complete (500ms debounce + processing time)
+        try? await Task.sleep(for: .milliseconds(700))
 
-        #expect(repository.fetchCount > 0)
+        #expect(repository.fetchCount > initialFetchCount, "Category change should trigger a new refresh")
+
+        viewModel.stopTasks()
     }
 
     @Test("Fetched races exclude already expired races")
@@ -116,7 +126,9 @@ struct RacesViewModelTests {
 
         // Start tasks
         viewModel.startTasks()
-        try? await Task.sleep(for: .milliseconds(200))
+
+        // Wait for initial debounced refresh to complete (500ms debounce + processing time)
+        try? await Task.sleep(for: .milliseconds(700))
 
         #expect(repository.fetchCount >= 1, "Should have fetched at least once")
 

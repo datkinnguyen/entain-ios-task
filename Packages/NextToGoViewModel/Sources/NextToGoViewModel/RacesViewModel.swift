@@ -7,9 +7,9 @@ import NextToGoCore
 /// Responsibilities:
 /// - Fetches races from the repository
 /// - Manages category filtering
-/// - Auto-refreshes races every 60 seconds
+/// - Auto-refreshes races at configurable intervals
 /// - Removes expired races every second
-/// - Debounces refresh when race count drops below 5
+/// - Debounces all refresh requests to prevent excessive API calls
 @MainActor
 @Observable
 public final class RacesViewModel {
@@ -23,9 +23,7 @@ public final class RacesViewModel {
     public var selectedCategories: Set<RaceCategory> = Set(RaceCategory.allCases) {
         didSet {
             if selectedCategories != oldValue {
-                Task {
-                    await refreshRaces()
-                }
+                scheduleRefresh()
             }
         }
     }
@@ -40,14 +38,11 @@ public final class RacesViewModel {
 
     private let repository: RaceRepositoryProtocol
 
-    // Tasks are nonisolated(unsafe) to allow access from deinit
-    // Safe because Task.cancel() is thread-safe and we only cancel, never read task state
-    @ObservationIgnored nonisolated(unsafe) private var autoRefreshTask: Task<Void, Never>?
-    @ObservationIgnored nonisolated(unsafe) private var expiryCheckTask: Task<Void, Never>?
-    @ObservationIgnored nonisolated(unsafe) private var debounceHandlerTask: Task<Void, Never>?
+    // Background tasks managed by TaskGroup
+    @ObservationIgnored private var backgroundTask: Task<Void, Never>?
 
     // Channel for debounced refresh signals
-    @ObservationIgnored nonisolated(unsafe) private var debounceChannel = AsyncChannel<Void>()
+    @ObservationIgnored private var refreshChannel = AsyncChannel<Void>()
 
     // MARK: - Initialisation
 
@@ -58,30 +53,43 @@ public final class RacesViewModel {
         self.repository = repository
     }
 
-    deinit {
-        stopTasks()
-    }
-
     // MARK: - Public Methods
 
-    /// Starts all background tasks (auto-refresh and expiry checking)
+    /// Starts all background tasks (auto-refresh, expiry checking, and debounce handling)
     public func startTasks() {
         stopTasks()
-        startAutoRefresh()
-        startExpiryCheck()
-        startDebounceHandler()
+
+        backgroundTask = Task { [weak self] in
+            guard let self = self else { return }
+
+            await withTaskGroup(of: Void.self) { group in
+                // Task 1: Auto-refresh timer
+                group.addTask { [weak self] in
+                    await self?.runAutoRefresh()
+                }
+
+                // Task 2: Expiry check
+                group.addTask { [weak self] in
+                    await self?.runExpiryCheck()
+                }
+
+                // Task 3: Debounced refresh handler
+                group.addTask { [weak self] in
+                    await self?.runDebounceHandler()
+                }
+
+                // Wait for all tasks to complete (they run indefinitely until cancelled)
+                await group.waitForAll()
+            }
+        }
     }
 
     /// Stops all background tasks
-    nonisolated public func stopTasks() {
-        autoRefreshTask?.cancel()
-        expiryCheckTask?.cancel()
-        debounceHandlerTask?.cancel()
-        debounceChannel.finish()
-        autoRefreshTask = nil
-        expiryCheckTask = nil
-        debounceHandlerTask = nil
-        debounceChannel = AsyncChannel<Void>()
+    public func stopTasks() {
+        backgroundTask?.cancel()
+        backgroundTask = nil
+        refreshChannel.finish()
+        refreshChannel = AsyncChannel<Void>()
     }
 
     /// Manually refreshes the race data
@@ -104,34 +112,32 @@ public final class RacesViewModel {
 
     // MARK: - Private Methods
 
-    /// Starts the auto-refresh task that fetches new races every 60 seconds
-    private func startAutoRefresh() {
-        autoRefreshTask = Task { [weak self] in
-            guard let self = self else { return }
-
-            // Initial fetch
-            await self.refreshRaces()
-
-            // Subsequent refreshes
-            while !Task.isCancelled {
-                try? await Task.sleep(for: .seconds(AppConfiguration.refreshInterval))
-                guard !Task.isCancelled else { break }
-                await self.refreshRaces()
-            }
+    /// Schedules a debounced refresh by sending a signal to the refresh channel
+    private func scheduleRefresh() {
+        Task {
+            await refreshChannel.send(())
         }
     }
 
-    /// Starts the expiry check task that removes expired races every second
-    private func startExpiryCheck() {
-        expiryCheckTask = Task { [weak self] in
-            guard let self = self else { return }
+    /// Runs the auto-refresh task that schedules refreshes at regular intervals
+    private func runAutoRefresh() async {
+        // Initial refresh
+        scheduleRefresh()
 
-            while !Task.isCancelled {
-                try? await Task.sleep(for: .seconds(1))
-                guard !Task.isCancelled else { break }
+        // Subsequent refreshes
+        while !Task.isCancelled {
+            try? await Task.sleep(for: .seconds(AppConfiguration.refreshInterval))
+            guard !Task.isCancelled else { break }
+            scheduleRefresh()
+        }
+    }
 
-                self.removeExpiredRaces()
-            }
+    /// Runs the expiry check task that removes expired races every second
+    private func runExpiryCheck() async {
+        while !Task.isCancelled {
+            try? await Task.sleep(for: .seconds(1))
+            guard !Task.isCancelled else { break }
+            removeExpiredRaces()
         }
     }
 
@@ -140,33 +146,22 @@ public final class RacesViewModel {
         let previousCount = races.count
         races.removeAll { $0.isExpired }
 
-        // If we dropped below 5 races, schedule a debounced refresh
+        // If we dropped below 5 races, schedule a refresh
         if races.count < AppConfiguration.maxRacesToDisplay && races.count < previousCount {
-            scheduleDebouncedRefresh()
+            scheduleRefresh()
         }
     }
 
-    /// Starts the debounce handler that processes refresh signals with debouncing
-    private func startDebounceHandler() {
-        debounceHandlerTask = Task { [weak self] in
-            guard let self = self else { return }
+    /// Runs the debounce handler that processes all refresh signals with debouncing
+    private func runDebounceHandler() async {
+        // Use AsyncAlgorithms' debounce to handle all refresh signals
+        let debouncedSignals = refreshChannel.debounce(
+            for: .milliseconds(AppConfiguration.debounceDelay)
+        )
 
-            // Use AsyncAlgorithms' debounce to handle refresh signals
-            let debouncedSignals = debounceChannel.debounce(
-                for: .milliseconds(AppConfiguration.debounceDelay)
-            )
-
-            for await _ in debouncedSignals {
-                guard !Task.isCancelled else { break }
-                await self.refreshRaces()
-            }
-        }
-    }
-
-    /// Sends a signal to trigger a debounced refresh
-    private func scheduleDebouncedRefresh() {
-        Task {
-            await debounceChannel.send(())
+        for await _ in debouncedSignals {
+            guard !Task.isCancelled else { break }
+            await refreshRaces()
         }
     }
 
