@@ -42,9 +42,9 @@ public struct RacesListView: View {
                     if viewModel.isLoading {
                         LoadingView(message: viewModel.loadingMessage)
                     } else if let error = viewModel.error {
-                        ErrorView(configuration: viewModel.errorConfiguration(for: error), viewModel: viewModel)
+                        errorStateView(for: error)
                     } else {
-                        EmptyStateView(configuration: viewModel.emptyConfiguration)
+                        emptyStateView
                     }
                 } else {
                     racesList
@@ -82,6 +82,47 @@ public struct RacesListView: View {
         }
         .listStyle(.plain)
         .scrollContentBackground(.hidden)
+    }
+
+    private var emptyStateView: some View {
+        let config = viewModel.emptyConfiguration
+        return ContentUnavailableView(
+            label: {
+                Label(config.title, systemImage: config.iconName)
+            },
+            description: {
+                Text(config.message)
+            }
+        )
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .accessibilityLabel(config.accessibilityLabel)
+    }
+
+    private func errorStateView(for error: Error) -> some View {
+        let config = viewModel.errorConfiguration(for: error)
+        return ContentUnavailableView(
+            label: {
+                Label(config.title, systemImage: config.iconName)
+            },
+            description: {
+                Text(config.message)
+            },
+            actions: {
+                Button(
+                    action: {
+                        Task {
+                            await viewModel.refreshRaces()
+                        }
+                    },
+                    label: {
+                        Text(config.retryButtonText)
+                    }
+                )
+                .buttonStyle(.borderedProminent)
+                .accessibilityLabel(config.retryAccessibilityLabel)
+            }
+        )
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     // MARK: - Private Methods
