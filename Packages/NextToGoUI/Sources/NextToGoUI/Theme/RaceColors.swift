@@ -22,8 +22,13 @@ public enum RaceColors {
     /// Red background for urgent countdown state when ≤5 minutes (#FF4444)
     public static let countdownUrgent = Color(red: 1.0, green: 0.267, blue: 0.267)
 
-    /// Light gray background for normal countdown state when >5 minutes (#F3F4F6)
-    public static let countdownNormal = Color(red: 0.953, green: 0.957, blue: 0.965)
+    /// Adaptive background for normal countdown state when >5 minutes
+    /// Uses system colors to ensure proper contrast in both light and dark mode
+    #if canImport(UIKit)
+    public static let countdownNormal = Color(uiColor: .secondarySystemGroupedBackground)
+    #else
+    public static let countdownNormal = Color(.gray).opacity(0.2)
+    #endif
 
     /// Text color for countdown badge
     public static let countdownText = Color.primary

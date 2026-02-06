@@ -35,22 +35,24 @@ extension View {
             .accessibilityLabel(label)
     }
 
-    /// Applies reduced motion-aware animations.
+    /// Applies reduced motion-aware transaction modifiers.
     ///
-    /// When Reduce Motion is enabled, uses simpler animations or removes them entirely.
+    /// When Reduce Motion is enabled, disables or simplifies animations.
+    /// Use this with state changes to respect accessibility preferences.
     ///
-    /// - Parameters:
-    ///   - animation: The animation to apply
-    ///   - reducedAnimation: Optional simplified animation for reduced motion (defaults to nil)
+    /// Example:
+    /// ```swift
+    /// Button("Animate") {
+    ///     withAnimation {
+    ///         value.toggle()
+    ///     }
+    /// }
+    /// .reducedMotionTransaction()
+    /// ```
+    ///
     /// - Returns: The modified view
-    public func reducedMotionAnimation(
-        _ animation: Animation,
-        reducedAnimation: Animation? = nil
-    ) -> some View {
-        modifier(ReducedMotionAnimationModifier(
-            animation: animation,
-            reducedAnimation: reducedAnimation
-        ))
+    public func reducedMotionTransaction() -> some View {
+        modifier(ReducedMotionTransactionModifier())
     }
 
 }
@@ -85,18 +87,18 @@ private struct OptionalAccessibilityValue: ViewModifier {
 
 }
 
-private struct ReducedMotionAnimationModifier: ViewModifier {
+private struct ReducedMotionTransactionModifier: ViewModifier {
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    let animation: Animation
-    let reducedAnimation: Animation?
 
     func body(content: Content) -> some View {
-        if reduceMotion {
-            content.animation(reducedAnimation, value: UUID())
-        } else {
-            content.animation(animation, value: UUID())
-        }
+        content
+            .transaction { transaction in
+                if reduceMotion {
+                    // Disable animations when reduce motion is enabled
+                    transaction.animation = nil
+                }
+            }
     }
 
 }

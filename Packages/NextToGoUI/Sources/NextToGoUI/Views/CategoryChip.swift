@@ -68,6 +68,7 @@ public struct CategoryChip: View {
             }
             .padding(.horizontal, RaceLayout.chipPaddingHorizontal)
             .padding(.vertical, RaceLayout.chipPaddingVertical)
+            .frame(minHeight: AccessibilityConstants.minimumTouchTarget)
             .background(backgroundColor)
             .clipShape(RoundedRectangle(cornerRadius: RaceLayout.chipCornerRadius))
         }
