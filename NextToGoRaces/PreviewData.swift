@@ -91,7 +91,7 @@ enum PreviewData {
 
         let races: [Race]
 
-        init(races: [Race] = sampleRaces) {
+        init(races: [Race]) {
             self.races = races
         }
 
@@ -117,18 +117,21 @@ enum PreviewData {
     /// Creates a view model configured for previews
     /// - Parameter races: The races to display (defaults to sample races)
     /// - Returns: A configured RacesViewModel for previews
+    @MainActor
     static func previewViewModel(races: [Race] = sampleRaces) -> RacesViewModel {
         let repository = MockRepository(races: races)
         return RacesViewModel(repository: repository)
     }
 
     /// Creates a view model with empty state
+    @MainActor
     static var emptyViewModel: RacesViewModel {
         let repository = MockRepository(races: [])
         return RacesViewModel(repository: repository)
     }
 
     /// Creates a view model with error state
+    @MainActor
     static var errorViewModel: RacesViewModel {
         let repository = ErrorRepository()
         return RacesViewModel(repository: repository)
