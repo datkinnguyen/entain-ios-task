@@ -52,8 +52,8 @@ public struct RaceRowView: View {
     // MARK: - Layout Variants
 
     private var horizontalLayout: some View {
-        HStack(spacing: RaceLayout.spacingM) {
-            // Category icon
+        HStack(alignment: .top, spacing: RaceLayout.spacingM) {
+            // Category icon - aligned with top of text
             Image(systemName: race.category.iconName)
                 .font(.system(size: RaceLayout.categoryIconSize))
                 .foregroundStyle(RaceColors.categoryIcon)
