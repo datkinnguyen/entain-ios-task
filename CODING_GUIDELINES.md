@@ -150,6 +150,16 @@ struct APIClientTests {
   - PR 3: UI components and views
   - PR 4: Tests and documentation
 
+### PR Self-Review Process
+**MANDATORY:** Before creating any PR, you MUST:
+1. **Self-review all code changes** - Review every file, every line changed
+2. **Fix all issues found** - Address any problems, inconsistencies, or violations of these guidelines
+3. **Verify tests pass** - Run the full test suite locally
+4. **Check documentation** - Ensure all docs are up to date
+5. **Only then create the PR** - Submit for team review
+
+This self-review process prevents wasted review cycles and ensures high-quality submissions.
+
 ### PR Best Practices
 - Keep PRs focused on a single concern
 - Include tests with the code they test
