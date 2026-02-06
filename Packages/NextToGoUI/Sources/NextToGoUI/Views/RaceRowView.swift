@@ -95,7 +95,10 @@ public struct RaceRowView: View {
     private var accessibilityLabel: String {
         let categoryName = category?.rawValue.capitalized ?? "Unknown"
         let countdown = race.advertisedStart.countdownString(from: currentTime)
-        return "\(categoryName) racing, \(race.meetingName), Race \(race.raceNumber), \(race.raceName), starts in \(countdown)"
+        return """
+            \(categoryName) racing, \(race.meetingName), Race \(race.raceNumber), \
+            \(race.raceName), starts in \(countdown)
+            """
     }
 
 }
