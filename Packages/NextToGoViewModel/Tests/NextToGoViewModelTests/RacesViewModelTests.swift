@@ -28,7 +28,7 @@ struct RacesViewModelTests {
         await viewModel.refreshRaces()
 
         #expect(viewModel.races.count == 5)
-        #expect(viewModel.races.map(\.raceId) == mockRaces.map(\.raceId), "Races should match mock data from repository")
+        #expect(viewModel.races == mockRaces, "Races should match mock data from repository")
         #expect(viewModel.isLoading == false)
         #expect(viewModel.error == nil)
     }

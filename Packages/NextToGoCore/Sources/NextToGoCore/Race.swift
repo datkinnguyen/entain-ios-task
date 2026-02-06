@@ -1,7 +1,7 @@
 import Foundation
 
 /// Represents a race with details including timing, category, and identification.
-public struct Race: Decodable, Sendable {
+public struct Race: Decodable, Equatable, Sendable {
 
     public let raceId: String
     public let raceName: String
