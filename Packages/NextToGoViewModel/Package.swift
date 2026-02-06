@@ -1,0 +1,39 @@
+// swift-tools-version: 6.0
+import PackageDescription
+
+let package = Package(
+    name: "NextToGoViewModel",
+    platforms: [
+        .iOS(.v18),
+        .macOS(.v14)
+    ],
+    products: [
+        .library(
+            name: "NextToGoViewModel",
+            targets: ["NextToGoViewModel"]
+        )
+    ],
+    dependencies: [
+        .package(path: "../NextToGoCore"),
+        .package(url: "https://github.com/apple/swift-async-algorithms.git", from: "1.0.0")
+    ],
+    targets: [
+        .target(
+            name: "NextToGoViewModel",
+            dependencies: [
+                "NextToGoCore",
+                .product(name: "AsyncAlgorithms", package: "swift-async-algorithms")
+            ],
+            swiftSettings: [
+                .swiftLanguageMode(.v6)
+            ]
+        ),
+        .testTarget(
+            name: "NextToGoViewModelTests",
+            dependencies: ["NextToGoViewModel"],
+            swiftSettings: [
+                .swiftLanguageMode(.v6)
+            ]
+        )
+    ]
+)

@@ -229,10 +229,16 @@ Create the ViewModel layer package.
 **Implementation:**
 - Initialize Swift Package: `Packages/NextToGoViewModel`
 - Add dependency on NextToGoCore
+- Add dependency on Swift Async Algorithms for AsyncChannel and debounce
 - Create `RacesViewModel.swift` with @Observable macro
-- Implement auto-refresh logic (60s interval)
-- Implement expiry check (1s interval)
-- Implement debounced refresh (500ms) when count < 5
+- Implement centralized refresh architecture:
+  * Single `scheduleRefresh()` method that sends signals to debounced channel
+  * All refresh triggers (auto-refresh timer, category changes, expiry-based) call `scheduleRefresh()`
+  * Debounce handler processes all signals with 500ms delay to prevent excessive API calls
+- Use TaskGroup to manage all background tasks safely:
+  * Auto-refresh task: Sends refresh signals at configurable intervals
+  * Expiry check task: Removes expired races every second
+  * Debounce handler task: Processes debounced refresh signals
 - Implement category filtering logic
 - Add comprehensive unit tests for all scenarios:
   * Filter toggling
@@ -254,10 +260,11 @@ Packages/NextToGoViewModel/
 ```
 
 **Key Logic:**
-- **Auto-refresh:** Every 60 seconds
+- **Auto-refresh:** At configurable intervals (default: 60 seconds)
 - **Expiry check:** Every 1 second, remove races where `advertised_start < now - 60s`
-- **Debounced refresh:** If race count < 5, refresh after 500ms
-- **Category filtering:** When toggled, trigger immediate API refresh
+- **Centralized debounced refresh:** ALL refresh requests (auto-refresh, category changes, expiry-triggered) go through a single debounced channel (500ms delay) to prevent excessive API calls
+- **Category filtering:** When toggled, triggers refresh through the debounced channel
+- **Task management:** All background tasks (auto-refresh, expiry check, debounce handler) are managed using TaskGroup for safe lifecycle management
 
 **PR Title:** `feat: Add NextToGoViewModel package with state management`
 
