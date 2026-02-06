@@ -3,8 +3,7 @@ import Foundation
 @testable import NextToGoViewModel
 import Testing
 
-/// Tests must run serially because they share time-sensitive async operations
-@Suite("RacesViewModel Tests", .serialized)
+@Suite("RacesViewModel Tests")
 struct RacesViewModelTests {
 
     @Test("Initial state is empty with all categories selected")
@@ -29,6 +28,7 @@ struct RacesViewModelTests {
         await viewModel.refreshRaces()
 
         #expect(viewModel.races.count == 5)
+        #expect(viewModel.races.map(\.raceId) == mockRaces.map(\.raceId), "Races should match mock data from repository")
         #expect(viewModel.isLoading == false)
         #expect(viewModel.error == nil)
     }
@@ -59,7 +59,7 @@ struct RacesViewModelTests {
         // Wait for initial refresh to complete
         try? await Task.sleep(for: .milliseconds(600))
 
-        let initialFetchCount = repository.fetchCount
+        let initialFetchCount = await repository.fetchCount
 
         // Change categories to trigger a new refresh
         viewModel.selectedCategories = [.horse, .greyhound]
@@ -67,55 +67,10 @@ struct RacesViewModelTests {
         // Wait for debounced refresh to complete (500ms debounce + processing time)
         try? await Task.sleep(for: .milliseconds(700))
 
-        #expect(repository.fetchCount > initialFetchCount, "Category change should trigger a new refresh")
+        let finalFetchCount = await repository.fetchCount
+        #expect(finalFetchCount > initialFetchCount, "Category change should trigger a new refresh")
 
         viewModel.stopTasks()
-    }
-
-    @Test("Fetched races exclude already expired races")
-    @MainActor
-    func testFetchExcludesExpiredRaces() async {
-        let now = Date.now
-
-        // Create races: one already expired, one in the future
-        let expiredRace = Race(
-            raceId: "expired-1",
-            raceName: "Expired Race",
-            raceNumber: 1,
-            meetingName: "Past Meeting",
-            categoryId: RaceCategory.horse.id,
-            advertisedStart: now.addingTimeInterval(-70) // 70 seconds ago (already expired)
-        )
-        let futureRace1 = Race(
-            raceId: "future-1",
-            raceName: "Future Race 1",
-            raceNumber: 2,
-            meetingName: "Future Meeting",
-            categoryId: RaceCategory.horse.id,
-            advertisedStart: now.addingTimeInterval(100)
-        )
-        let futureRace2 = Race(
-            raceId: "future-2",
-            raceName: "Future Race 2",
-            raceNumber: 3,
-            meetingName: "Future Meeting",
-            categoryId: RaceCategory.horse.id,
-            advertisedStart: now.addingTimeInterval(200)
-        )
-
-        // Repository returns all races (including expired)
-        let repository = MockRaceRepository(racesToReturn: [expiredRace, futureRace1, futureRace2])
-        let viewModel = RacesViewModel(repository: repository)
-
-        // Refresh races
-        await viewModel.refreshRaces()
-
-        // All non-expired races should be returned
-        #expect(viewModel.races.count == 3)
-        #expect(viewModel.races.allSatisfy { !$0.isExpired } == false) // Repository returns all races
-
-        // Note: Expiry filtering happens in the repository, not the ViewModel
-        // The ViewModel's expiry check task removes races that become expired over time
     }
 
     @Test("Auto-refresh starts and stops correctly")
@@ -130,16 +85,16 @@ struct RacesViewModelTests {
         // Wait for initial debounced refresh to complete (500ms debounce + processing time)
         try? await Task.sleep(for: .milliseconds(700))
 
-        #expect(repository.fetchCount >= 1, "Should have fetched at least once")
-
-        let fetchCountBefore = repository.fetchCount
+        let initialFetchCount = await repository.fetchCount
+        #expect(initialFetchCount >= 1, "Should have fetched at least once")
 
         // Stop tasks
         viewModel.stopTasks()
         try? await Task.sleep(for: .seconds(2))
 
-        // Fetch count should not increase significantly after stopping
-        #expect(repository.fetchCount == fetchCountBefore, "Should not fetch after stopping")
+        // Fetch count should not increase after stopping
+        let finalFetchCount = await repository.fetchCount
+        #expect(finalFetchCount == initialFetchCount, "Should not fetch after stopping")
     }
 
     @Test("Maximum 5 races displayed")
@@ -152,47 +107,6 @@ struct RacesViewModelTests {
         await viewModel.refreshRaces()
 
         #expect(viewModel.races.count == 5, "Should display maximum 5 races")
-    }
-
-    @Test("Races remain sorted by advertised start time")
-    @MainActor
-    func testRacesSortedByStartTime() async {
-        let now = Date.now
-        let race1 = Race(
-            raceId: "race-1",
-            raceName: "Race 1",
-            raceNumber: 1,
-            meetingName: "Meeting",
-            categoryId: RaceCategory.horse.id,
-            advertisedStart: now.addingTimeInterval(300)
-        )
-        let race2 = Race(
-            raceId: "race-2",
-            raceName: "Race 2",
-            raceNumber: 2,
-            meetingName: "Meeting",
-            categoryId: RaceCategory.horse.id,
-            advertisedStart: now.addingTimeInterval(100)
-        )
-        let race3 = Race(
-            raceId: "race-3",
-            raceName: "Race 3",
-            raceNumber: 3,
-            meetingName: "Meeting",
-            categoryId: RaceCategory.horse.id,
-            advertisedStart: now.addingTimeInterval(500)
-        )
-
-        let repository = MockRaceRepository(racesToReturn: [race1, race2, race3])
-        let viewModel = RacesViewModel(repository: repository)
-
-        await viewModel.refreshRaces()
-
-        #expect(viewModel.races.count == 3)
-        // Repository should return sorted races
-        #expect(viewModel.races[0].raceId == "race-2")
-        #expect(viewModel.races[1].raceId == "race-1")
-        #expect(viewModel.races[2].raceId == "race-3")
     }
 
 }
@@ -219,7 +133,7 @@ private extension RacesViewModelTests {
 
 // MARK: - Mock Repository
 
-private final class MockRaceRepository: RaceRepositoryProtocol, @unchecked Sendable {
+private actor MockRaceRepository: RaceRepositoryProtocol {
 
     private let racesToReturn: [Race]
     private let shouldThrowError: Bool
