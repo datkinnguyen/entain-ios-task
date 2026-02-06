@@ -15,12 +15,12 @@ public actor RaceRepositoryImpl: RaceRepositoryProtocol {
     /// Fetches the next races to go based on the specified count and categories
     /// - Parameters:
     ///   - count: The maximum number of races to fetch
-    ///   - categories: The set of race categories to filter by
+    ///   - categories: The set of race categories to filter by. Empty set means all categories.
     /// - Returns: An array of Race objects sorted by advertised start time
     /// - Throws: An error if the fetch operation fails
     public func fetchNextRaces(count: Int, categories: Set<RaceCategory>) async throws -> [Race] {
-        // Build category IDs for API filter
-        let categoryIds = categories.isEmpty ? nil : categories.map { $0.id }
+        // Empty categories means "all categories" - pass all category IDs to API
+        let categoryIds = categories.isEmpty ? RaceCategory.allCases.map { $0.id } : categories.map { $0.id }
 
         // Create endpoint
         let endpoint = APIEndpoint.nextRaces(count: count, categoryIds: categoryIds)
@@ -30,7 +30,7 @@ public actor RaceRepositoryImpl: RaceRepositoryProtocol {
 
         // Filter races by category (client-side validation)
         let validRaces = response.races.filter { race in
-            // If no categories specified, include all races
+            // If no categories specified, treat as all categories selected
             guard !categories.isEmpty else { return true }
 
             // Check if race belongs to one of the selected categories
@@ -38,6 +38,7 @@ public actor RaceRepositoryImpl: RaceRepositoryProtocol {
         }
 
         // Filter out expired races and sort by start time
+        // Note: Backend should not send expired races, but we filter client-side as defensive programming
         let activeRaces = validRaces
             .filter { !$0.isExpired }
             .sorted { $0.advertisedStart < $1.advertisedStart }

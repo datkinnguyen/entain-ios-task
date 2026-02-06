@@ -8,7 +8,10 @@ This document outlines the coding standards and best practices for the Next To G
 - Use Swift 6 with strict concurrency enabled
 - Build with Xcode 16.2+ for latest Swift 6 features
 - Use `.swiftLanguageMode(.v6)` in Package.swift
-- Do NOT use `.enableUpcomingFeature("StrictConcurrency")` (redundant in Swift 6.0+)
+- **IMPORTANT:** Do NOT use `.enableExperimentalFeature("StrictConcurrency")` in Package.swift
+  - Strict concurrency checking is **enabled by default** in Swift 6.0+
+  - The experimental feature flag is redundant and should be removed
+  - Only use `.swiftLanguageMode(.v6)` to enable Swift 6
 
 ### Language and Spelling
 - Always use UK/AU English spelling throughout the codebase
@@ -480,11 +483,33 @@ struct APIClientTests {
 
 ### PR Self-Review Process
 **MANDATORY:** Before creating any PR, you MUST:
-1. **Self-review all code changes** - Review every file, every line changed
-2. **Fix all issues found** - Address any problems, inconsistencies, or violations of these guidelines
-3. **Verify tests pass** - Run the full test suite locally
-4. **Check documentation** - Ensure all docs are up to date
-5. **Only then create the PR** - Submit for team review
+1. **Run SwiftLint** - Fix all violations before committing
+   ```bash
+   swiftlint lint --strict
+   ```
+   - **Zero tolerance** - All violations MUST be fixed
+   - No warnings, no errors in strict mode
+   - Follow project's `.swiftlint.yml` configuration
+2. **Run all tests** - Verify all tests pass locally
+   ```bash
+   swift test
+   ```
+3. **Self-review all code changes** - Review every file, every line changed
+4. **Fix all issues found** - Address any problems, inconsistencies, or violations of these guidelines
+5. **Check documentation** - Ensure all docs are up to date
+6. **Only then create the PR** - Submit for team review
+
+**Self-Review Checklist:**
+- [ ] SwiftLint passes with zero violations (`swiftlint lint --strict`)
+- [ ] All tests pass (`swift test`)
+- [ ] Code follows Swift 6 concurrency best practices
+- [ ] No force unwrapping, force try, or force cast
+- [ ] Imports are alphabetically sorted
+- [ ] Functions are under 40 lines (excluding comments)
+- [ ] Lines are under 120 characters
+- [ ] Proper error handling implemented
+- [ ] Test helpers are in private extensions at bottom of test files
+- [ ] UK English spelling used throughout
 
 This self-review process prevents wasted review cycles and ensures high-quality submissions.
 

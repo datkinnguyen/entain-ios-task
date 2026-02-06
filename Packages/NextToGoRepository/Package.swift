@@ -25,16 +25,14 @@ let package = Package(
                 "NextToGoNetworking"
             ],
             swiftSettings: [
-                .swiftLanguageMode(.v6),
-                .enableExperimentalFeature("StrictConcurrency")
+                .swiftLanguageMode(.v6)
             ]
         ),
         .testTarget(
             name: "NextToGoRepositoryTests",
             dependencies: ["NextToGoRepository"],
             swiftSettings: [
-                .swiftLanguageMode(.v6),
-                .enableExperimentalFeature("StrictConcurrency")
+                .swiftLanguageMode(.v6)
             ]
         )
     ]

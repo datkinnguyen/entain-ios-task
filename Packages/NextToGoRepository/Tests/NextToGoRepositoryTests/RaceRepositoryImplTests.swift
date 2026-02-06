@@ -7,81 +7,6 @@ import Testing
 @Suite("RaceRepositoryImpl Tests")
 struct RaceRepositoryImplTests {
 
-    // MARK: - Helper Methods
-
-    // swiftlint:disable:next function_parameter_count
-    func createRace(
-        id: String,
-        name: String,
-        number: Int,
-        meeting: String,
-        category: RaceCategory,
-        offset: TimeInterval
-    ) -> Race {
-        Race(
-            raceId: id,
-            raceName: name,
-            raceNumber: number,
-            meetingName: meeting,
-            categoryId: category.id,
-            advertisedStart: Date.now.addingTimeInterval(offset)
-        )
-    }
-
-    func createMockRaces() -> [Race] {
-        [
-            createRace(
-                id: "race1", name: "Race 1", number: 1, meeting: "Meeting A",
-                category: .horse, offset: 300
-            ),
-            createRace(
-                id: "race2", name: "Race 2", number: 2, meeting: "Meeting B",
-                category: .greyhound, offset: 600
-            ),
-            createRace(
-                id: "race3", name: "Race 3", number: 3, meeting: "Meeting C",
-                category: .harness, offset: 150
-            ),
-            createRace(
-                id: "race4", name: "Race 4", number: 4, meeting: "Meeting D",
-                category: .horse, offset: 900
-            ),
-            createRace(
-                id: "expired_race", name: "Expired Race", number: 5, meeting: "Meeting E",
-                category: .horse, offset: -120
-            )
-        ]
-    }
-
-    func createMockResponse(races: [Race]) -> RaceResponse {
-        // Create a manual RaceResponse since it uses custom decoding
-        // We'll use the raw JSON approach
-        let raceSummaries = races.enumerated().reduce(into: [String: Any]()) { dict, item in
-            let (index, race) = item
-            dict["race\(index)"] = [
-                "race_id": race.raceId,
-                "race_name": race.raceName,
-                "race_number": race.raceNumber,
-                "meeting_name": race.meetingName,
-                "category_id": race.categoryId,
-                "advertised_start": ["seconds": race.advertisedStart.timeIntervalSince1970]
-            ]
-        }
-
-        let json: [String: Any] = [
-            "status": 200,
-            "data": [
-                "race_summaries": raceSummaries
-            ]
-        ]
-
-        guard let data = try? JSONSerialization.data(withJSONObject: json),
-              let response = try? JSONDecoder().decode(RaceResponse.self, from: data) else {
-            fatalError("Failed to create mock response - invalid test data")
-        }
-        return response
-    }
-
     // MARK: - Tests
 
     @Test("Fetch races with all categories returns all non-expired races")
@@ -102,6 +27,7 @@ struct RaceRepositoryImplTests {
         #expect(result.count == 4)
 
         // Should not include expired race
+        // Note: Backend should never send expired races, but we verify client-side filtering works correctly
         #expect(!result.contains { $0.raceId == "expired_race" })
 
         // Should be sorted by advertised start time
@@ -163,52 +89,6 @@ struct RaceRepositoryImplTests {
         #expect(sortedIds == ["race3", "race1", "race4"])
     }
 
-    @Test("Fetch races excludes expired races")
-    func fetchRacesExcludesExpired() async throws {
-        let mockClient = MockAPIClient()
-        let repository = RaceRepositoryImpl(apiClient: mockClient)
-
-        let now = Date.now
-        let expiredRaces = [
-            Race(
-                raceId: "expired1",
-                raceName: "Expired 1",
-                raceNumber: 1,
-                meetingName: "Meeting A",
-                categoryId: RaceCategory.horse.id,
-                advertisedStart: now.addingTimeInterval(-120) // 2 minutes ago
-            ),
-            Race(
-                raceId: "expired2",
-                raceName: "Expired 2",
-                raceNumber: 2,
-                meetingName: "Meeting B",
-                categoryId: RaceCategory.horse.id,
-                advertisedStart: now.addingTimeInterval(-61) // Just over 1 minute ago
-            ),
-            Race(
-                raceId: "active",
-                raceName: "Active",
-                raceNumber: 3,
-                meetingName: "Meeting C",
-                categoryId: RaceCategory.horse.id,
-                advertisedStart: now.addingTimeInterval(300) // 5 minutes from now
-            )
-        ]
-
-        let mockResponse = createMockResponse(races: expiredRaces)
-
-        await mockClient.configure { _ in
-            return mockResponse
-        }
-
-        let result = try await repository.fetchNextRaces(count: 10, categories: [])
-
-        // Should only return the active race
-        #expect(result.count == 1)
-        #expect(result.first?.raceId == "active")
-    }
-
     @Test("Fetch races with no matching categories returns empty")
     func fetchRacesWithNoMatchingCategories() async throws {
         let mockClient = MockAPIClient()
@@ -253,7 +133,9 @@ struct RaceRepositoryImplTests {
             // Verify the endpoint is correct
             if case .nextRaces(let count, let categoryIds) = endpoint {
                 #expect(count == 10)
-                #expect(categoryIds == [RaceCategory.horse.id, RaceCategory.greyhound.id])
+                // Compare as sets since order doesn't matter
+                let expectedIds = Set([RaceCategory.horse.id, RaceCategory.greyhound.id])
+                #expect(Set(categoryIds ?? []) == expectedIds)
             } else {
                 Issue.record("Expected nextRaces endpoint")
             }
@@ -269,18 +151,20 @@ struct RaceRepositoryImplTests {
         #expect(callCount == 1)
     }
 
-    @Test("Fetch races with empty categories passes nil to endpoint")
-    func fetchRacesWithEmptyCategoriesPassesNil() async throws {
+    @Test("Fetch races with empty categories passes all category IDs to endpoint")
+    func fetchRacesWithEmptyCategoriesPassesAllCategories() async throws {
         let mockClient = MockAPIClient()
         let repository = RaceRepositoryImpl(apiClient: mockClient)
 
         let mockResponse = createMockResponse(races: [])
 
         await mockClient.configure { endpoint in
-            // Verify categoryIds is nil when no categories specified
+            // Verify all category IDs are passed when categories set is empty
             if case .nextRaces(let count, let categoryIds) = endpoint {
                 #expect(count == 10)
-                #expect(categoryIds == nil)
+                // Empty categories means "all categories" - should pass all category IDs
+                let allCategoryIds = Set(RaceCategory.allCases.map { $0.id })
+                #expect(Set(categoryIds ?? []) == allCategoryIds)
             } else {
                 Issue.record("Expected nextRaces endpoint")
             }
@@ -340,6 +224,86 @@ struct RaceRepositoryImplTests {
         #expect(result[0].raceId == "race1") // 2.5 min
         #expect(result[1].raceId == "race2") // 5 min
         #expect(result[2].raceId == "race3") // 15 min
+    }
+}
+
+// MARK: - Test Helpers
+
+private extension RaceRepositoryImplTests {
+
+    // swiftlint:disable:next function_parameter_count
+    func createRace(
+        id: String,
+        name: String,
+        number: Int,
+        meeting: String,
+        category: RaceCategory,
+        offset: TimeInterval
+    ) -> Race {
+        Race(
+            raceId: id,
+            raceName: name,
+            raceNumber: number,
+            meetingName: meeting,
+            categoryId: category.id,
+            advertisedStart: Date.now.addingTimeInterval(offset)
+        )
+    }
+
+    func createMockRaces() -> [Race] {
+        [
+            createRace(
+                id: "race1", name: "Race 1", number: 1, meeting: "Meeting A",
+                category: .horse, offset: 300
+            ),
+            createRace(
+                id: "race2", name: "Race 2", number: 2, meeting: "Meeting B",
+                category: .greyhound, offset: 600
+            ),
+            createRace(
+                id: "race3", name: "Race 3", number: 3, meeting: "Meeting C",
+                category: .harness, offset: 150
+            ),
+            createRace(
+                id: "race4", name: "Race 4", number: 4, meeting: "Meeting D",
+                category: .horse, offset: 900
+            ),
+            // Note: Backend should never send expired races, but we include this
+            // to verify client-side filtering works correctly as defensive programming
+            createRace(
+                id: "expired_race", name: "Expired Race", number: 5, meeting: "Meeting E",
+                category: .horse, offset: -120
+            )
+        ]
+    }
+
+    func createMockResponse(races: [Race]) -> RaceResponse {
+        // Create a manual RaceResponse since it uses custom decoding
+        // We'll use the raw JSON approach
+        let raceSummaries = races.enumerated().reduce(into: [String: Any]()) { dict, item in
+            let (index, race) = item
+            dict["race\(index)"] = [
+                "race_id": race.raceId,
+                "race_name": race.raceName,
+                "race_number": race.raceNumber,
+                "meeting_name": race.meetingName,
+                "category_id": race.categoryId,
+                "advertised_start": ["seconds": race.advertisedStart.timeIntervalSince1970]
+            ]
+        }
+
+        let json: [String: Any] = [
+            "status": 200,
+            "data": [
+                "race_summaries": raceSummaries
+            ]
+        ]
+
+        guard let data = try? JSONSerialization.data(withJSONObject: json),
+              let response = try? JSONDecoder().decode(RaceResponse.self, from: data) else {
+            fatalError("Failed to create mock response - invalid test data")
+        }
+        return response
     }
 }
 
