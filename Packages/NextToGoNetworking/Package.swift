@@ -26,16 +26,14 @@ let package = Package(
             name: "NextToGoNetworking",
             dependencies: ["NextToGoCore"],
             swiftSettings: [
-                .swiftLanguageMode(.v6),
-                .enableUpcomingFeature("StrictConcurrency")
+                .swiftLanguageMode(.v6)
             ]
         ),
         .testTarget(
             name: "NextToGoNetworkingTests",
             dependencies: ["NextToGoNetworking"],
             swiftSettings: [
-                .swiftLanguageMode(.v6),
-                .enableUpcomingFeature("StrictConcurrency")
+                .swiftLanguageMode(.v6)
             ]
         ),
     ]

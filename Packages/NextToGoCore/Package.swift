@@ -23,16 +23,14 @@ let package = Package(
         .target(
             name: "NextToGoCore",
             swiftSettings: [
-                .swiftLanguageMode(.v6),
-                .enableUpcomingFeature("StrictConcurrency")
+                .swiftLanguageMode(.v6)
             ]
         ),
         .testTarget(
             name: "NextToGoCoreTests",
             dependencies: ["NextToGoCore"],
             swiftSettings: [
-                .swiftLanguageMode(.v6),
-                .enableUpcomingFeature("StrictConcurrency")
+                .swiftLanguageMode(.v6)
             ]
         ),
     ]
