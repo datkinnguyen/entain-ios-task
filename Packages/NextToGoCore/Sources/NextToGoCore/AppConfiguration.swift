@@ -2,6 +2,7 @@ import Foundation
 
 /// Centralised configuration constants for the Next To Go application.
 public enum AppConfiguration {
+
     /// The base URL for the racing API
     public static let apiBaseURL = "https://api.neds.com.au/rest/v1/racing/"
 
@@ -16,4 +17,5 @@ public enum AppConfiguration {
 
     /// Maximum number of races to display in the list
     public static let maxRacesToDisplay: Int = 5
+
 }

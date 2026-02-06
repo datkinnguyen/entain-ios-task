@@ -2,6 +2,7 @@ import Foundation
 
 /// Represents a race with details including timing, category, and identification.
 public struct Race: Codable, Identifiable, Sendable {
+
     public let raceId: String
     public let raceName: String
     public let raceNumber: Int
@@ -74,4 +75,5 @@ public struct Race: Codable, Identifiable, Sendable {
     private enum AdvertisedStartKeys: String, CodingKey {
         case seconds
     }
+
 }

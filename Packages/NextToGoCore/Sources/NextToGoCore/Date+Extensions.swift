@@ -1,6 +1,7 @@
 import Foundation
 
 extension Date {
+
     /// Returns a countdown string in the format "Xm Ys" or "-Xm Ys" for expired times.
     /// Uses DST-aware time calculation and monospaced digits for consistent UI layout.
     ///
@@ -18,13 +19,15 @@ extension Date {
         let minutes = Int(absoluteInterval) / 60
         let seconds = Int(absoluteInterval) % 60
 
-        let sign = interval < 0 ? "-" : ""
+        // Don't show negative sign for zero values
+        let sign = (interval < 0 && (minutes > 0 || seconds > 0)) ? "-" : ""
 
-        // Only show minutes if >= 1 minute, otherwise show seconds only
+        // Only show minutes (rounded down) if >= 1 minute, otherwise show seconds only
         if minutes >= 1 {
-            return "\(sign)\(minutes)m \(seconds)s"
+            return "\(sign)\(minutes)m"
         } else {
             return "\(sign)\(seconds)s"
         }
     }
+
 }

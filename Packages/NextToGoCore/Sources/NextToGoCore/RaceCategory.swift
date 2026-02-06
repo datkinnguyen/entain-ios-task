@@ -2,6 +2,7 @@ import Foundation
 
 /// Represents the category of a race with associated metadata.
 public enum RaceCategory: String, Codable, CaseIterable, Sendable {
+
     case greyhound
     case harness
     case horse
@@ -57,4 +58,5 @@ public enum RaceCategory: String, Codable, CaseIterable, Sendable {
             return nil
         }
     }
+
 }
