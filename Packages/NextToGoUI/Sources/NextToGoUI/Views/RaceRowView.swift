@@ -28,8 +28,24 @@ public struct RaceRowView: View {
     // MARK: - Body
 
     public var body: some View {
+        ViewThatFits {
+            // Horizontal layout - try this first
+            horizontalLayout
+
+            // Vertical layout - fallback for large text sizes
+            verticalLayout
+        }
+        .padding(RaceLayout.cardPadding)
+        .frame(minHeight: RaceLayout.raceRowHeight)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(accessibilityLabel)
+    }
+
+    // MARK: - Layout Variants
+
+    private var horizontalLayout: some View {
         HStack(spacing: RaceLayout.spacingM) {
-            // Category icon (left side, black/dark color)
+            // Category icon
             Image(systemName: race.category.iconName)
                 .font(.system(size: RaceLayout.categoryIconSize))
                 .foregroundStyle(RaceColors.categoryIcon)
@@ -38,38 +54,75 @@ public struct RaceRowView: View {
 
             // Meeting info and race details
             VStack(alignment: .leading, spacing: RaceLayout.spacingXS) {
-                // Meeting name (bold, prominent)
                 Text(race.meetingName)
                     .font(RaceTypography.meetingName)
                     .foregroundStyle(RaceColors.meetingNameText)
                     .lineLimit(1)
 
-                // Race name as subtitle (since we don't have venue_state/distance yet)
                 Text(race.raceName)
                     .font(RaceTypography.location)
                     .foregroundStyle(RaceColors.locationText)
                     .lineLimit(1)
             }
-            .fixedSize(horizontal: false, vertical: true)
 
-            Spacer()
+            Spacer(minLength: RaceLayout.spacingM)
 
-            // Race number (right side)
+            // Race number
             Text(viewModel.raceNumberText(for: race))
                 .font(RaceTypography.raceNumber)
                 .foregroundStyle(RaceColors.meetingNameText)
+                .lineLimit(1)
 
-            // Countdown badge (far right)
+            // Countdown badge
             CountdownBadge(
                 text: viewModel.countdownText(for: race),
                 isUrgent: viewModel.isCountdownUrgent(for: race),
                 accessibilityLabel: viewModel.countdownAccessibilityLabel(for: race)
             )
         }
-        .padding(RaceLayout.cardPadding)
-        .frame(height: RaceLayout.raceRowHeight)
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel(accessibilityLabel)
+    }
+
+    private var verticalLayout: some View {
+        VStack(spacing: RaceLayout.spacingM) {
+            // Top row: Icon + Meeting info
+            HStack(spacing: RaceLayout.spacingM) {
+                Image(systemName: race.category.iconName)
+                    .font(.system(size: RaceLayout.categoryIconSize))
+                    .foregroundStyle(RaceColors.categoryIcon)
+                    .frame(width: RaceLayout.categoryIconSize, height: RaceLayout.categoryIconSize)
+                    .accessibilityHidden(true)
+
+                VStack(alignment: .leading, spacing: RaceLayout.spacingXS) {
+                    Text(race.meetingName)
+                        .font(RaceTypography.meetingName)
+                        .foregroundStyle(RaceColors.meetingNameText)
+                        .lineLimit(2)
+
+                    Text(race.raceName)
+                        .font(RaceTypography.location)
+                        .foregroundStyle(RaceColors.locationText)
+                        .lineLimit(2)
+                }
+
+                Spacer(minLength: 0)
+            }
+
+            // Bottom row: Race number + Countdown
+            HStack(spacing: RaceLayout.spacingM) {
+                Text(viewModel.raceNumberText(for: race))
+                    .font(RaceTypography.raceNumber)
+                    .foregroundStyle(RaceColors.meetingNameText)
+                    .lineLimit(1)
+
+                Spacer(minLength: 0)
+
+                CountdownBadge(
+                    text: viewModel.countdownText(for: race),
+                    isUrgent: viewModel.isCountdownUrgent(for: race),
+                    accessibilityLabel: viewModel.countdownAccessibilityLabel(for: race)
+                )
+            }
+        }
     }
 
     // MARK: - Accessibility
