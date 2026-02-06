@@ -17,13 +17,17 @@ extension Date {
     public func countdownString(from startDate: Date = Date.now) -> String {
         // Use timeIntervalSince for DST-aware calculation
         let interval = self.timeIntervalSince(startDate)
-        let absoluteInterval = abs(interval)
+
+        // Round to nearest second to avoid displaying 0 for too long
+        let roundedInterval = round(interval)
+        let absoluteInterval = abs(roundedInterval)
 
         let minutes = Int(absoluteInterval) / 60
         let seconds = Int(absoluteInterval) % 60
 
-        // Don't show negative sign for zero values
-        let sign = (interval < 0 && (minutes > 0 || seconds > 0)) ? "-" : ""
+        // Show negative sign only when interval is negative AND has non-zero time
+        // This prevents showing "-0s" or "-0m"
+        let sign = (roundedInterval < 0 && (minutes > 0 || seconds > 0)) ? "-" : ""
 
         // Format based on time value:
         // >= 5 minutes: show only minutes (e.g., "5m")
