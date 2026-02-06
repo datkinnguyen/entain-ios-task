@@ -1,7 +1,7 @@
-import Testing
 import Foundation
-@testable import NextToGoNetworking
 import NextToGoCore
+@testable import NextToGoNetworking
+import Testing
 
 /// APIClient tests must run serially (.serialized) because they share a static
 /// MockURLProtocol.requestHandler. Running tests in parallel causes race conditions

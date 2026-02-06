@@ -1,7 +1,7 @@
-import Testing
 import Foundation
-@testable import NextToGoNetworking
 import NextToGoCore
+@testable import NextToGoNetworking
+import Testing
 
 @Suite("RaceResponse Tests")
 struct RaceResponseTests {

@@ -23,6 +23,7 @@ opt_in_rules:
   - return_arrow_whitespace
   - empty_count
   - contains_over_first_not_nil
+  - sorted_imports # Enforce alphabetical import ordering
 
 # Disabled rules (rules we explicitly don't want)
 disabled_rules:

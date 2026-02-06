@@ -1,6 +1,6 @@
-import Testing
 import Foundation
 @testable import NextToGoCore
+import Testing
 
 @Suite("Race Model Tests")
 struct RaceTests {
