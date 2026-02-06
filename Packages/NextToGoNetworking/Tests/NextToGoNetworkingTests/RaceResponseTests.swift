@@ -55,7 +55,7 @@ struct RaceResponseTests {
         #expect(race1.raceName == "Race 1")
         #expect(race1.raceNumber == 1)
         #expect(race1.meetingName == "Meeting 1")
-        #expect(race1.categoryId == "9daef0d7-bf3c-4f50-921d-8e818c60fe61")
+        #expect(race1.category.id == "9daef0d7-bf3c-4f50-921d-8e818c60fe61")
 
         // Verify second race
         let race2 = response.races[1]
@@ -63,7 +63,7 @@ struct RaceResponseTests {
         #expect(race2.raceName == "Race 2")
         #expect(race2.raceNumber == 2)
         #expect(race2.meetingName == "Meeting 2")
-        #expect(race2.categoryId == "161d9be2-e909-4326-8c2c-35ed71fb460b")
+        #expect(race2.category.id == "161d9be2-e909-4326-8c2c-35ed71fb460b")
     }
 
     @Test("RaceResponse sorts races by advertised start")
