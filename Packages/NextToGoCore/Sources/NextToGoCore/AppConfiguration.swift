@@ -18,7 +18,10 @@ public enum AppConfiguration {
     /// Debounce delay in milliseconds for user interactions
     public static let debounceDelay: Int = 500
 
-    /// Maximum number of races to display in the list
+    /// Number of races to load from the API (load more to ensure we always have enough)
+    public static let numberOfRacesToLoad: Int = 10
+
+    /// Maximum number of races to display in the list (always show top 5)
     public static let maxRacesToDisplay: Int = 5
 
     /// Network request timeout in seconds

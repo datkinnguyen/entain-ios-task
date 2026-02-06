@@ -177,10 +177,12 @@ public final class RacesViewModel {
         error = nil
 
         do {
+            // Load more races than we display to ensure we always have enough
             let fetchedRaces = try await repository.fetchNextRaces(
-                count: AppConfiguration.maxRacesToDisplay,
+                count: AppConfiguration.numberOfRacesToLoad,
                 categories: selectedCategories
             )
+            // But only display the configured maximum
             races = Array(fetchedRaces.prefix(AppConfiguration.maxRacesToDisplay))
         } catch {
             self.error = error

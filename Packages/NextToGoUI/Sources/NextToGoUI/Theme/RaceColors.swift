@@ -42,6 +42,9 @@ public enum RaceColors {
     public static let raceCardBackground = Color(.white)
     #endif
 
+    /// Dark/black color for category icons in race rows
+    public static let categoryIcon = Color.primary
+
     /// Blue color for race flag icon
     public static let raceFlagBlue = Color.blue
 

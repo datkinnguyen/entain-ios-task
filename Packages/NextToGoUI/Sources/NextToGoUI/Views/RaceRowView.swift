@@ -29,45 +29,43 @@ public struct RaceRowView: View {
 
     public var body: some View {
         HStack(spacing: RaceLayout.spacingM) {
-            // Category icon
+            // Category icon (left side, black/dark color)
             Image(systemName: race.category.iconName)
                 .font(.system(size: RaceLayout.categoryIconSize))
-                .foregroundStyle(RaceColors.selectedChipBackground)
+                .foregroundStyle(RaceColors.categoryIcon)
                 .frame(width: RaceLayout.categoryIconSize, height: RaceLayout.categoryIconSize)
                 .accessibilityHidden(true)
 
-            // Meeting info and race number
+            // Meeting info and race details
             VStack(alignment: .leading, spacing: RaceLayout.spacingXS) {
-                HStack(spacing: RaceLayout.spacingS) {
-                    // Race flag
-                    Image(systemName: "flag.fill")
-                        .font(.system(size: RaceLayout.raceFlagSize))
-                        .foregroundStyle(RaceColors.raceFlagBlue)
-                        .accessibilityHidden(true)
+                // Meeting name (bold, prominent)
+                Text(race.meetingName)
+                    .font(RaceTypography.meetingName)
+                    .foregroundStyle(RaceColors.meetingNameText)
+                    .lineLimit(1)
 
-                    // Meeting name
-                    Text(race.meetingName)
-                        .font(RaceTypography.meetingName)
-                        .foregroundStyle(RaceColors.meetingNameText)
-                        .lineLimit(1)
-                }
-
-                // Race number
-                HStack(spacing: RaceLayout.spacingXS) {
-                    Text(viewModel.raceNumberText(for: race))
-                        .font(RaceTypography.raceNumber)
-                        .foregroundStyle(RaceColors.meetingNameText)
-
-                    Text(race.raceName)
-                        .font(RaceTypography.location)
-                        .foregroundStyle(RaceColors.locationText)
-                        .lineLimit(1)
-                }
+                // Race name as subtitle (since we don't have venue_state/distance yet)
+                Text(race.raceName)
+                    .font(RaceTypography.location)
+                    .foregroundStyle(RaceColors.locationText)
+                    .lineLimit(1)
             }
 
             Spacer()
 
-            // Countdown badge
+            // Race flag and number (right side)
+            HStack(spacing: RaceLayout.spacingS) {
+                Image(systemName: "flag.fill")
+                    .font(.system(size: RaceLayout.raceFlagSize))
+                    .foregroundStyle(RaceColors.raceFlagBlue)
+                    .accessibilityHidden(true)
+
+                Text(viewModel.raceNumberText(for: race))
+                    .font(RaceTypography.raceNumber)
+                    .foregroundStyle(RaceColors.meetingNameText)
+            }
+
+            // Countdown badge (far right)
             CountdownBadge(
                 text: viewModel.countdownText(for: race, at: viewModel.currentTime),
                 isUrgent: viewModel.isCountdownUrgent(for: race, at: viewModel.currentTime),
