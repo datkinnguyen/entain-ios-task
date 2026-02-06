@@ -35,7 +35,7 @@ public actor APIClient {
     /// - Parameter endpoint: The API endpoint to fetch from
     /// - Returns: The decoded response of type T
     /// - Throws: APIError if the request fails or decoding fails
-    public func fetch<T: Decodable>(_ endpoint: APIEndpoint) async throws -> T {
+    public func fetch<T: Decodable & Sendable>(_ endpoint: APIEndpoint) async throws -> T {
         // Build URL from endpoint
         guard let url = endpoint.buildURL(baseURL: baseURL) else {
             throw APIError.invalidURL

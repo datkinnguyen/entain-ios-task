@@ -1,7 +1,7 @@
 import Foundation
 
 /// Represents an API endpoint with configuration for building requests
-public enum APIEndpoint {
+public enum APIEndpoint: Sendable {
     case nextRaces(count: Int, categoryIds: [String]?)
 
     /// HTTP method for the endpoint
