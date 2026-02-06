@@ -58,7 +58,6 @@ struct RaceTests {
 
         let data = json.data(using: .utf8)!
         let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
         let race = try decoder.decode(Race.self, from: data)
 
         #expect(race.raceId == "abc123")

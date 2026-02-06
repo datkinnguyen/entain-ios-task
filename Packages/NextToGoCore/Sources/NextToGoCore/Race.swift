@@ -49,12 +49,12 @@ public struct Race: Decodable, Sendable {
     }
 
     private enum CodingKeys: String, CodingKey {
-        case raceId
-        case raceName
-        case raceNumber
-        case meetingName
-        case categoryId
-        case advertisedStart
+        case raceId = "race_id"
+        case raceName = "race_name"
+        case raceNumber = "race_number"
+        case meetingName = "meeting_name"
+        case categoryId = "category_id"
+        case advertisedStart = "advertised_start"
     }
 
     private enum AdvertisedStartKeys: String, CodingKey {

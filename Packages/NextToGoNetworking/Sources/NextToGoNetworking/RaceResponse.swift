@@ -12,7 +12,7 @@ public struct RaceResponse: Decodable, Sendable {
     }
 
     enum DataKeys: String, CodingKey {
-        case raceSummaries
+        case raceSummaries = "race_summaries"
     }
 
     /// Custom decoder that unwraps the nested dictionary structure and converts to array

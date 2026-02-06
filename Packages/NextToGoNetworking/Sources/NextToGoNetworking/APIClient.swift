@@ -27,9 +27,8 @@ public actor APIClient: Sendable {
             self.urlSession = URLSession(configuration: configuration)
         }
 
-        // Configure decoder for snake_case
+        // Configure decoder
         self.decoder = JSONDecoder()
-        self.decoder.keyDecodingStrategy = .convertFromSnakeCase
     }
 
     /// Fetches data from the specified endpoint and decodes it
