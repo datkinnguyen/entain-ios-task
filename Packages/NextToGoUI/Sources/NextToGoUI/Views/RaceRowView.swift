@@ -12,7 +12,6 @@ public struct RaceRowView: View {
 
     private let race: Race
     private let viewModel: RacesViewModel
-    private let currentTime: Date
 
     // MARK: - Initialisation
 
@@ -20,12 +19,10 @@ public struct RaceRowView: View {
     ///
     /// - Parameters:
     ///   - race: The race to display
-    ///   - viewModel: The view model providing display data
-    ///   - currentTime: The current time for countdown calculation
-    public init(race: Race, viewModel: RacesViewModel, currentTime: Date) {
+    ///   - viewModel: The view model providing display data and current time
+    public init(race: Race, viewModel: RacesViewModel) {
         self.race = race
         self.viewModel = viewModel
-        self.currentTime = currentTime
     }
 
     // MARK: - Body
@@ -72,9 +69,9 @@ public struct RaceRowView: View {
 
             // Countdown badge
             CountdownBadge(
-                text: viewModel.countdownText(for: race, at: currentTime),
-                isUrgent: viewModel.isCountdownUrgent(for: race, at: currentTime),
-                accessibilityLabel: viewModel.countdownAccessibilityLabel(for: race, at: currentTime)
+                text: viewModel.countdownText(for: race, at: viewModel.currentTime),
+                isUrgent: viewModel.isCountdownUrgent(for: race, at: viewModel.currentTime),
+                accessibilityLabel: viewModel.countdownAccessibilityLabel(for: race, at: viewModel.currentTime)
             )
         }
         .padding(RaceLayout.cardPadding)
@@ -93,7 +90,7 @@ public struct RaceRowView: View {
     // MARK: - Accessibility
 
     private var accessibilityLabel: String {
-        viewModel.raceAccessibilityLabel(for: race, at: currentTime)
+        viewModel.raceAccessibilityLabel(for: race, at: viewModel.currentTime)
     }
 
 }
@@ -111,7 +108,7 @@ public struct RaceRowView: View {
     )
     let mockRepository = MockRaceRepository()
     let viewModel = RacesViewModel(repository: mockRepository)
-    return RaceRowView(race: race, viewModel: viewModel, currentTime: .now)
+    return RaceRowView(race: race, viewModel: viewModel)
         .padding()
 }
 
@@ -126,7 +123,7 @@ public struct RaceRowView: View {
     )
     let mockRepository = MockRaceRepository()
     let viewModel = RacesViewModel(repository: mockRepository)
-    return RaceRowView(race: race, viewModel: viewModel, currentTime: .now)
+    return RaceRowView(race: race, viewModel: viewModel)
         .padding()
 }
 
@@ -141,7 +138,7 @@ public struct RaceRowView: View {
     )
     let mockRepository = MockRaceRepository()
     let viewModel = RacesViewModel(repository: mockRepository)
-    return RaceRowView(race: race, viewModel: viewModel, currentTime: .now)
+    return RaceRowView(race: race, viewModel: viewModel)
         .padding()
 }
 
@@ -156,7 +153,7 @@ public struct RaceRowView: View {
     )
     let mockRepository = MockRaceRepository()
     let viewModel = RacesViewModel(repository: mockRepository)
-    return RaceRowView(race: race, viewModel: viewModel, currentTime: .now)
+    return RaceRowView(race: race, viewModel: viewModel)
         .padding()
         .preferredColorScheme(.dark)
 }

@@ -12,6 +12,9 @@ public enum AppConfiguration {
     /// Time threshold in seconds after which a race is considered expired
     public static let expiryThreshold: TimeInterval = 60
 
+    /// Time threshold in seconds for countdown urgent state (≤5 minutes)
+    public static let countdownUrgentThreshold: TimeInterval = 300
+
     /// Debounce delay in milliseconds for user interactions
     public static let debounceDelay: Int = 500
 

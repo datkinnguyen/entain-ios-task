@@ -34,6 +34,9 @@ public final class RacesViewModel {
     /// Current error state, if any
     public private(set) var error: Error?
 
+    /// Current time for countdown calculations (updated every second)
+    public private(set) var currentTime: Date = .now
+
     // MARK: - Display Configurations
 
     /// Configuration for empty state display
@@ -126,7 +129,7 @@ public final class RacesViewModel {
 
     // MARK: - Public Methods
 
-    /// Starts all background tasks (auto-refresh, expiry checking, and debounce handling)
+    /// Starts all background tasks (auto-refresh, expiry checking, countdown timer, and debounce handling)
     public func startTasks() {
         stopTasks()
 
@@ -144,7 +147,12 @@ public final class RacesViewModel {
                     await self?.runExpiryCheck()
                 }
 
-                // Task 3: Debounced refresh handler
+                // Task 3: Countdown timer (updates current time every second)
+                group.addTask { [weak self] in
+                    await self?.runCountdownTimer()
+                }
+
+                // Task 4: Debounced refresh handler
                 group.addTask { [weak self] in
                     await self?.runDebounceHandler()
                 }
@@ -206,7 +214,7 @@ public final class RacesViewModel {
     /// - Returns: True if countdown is urgent
     public func isCountdownUrgent(for race: Race, at currentTime: Date) -> Bool {
         let interval = race.advertisedStart.timeIntervalSince(currentTime)
-        return interval <= 300 // 5 minutes in seconds
+        return interval <= AppConfiguration.countdownUrgentThreshold
     }
 
     /// Returns the accessibility label for a countdown badge
@@ -294,6 +302,15 @@ public final class RacesViewModel {
             try? await Task.sleep(for: .seconds(1))
             guard !Task.isCancelled else { break }
             removeExpiredRaces()
+        }
+    }
+
+    /// Runs the countdown timer that updates current time every second
+    private func runCountdownTimer() async {
+        while !Task.isCancelled {
+            try? await Task.sleep(for: .seconds(1))
+            guard !Task.isCancelled else { break }
+            currentTime = .now
         }
     }
 

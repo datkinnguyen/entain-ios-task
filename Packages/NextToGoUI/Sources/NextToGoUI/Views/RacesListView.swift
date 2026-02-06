@@ -15,7 +15,6 @@ public struct RacesListView: View {
     // MARK: - Properties
 
     @Bindable private var viewModel: RacesViewModel
-    @State private var currentTime: Date = .now
 
     // MARK: - Initialisation
 
@@ -57,7 +56,6 @@ public struct RacesListView: View {
             .background(RaceColors.listBackground)
             .task {
                 viewModel.startTasks()
-                await startCountdownTimer()
             }
             .onDisappear {
                 viewModel.stopTasks()
@@ -70,7 +68,7 @@ public struct RacesListView: View {
     private var racesList: some View {
         List {
             ForEach(viewModel.races, id: \.raceId) { race in
-                RaceRowView(race: race, viewModel: viewModel, currentTime: currentTime)
+                RaceRowView(race: race, viewModel: viewModel)
                     .listRowInsets(EdgeInsets(
                         top: RaceLayout.spacingS,
                         leading: RaceLayout.spacingL,
@@ -139,41 +137,6 @@ public struct RacesListView: View {
             }
         )
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-
-    // MARK: - Private Methods
-
-    /// Starts the countdown timer that updates every second via AsyncStream
-    private func startCountdownTimer() async {
-        for await _ in AsyncStream<Void>.makeStream(interval: 1.0) {
-            currentTime = .now
-        }
-    }
-
-}
-
-// MARK: - AsyncStream Extension
-
-extension AsyncStream where Element == Void {
-
-    /// Creates a timer stream that emits at regular intervals.
-    ///
-    /// - Parameter interval: The time interval in seconds between emissions
-    /// - Returns: An async stream that emits void values at the specified interval
-    static func makeStream(interval: TimeInterval) -> AsyncStream<Void> {
-        AsyncStream { continuation in
-            let task = Task {
-                while !Task.isCancelled {
-                    continuation.yield(())
-                    try? await Task.sleep(for: .seconds(interval))
-                }
-                continuation.finish()
-            }
-
-            continuation.onTermination = { _ in
-                task.cancel()
-            }
-        }
     }
 
 }
