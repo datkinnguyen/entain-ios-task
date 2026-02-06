@@ -3,6 +3,10 @@ import Foundation
 @testable import NextToGoNetworking
 import NextToGoCore
 
+/// APIClient tests must run serially (.serialized) because they share a static
+/// MockURLProtocol.requestHandler. Running tests in parallel causes race conditions
+/// where one test's mock handler interferes with another test's handler, leading to
+/// incorrect responses (e.g., 404 errors when expecting 200 success responses).
 @Suite("APIClient Tests", .serialized)
 struct APIClientTests {
 
