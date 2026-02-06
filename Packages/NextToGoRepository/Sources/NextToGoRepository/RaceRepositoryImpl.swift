@@ -30,11 +30,7 @@ public actor RaceRepositoryImpl: RaceRepositoryProtocol {
 
         // Filter races by category (client-side validation)
         let validRaces = response.races.filter { race in
-            // If no categories specified, treat as all categories selected
-            guard !categories.isEmpty else { return true }
-
-            // Check if race belongs to one of the selected categories
-            return categories.contains { $0.id == race.categoryId }
+            categoryIds.contains(race.categoryId)
         }
 
         // Filter out expired races and sort by start time
