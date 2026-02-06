@@ -22,9 +22,18 @@ extension Date {
         // Don't show negative sign for zero values
         let sign = (interval < 0 && (minutes > 0 || seconds > 0)) ? "-" : ""
 
-        // Only show minutes (rounded down) if >= 1 minute, otherwise show seconds only
-        if minutes >= 1 {
+        // Format based on time value:
+        // >= 5 minutes: show only minutes (e.g., "5m")
+        // < 5 minutes with minutes > 0: show minutes and seconds, but omit seconds if 0 (e.g., "4m 59s" or "1m")
+        // < 1 minute: show only seconds (e.g., "45s")
+        if minutes >= 5 {
             return "\(sign)\(minutes)m"
+        } else if minutes > 0 {
+            if seconds == 0 {
+                return "\(sign)\(minutes)m"
+            } else {
+                return "\(sign)\(minutes)m \(seconds)s"
+            }
         } else {
             return "\(sign)\(seconds)s"
         }
