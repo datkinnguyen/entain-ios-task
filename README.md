@@ -44,7 +44,7 @@ NextToGoNetworking (API Client) + NextToGoCore (Domain Models)
 - **NextToGoViewModel** - @Observable state management (coming soon)
 - **NextToGoUI** - SwiftUI components (coming soon)
 
-See [ARCHITECTURE.md](./ARCHITECTURE.md) for detailed technical architecture.
+See [Documentation/ARCHITECTURE.md](./Documentation/ARCHITECTURE.md) for detailed technical architecture.
 
 ## Getting Started
 
@@ -85,10 +85,12 @@ entain-ios-task/
 │   ├── NextToGoCore/                # Domain models
 │   └── NextToGoNetworking/          # API client
 ├── .github/workflows/               # CI/CD configuration
-├── ARCHITECTURE.md                  # Technical architecture
-├── CODING_GUIDELINES.md             # Coding standards
-├── CONTRIBUTING.md                  # Contribution guide
-├── TESTING.md                       # Testing guide
+├── Documentation/                   # All documentation
+│   ├── ARCHITECTURE.md             # Technical architecture
+│   ├── CODING_GUIDELINES.md        # Coding standards
+│   ├── CONTRIBUTING.md             # Contribution guide
+│   ├── TESTING.md                  # Testing guide
+│   └── IMPLEMENTATION_PLAN.md      # Implementation plan
 └── README.md                        # This file
 ```
 
@@ -99,6 +101,7 @@ This project uses **Swift 6** with strict concurrency checking:
 - `Sendable` conformance for data race prevention
 - `@Observable` macro for state management
 - Structured concurrency with `async/await`
+- Progressive concurrency adoption (start simple, add complexity when needed)
 
 ### API Endpoint
 
@@ -124,16 +127,16 @@ This project uses **Swift 6** with strict concurrency checking:
 - **Integration tests** for end-to-end flows (planned)
 - **Target coverage:** ≥80%
 
-See [TESTING.md](./TESTING.md) for detailed testing guide.
+See [Documentation/TESTING.md](./Documentation/TESTING.md) for detailed testing guide.
 
 ## Contributing
 
-We welcome contributions! Please read [CONTRIBUTING.md](./CONTRIBUTING.md) before submitting PRs.
+We welcome contributions! Please read [Documentation/CONTRIBUTING.md](./Documentation/CONTRIBUTING.md) before submitting PRs.
 
 ### Quick Start
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feature/task-N-description`
-3. Make your changes following [CODING_GUIDELINES.md](./CODING_GUIDELINES.md)
+3. Make your changes following [Documentation/CODING_GUIDELINES.md](./Documentation/CODING_GUIDELINES.md)
 4. **Self-review all changes** (mandatory before creating PR)
 5. Run tests: `swift test`
 6. Create PR with descriptive title and summary
@@ -156,11 +159,16 @@ GitHub Actions runs automatically on every PR:
 
 ## Documentation
 
-- [ARCHITECTURE.md](./ARCHITECTURE.md) - Technical architecture and design decisions
-- [CODING_GUIDELINES.md](./CODING_GUIDELINES.md) - Coding standards and best practices
-- [CONTRIBUTING.md](./CONTRIBUTING.md) - How to contribute to the project
-- [TESTING.md](./TESTING.md) - Testing strategy and guide
-- [IMPLEMENTATION_PLAN_EXPORT.md](./IMPLEMENTATION_PLAN_EXPORT.md) - Detailed implementation plan
+All documentation is located in the `Documentation/` folder:
+
+- **[ARCHITECTURE.md](./Documentation/ARCHITECTURE.md)** - Technical architecture and design decisions
+- **[CODING_GUIDELINES.md](./Documentation/CODING_GUIDELINES.md)** - Coding standards and best practices
+  - Swift 6 concurrency patterns (actors, Sendable, progressive adoption)
+  - SwiftUI architecture (property wrappers, @Observable, ViewModels)
+  - Performance optimisation best practices
+- **[CONTRIBUTING.md](./Documentation/CONTRIBUTING.md)** - How to contribute to the project
+- **[TESTING.md](./Documentation/TESTING.md)** - Testing strategy and guide
+- **[IMPLEMENTATION_PLAN.md](./Documentation/IMPLEMENTATION_PLAN.md)** - Detailed implementation plan
 
 ## Roadmap
 
@@ -169,7 +177,7 @@ GitHub Actions runs automatically on every PR:
 - [x] Task #2: NextToGoCore and NextToGoNetworking packages
 - [x] GitHub Actions CI/CD pipeline
 - [x] Comprehensive test coverage (48 tests)
-- [x] Documentation (Architecture, Testing, Contributing)
+- [x] Documentation (Architecture, Testing, Contributing, Coding Guidelines)
 
 ### 🚧 In Progress
 - [ ] Task #3: NextToGoRepository package
