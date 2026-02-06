@@ -14,7 +14,7 @@ struct RacesViewModelTests {
 
         #expect(viewModel.races.isEmpty)
         #expect(viewModel.selectedCategories == Set(RaceCategory.allCases))
-        #expect(viewModel.isLoading == false)
+        #expect(viewModel.isLoading == true) // Initially true, expecting to load
         #expect(viewModel.error == nil)
     }
 
