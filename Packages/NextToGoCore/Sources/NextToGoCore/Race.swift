@@ -43,7 +43,10 @@ public struct Race: Decodable, Sendable {
         categoryId = try container.decode(String.self, forKey: .categoryId)
 
         // Parse advertised_start which is { "seconds": Int }
-        let advertisedStartContainer = try container.nestedContainer(keyedBy: AdvertisedStartKeys.self, forKey: .advertisedStart)
+        let advertisedStartContainer = try container.nestedContainer(
+            keyedBy: AdvertisedStartKeys.self,
+            forKey: .advertisedStart
+        )
         let seconds = try advertisedStartContainer.decode(TimeInterval.self, forKey: .seconds)
         advertisedStart = Date(timeIntervalSince1970: seconds)
     }

@@ -1,6 +1,6 @@
-import Testing
 import Foundation
 @testable import NextToGoCore
+import Testing
 
 @Suite("Date Extensions Tests")
 struct DateExtensionsTests {
@@ -140,4 +140,3 @@ struct DateExtensionsTests {
         #expect(countdown == "-2m 30s")
     }
 }
-

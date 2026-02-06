@@ -1,0 +1,129 @@
+# SwiftLint Configuration for Next To Go iOS Racing App
+# Strict but reasonable rules for Swift 6 with comprehensive enforcement
+
+# Paths to include in linting
+included:
+  - NextToGoRaces
+  - Packages
+
+# Paths to exclude from linting
+excluded:
+  - Packages/**/Tests/**/*PackageTests.derived
+  - Packages/**/.build
+  - .build
+  - DerivedData
+  - .swiftpm
+  - Pods
+
+# Opt-in rules (rules not enabled by default)
+opt_in_rules:
+  - unused_optional_binding
+  - closure_spacing
+  - operator_usage_whitespace
+  - return_arrow_whitespace
+  - empty_count
+  - contains_over_first_not_nil
+  - sorted_imports # Enforce alphabetical import ordering
+
+# Disabled rules (rules we explicitly don't want)
+disabled_rules:
+  - todo # Allow TODO comments for development
+  - trailing_comma # Different style preference
+
+# Line Length
+line_length:
+  warning: 120
+  error: 150
+  ignores_comments: true
+  ignores_urls: true
+  ignores_function_declarations: false
+
+# Type Body Length
+type_body_length:
+  warning: 300
+  error: 400
+
+# Function Body Length
+function_body_length:
+  warning: 40
+  error: 60
+
+# File Length
+file_length:
+  warning: 400
+  error: 500
+  ignore_comment_only_lines: true
+
+# Cyclomatic Complexity
+cyclomatic_complexity:
+  warning: 10
+  error: 15
+  ignores_case_statements: false
+
+# Identifier Name
+identifier_name:
+  min_length:
+    warning: 2
+    error: 1
+  max_length:
+    warning: 50
+    error: 60
+  excluded:
+    - id
+    - x
+    - y
+    - i
+    - j
+    - k
+
+# Trailing Whitespace
+trailing_whitespace:
+  ignores_empty_lines: false
+  ignores_comments: false
+
+# Colon Spacing
+colon:
+  flexible_right_spacing: false
+  apply_to_dictionaries: true
+
+# Comma Spacing
+comma:
+  severity: error
+
+# Opening Brace Spacing
+opening_brace:
+  severity: warning
+
+# Force Cast
+force_cast:
+  severity: error
+
+# Force Try
+force_try:
+  severity: error
+
+
+# Nesting
+nesting:
+  type_level:
+    warning: 2
+    error: 3
+  function_level:
+    warning: 3
+    error: 5
+
+# Custom Rules
+custom_rules:
+  # Enforce UK English spelling in code
+  uk_english_spelling:
+    name: "UK English Spelling"
+    regex: '\b(localized|centralized|optimized|initialized|organized)\b'
+    match_kinds:
+      - comment
+      - identifier
+      - string
+    message: "Use UK English spelling (localised, centralised, optimised, initialised, organised)"
+    severity: warning
+
+# Reporter Type
+reporter: "xcode" # Use Xcode-style output for better IDE integration

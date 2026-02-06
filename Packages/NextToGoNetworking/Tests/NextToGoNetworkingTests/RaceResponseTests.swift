@@ -1,12 +1,13 @@
-import Testing
 import Foundation
-@testable import NextToGoNetworking
 import NextToGoCore
+@testable import NextToGoNetworking
+import Testing
 
 @Suite("RaceResponse Tests")
 struct RaceResponseTests {
 
     @Test("RaceResponse decodes valid JSON correctly")
+    // swiftlint:disable:next function_body_length
     func testDecodeValidJSON() throws {
         // Given: Valid API response JSON
         let json = """
@@ -66,6 +67,7 @@ struct RaceResponseTests {
     }
 
     @Test("RaceResponse sorts races by advertised start")
+    // swiftlint:disable:next function_body_length
     func testRacesSortedByAdvertisedStart() throws {
         // Given: API response with races in random order
         let json = """

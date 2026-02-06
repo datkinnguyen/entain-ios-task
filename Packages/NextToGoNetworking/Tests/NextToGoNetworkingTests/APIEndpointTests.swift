@@ -1,6 +1,6 @@
-import Testing
 import Foundation
 @testable import NextToGoNetworking
+import Testing
 
 @Suite("APIEndpoint Tests")
 struct APIEndpointTests {

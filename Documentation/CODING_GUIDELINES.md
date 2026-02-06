@@ -555,9 +555,28 @@ Follow clean architecture principles with these dependency rules:
 - Use `// MARK: -` to separate logical sections
 
 ### Imports
+
+**Alphabetical Ordering** (enforced by `sorted_imports` SwiftLint rule):
+- Imports must be ordered alphabetically
+- `@testable` is treated as part of the module name for sorting
+- SwiftLint will auto-fix import order with `swiftlint --fix`
+
+```swift
+// ✅ Correct: Alphabetical ordering
+import Foundation
+@testable import NextToGoCore
+import Testing
+
+// ❌ Wrong: Not alphabetical
+import Testing
+import Foundation
+@testable import NextToGoCore
+```
+
+**General Guidelines**:
 - Import only what you need
 - Use `@testable` only in test targets
-- Group imports: system frameworks first, then external dependencies, then internal modules
+- Avoid wildcard imports (`import Foundation.*`)
 
 ## Performance Optimisation
 
