@@ -14,16 +14,16 @@ public enum RaceColors {
     /// Light gray background for unselected category chips (#E5E7EB)
     public static let unselectedChipBackground = Color(red: 0.898, green: 0.906, blue: 0.922)
 
-    /// Gray icon color for unselected category chips
-    public static let unselectedChipIcon = Color.gray
+    /// Gray icon color for unselected category chips (uses system secondary for proper contrast)
+    public static let unselectedChipIcon = Color.secondary
 
     // MARK: - Countdown Colors
 
     /// Light red/pink background for urgent countdown state (<5 minutes or started)
     public static let countdownUrgentBackground = Color(red: 1.0, green: 0.9, blue: 0.9)
 
-    /// Red text color for urgent countdown state
-    public static let countdownUrgentText = Color(red: 0.8, green: 0.2, blue: 0.2)
+    /// Red text color for urgent countdown state (darker for WCAG AA contrast 4.5:1)
+    public static let countdownUrgentText = Color(red: 0.6, green: 0.1, blue: 0.1)
 
     /// Light grey background for normal countdown state when ≥5 minutes
     public static let countdownNormal = Color(red: 0.95, green: 0.95, blue: 0.95)

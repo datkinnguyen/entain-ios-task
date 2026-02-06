@@ -29,13 +29,7 @@ public struct RacesListView: View {
 
     public var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
-                // Category filters
-                CategoryFilterView(selectedCategories: $viewModel.selectedCategories)
-                    .background(RaceColors.raceCardBackground)
-
-                Divider()
-
+            Group {
                 // Main content - check empty first, then loading/error/success
                 if viewModel.races.isEmpty {
                     if viewModel.isLoading {
@@ -49,9 +43,16 @@ public struct RacesListView: View {
                     racesList
                 }
             }
+            .safeAreaInset(edge: .top, spacing: 0) {
+                VStack(spacing: 0) {
+                    CategoryFilterView(selectedCategories: $viewModel.selectedCategories)
+                        .background(RaceColors.raceCardBackground)
+                    Divider()
+                }
+            }
             .navigationTitle(viewModel.navigationTitle)
             #if os(iOS)
-            .navigationBarTitleDisplayMode(.large)
+            .navigationBarTitleDisplayMode(.inline)
             #endif
             .background(RaceColors.listBackground)
             .task {

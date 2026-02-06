@@ -52,8 +52,8 @@ public struct RaceRowView: View {
     // MARK: - Layout Variants
 
     private var horizontalLayout: some View {
-        HStack(alignment: .top, spacing: RaceLayout.spacingM) {
-            // Category icon - aligned with top of text
+        HStack(alignment: .center, spacing: RaceLayout.spacingM) {
+            // Category icon
             Image(systemName: race.category.iconName)
                 .font(.system(size: RaceLayout.categoryIconSize))
                 .foregroundStyle(RaceColors.categoryIcon)
@@ -89,42 +89,40 @@ public struct RaceRowView: View {
     }
 
     private var verticalLayout: some View {
-        VStack(alignment: .leading, spacing: RaceLayout.spacingM) {
-            // Top row: Icon + Meeting info
-            HStack(alignment: .top, spacing: RaceLayout.spacingM) {
-                Image(systemName: race.category.iconName)
-                    .font(.system(size: RaceLayout.categoryIconSize))
-                    .foregroundStyle(RaceColors.categoryIcon)
-                    .frame(width: RaceLayout.categoryIconSize, height: RaceLayout.categoryIconSize)
-                    .accessibilityHidden(true)
+        HStack(alignment: .center, spacing: RaceLayout.spacingM) {
+            // Category icon
+            Image(systemName: race.category.iconName)
+                .font(.system(size: RaceLayout.categoryIconSize))
+                .foregroundStyle(RaceColors.categoryIcon)
+                .frame(width: RaceLayout.categoryIconSize, height: RaceLayout.categoryIconSize)
+                .accessibilityHidden(true)
 
-                VStack(alignment: .leading, spacing: RaceLayout.spacingXS) {
-                    Text(race.meetingName)
-                        .font(RaceTypography.meetingName)
-                        .foregroundStyle(RaceColors.meetingNameText)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-
-                    Text(race.raceName)
-                        .font(RaceTypography.location)
-                        .foregroundStyle(RaceColors.locationText)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-            }
-
-            // Bottom row: Race number + Countdown
-            HStack(spacing: RaceLayout.spacingM) {
-                Text(viewModel.raceNumberText(for: race))
-                    .font(RaceTypography.raceNumber)
+            // Meeting info, race number, and countdown
+            VStack(alignment: .leading, spacing: RaceLayout.spacingXS) {
+                Text(race.meetingName)
+                    .font(RaceTypography.meetingName)
                     .foregroundStyle(RaceColors.meetingNameText)
-                    .lineLimit(1)
+                    .frame(maxWidth: .infinity, alignment: .leading)
 
-                Spacer(minLength: 0)
+                Text(race.raceName)
+                    .font(RaceTypography.location)
+                    .foregroundStyle(RaceColors.locationText)
+                    .frame(maxWidth: .infinity, alignment: .leading)
 
-                CountdownBadge(
-                    text: viewModel.countdownText(for: race),
-                    isUrgent: viewModel.isCountdownUrgent(for: race),
-                    accessibilityLabel: viewModel.countdownAccessibilityLabel(for: race)
-                )
+                HStack(spacing: RaceLayout.spacingM) {
+                    Text(viewModel.raceNumberText(for: race))
+                        .font(RaceTypography.raceNumber)
+                        .foregroundStyle(RaceColors.meetingNameText)
+                        .lineLimit(1)
+
+                    Spacer(minLength: 0)
+
+                    CountdownBadge(
+                        text: viewModel.countdownText(for: race),
+                        isUrgent: viewModel.isCountdownUrgent(for: race),
+                        accessibilityLabel: viewModel.countdownAccessibilityLabel(for: race)
+                    )
+                }
             }
         }
     }
