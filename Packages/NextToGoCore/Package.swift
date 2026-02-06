@@ -5,6 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "NextToGoCore",
+    defaultLocalization: "en",
     platforms: [
         .iOS(.v18),
         .macOS(.v12)

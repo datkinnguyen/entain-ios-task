@@ -1,4 +1,5 @@
 import Foundation
+import NextToGoCore
 
 /// Actor-based API client for thread-safe networking operations
 public actor APIClient: Sendable {
@@ -11,18 +12,18 @@ public actor APIClient: Sendable {
     ///   - baseURL: The base URL for API requests
     ///   - urlSession: The URLSession to use for requests (defaults to a configured session)
     public init(
-        baseURL: String = "https://api.neds.com.au/rest/v1/racing/",
+        baseURL: String = AppConfiguration.apiBaseURL,
         urlSession: URLSession? = nil
     ) {
         self.baseURL = baseURL
 
         // Configure URLSession with proper timeouts
-        if let urlSession = urlSession {
+        if let urlSession {
             self.urlSession = urlSession
         } else {
             let configuration = URLSessionConfiguration.default
-            configuration.timeoutIntervalForRequest = 30
-            configuration.timeoutIntervalForResource = 60
+            configuration.timeoutIntervalForRequest = AppConfiguration.networkRequestTimeout
+            configuration.timeoutIntervalForResource = AppConfiguration.networkResourceTimeout
             self.urlSession = URLSession(configuration: configuration)
         }
 

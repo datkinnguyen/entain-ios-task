@@ -18,4 +18,10 @@ public enum AppConfiguration {
     /// Maximum number of races to display in the list
     public static let maxRacesToDisplay: Int = 5
 
+    /// Network request timeout in seconds
+    public static let networkRequestTimeout: TimeInterval = 30
+
+    /// Network resource timeout in seconds
+    public static let networkResourceTimeout: TimeInterval = 60
+
 }

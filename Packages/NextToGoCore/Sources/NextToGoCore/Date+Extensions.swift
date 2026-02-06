@@ -5,15 +5,18 @@ extension Date {
     /// Returns a countdown string in the format "Xm Ys" or "-Xm Ys" for expired times.
     /// Uses DST-aware time calculation and monospaced digits for consistent UI layout.
     ///
+    /// - Parameter startDate: The reference date to calculate the interval from. Defaults to `Date.now`.
+    ///                        This parameter allows for deterministic testing with static dates.
     /// - Returns: A formatted string representing the time until or since this date
     ///
     /// Examples:
-    /// - "5m 30s" - 5 minutes and 30 seconds in the future
+    /// - "5m" - 5 minutes or more in the future (seconds omitted when >= 5 minutes)
+    /// - "4m 59s" - Less than 5 minutes in the future (shows both minutes and seconds)
     /// - "-2m 15s" - 2 minutes and 15 seconds in the past
-    /// - "0m 5s" - 5 seconds in the future
-    public func countdownString() -> String {
+    /// - "5s" - 5 seconds in the future (minutes omitted when 0)
+    public func countdownString(from startDate: Date = Date.now) -> String {
         // Use timeIntervalSince for DST-aware calculation
-        let interval = self.timeIntervalSince(Date.now)
+        let interval = self.timeIntervalSince(startDate)
         let absoluteInterval = abs(interval)
 
         let minutes = Int(absoluteInterval) / 60

@@ -31,20 +31,6 @@ public enum RaceCategory: String, Codable, CaseIterable, Sendable {
         }
     }
 
-    /// Localised display name for the category
-    /// Note: In production, this should use NSLocalizedString for proper localisation
-    public var displayName: String {
-        // TODO: Replace with NSLocalizedString when Localizable.strings is added
-        switch self {
-        case .greyhound:
-            return "Greyhound"
-        case .harness:
-            return "Harness"
-        case .horse:
-            return "Horse"
-        }
-    }
-
     /// Initialize from a category ID
     public init?(id: String) {
         switch id {

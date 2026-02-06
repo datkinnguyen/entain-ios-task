@@ -5,17 +5,37 @@ import Foundation
 @Suite("Race Model Tests")
 struct RaceTests {
 
+    /// Helper function to create a Race with default values for testing
+    /// - Parameters:
+    ///   - raceId: The race identifier (default: "test-id")
+    ///   - raceName: The race name (default: "Test Race")
+    ///   - raceNumber: The race number (default: 1)
+    ///   - meetingName: The meeting name (default: "Test Meeting")
+    ///   - categoryId: The category identifier (default: horse)
+    ///   - advertisedStart: The advertised start time (default: Date.now)
+    /// - Returns: A Race instance with the specified or default values
+    static func makeRace(
+        raceId: String = "test-id",
+        raceName: String = "Test Race",
+        raceNumber: Int = 1,
+        meetingName: String = "Test Meeting",
+        categoryId: String = RaceCategory.horse.id,
+        advertisedStart: Date = Date.now
+    ) -> Race {
+        Race(
+            raceId: raceId,
+            raceName: raceName,
+            raceNumber: raceNumber,
+            meetingName: meetingName,
+            categoryId: categoryId,
+            advertisedStart: advertisedStart
+        )
+    }
+
     @Test("Race initializes with correct properties")
     func testRaceInitialization() {
         let date = Date()
-        let race = Race(
-            raceId: "test-id",
-            raceName: "Test Race",
-            raceNumber: 1,
-            meetingName: "Test Meeting",
-            categoryId: RaceCategory.horse.id,
-            advertisedStart: date
-        )
+        let race = Self.makeRace(advertisedStart: date)
 
         #expect(race.raceId == "test-id")
         #expect(race.raceName == "Test Race")
@@ -29,14 +49,7 @@ struct RaceTests {
     @Test("Race is not expired when in the future")
     func testRaceNotExpired() {
         let futureDate = Date.now.addingTimeInterval(120) // 2 minutes in the future
-        let race = Race(
-            raceId: "test-id",
-            raceName: "Test Race",
-            raceNumber: 1,
-            meetingName: "Test Meeting",
-            categoryId: RaceCategory.horse.id,
-            advertisedStart: futureDate
-        )
+        let race = Self.makeRace(advertisedStart: futureDate)
 
         #expect(!race.isExpired)
     }
@@ -44,46 +57,23 @@ struct RaceTests {
     @Test("Race is expired when more than 60 seconds in the past")
     func testRaceExpired() {
         let pastDate = Date.now.addingTimeInterval(-120) // 2 minutes in the past
-        let race = Race(
-            raceId: "test-id",
-            raceName: "Test Race",
-            raceNumber: 1,
-            meetingName: "Test Meeting",
-            categoryId: RaceCategory.horse.id,
-            advertisedStart: pastDate
-        )
+        let race = Self.makeRace(advertisedStart: pastDate)
 
         #expect(race.isExpired)
     }
 
     @Test("Race is not expired at the 60 second threshold")
     func testRaceNotExpiredAt60Seconds() {
-        // Use 59 seconds to avoid timing issues between date creation and expiry check
-        let pastDate = Date.now.addingTimeInterval(-59) // 59 seconds in the past
-        let race = Race(
-            raceId: "test-id",
-            raceName: "Test Race",
-            raceNumber: 1,
-            meetingName: "Test Meeting",
-            categoryId: RaceCategory.horse.id,
-            advertisedStart: pastDate
-        )
+        let pastDate = Date.now.addingTimeInterval(-59)
+        let race = Self.makeRace(advertisedStart: pastDate)
 
         #expect(!race.isExpired)
     }
 
     @Test("Race is not expired when less than 60 seconds in the past")
     func testRaceNotExpiredWithinThreshold() {
-        let pastDate = Date.now.addingTimeInterval(-30) // 30 seconds in the past
-        let race = Race(
-            raceId: "test-id",
-            raceName: "Test Race",
-            raceNumber: 1,
-            meetingName: "Test Meeting",
-            categoryId: RaceCategory.horse.id,
-            advertisedStart: pastDate
-        )
-
+        let pastDate = Date.now.addingTimeInterval(-30)
+        let race = Self.makeRace(advertisedStart: pastDate)
         #expect(!race.isExpired)
     }
 
