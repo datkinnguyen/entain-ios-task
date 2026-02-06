@@ -84,7 +84,6 @@ public struct RacesListView: View {
         .scrollContentBackground(.hidden)
     }
 
-
     // MARK: - Private Methods
 
     /// Starts the countdown timer that updates every second via AsyncStream

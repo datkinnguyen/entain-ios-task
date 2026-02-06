@@ -1,5 +1,8 @@
 import Foundation
 
+// swiftlint:disable uk_english_spelling
+// Reason: This file uses Foundation's NSLocalizedString API which uses US spelling
+
 /// Helper for accessing localized strings from the ViewModel package bundle
 enum LocalizedString {
 
@@ -74,3 +77,5 @@ enum LocalizedString {
     }
 
 }
+
+// swiftlint:enable uk_english_spelling
