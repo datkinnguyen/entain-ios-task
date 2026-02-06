@@ -18,7 +18,7 @@ public struct CountdownBadge: View {
     ///
     /// - Parameters:
     ///   - text: The countdown text to display
-    ///   - isUrgent: Whether to show urgent state (red background)
+    ///   - isUrgent: Whether to show urgent state (light red background + red text for <5min or started)
     ///   - accessibilityLabel: The accessibility label
     public init(text: String, isUrgent: Bool, accessibilityLabel: String) {
         self.text = text
@@ -31,12 +31,10 @@ public struct CountdownBadge: View {
     public var body: some View {
         Text(text)
             .font(RaceTypography.countdown)
-            .foregroundStyle(isUrgent ? .white : RaceColors.countdownText)
-            .padding(.horizontal, RaceLayout.countdownPaddingHorizontal)
-            .padding(.vertical, RaceLayout.countdownPaddingVertical)
-            .frame(minHeight: RaceLayout.countdownMinHeight)
-            .background(isUrgent ? RaceColors.countdownUrgent : RaceColors.countdownNormal)
-            .clipShape(RoundedRectangle(cornerRadius: RaceLayout.chipCornerRadius))
+            .foregroundStyle(isUrgent ? RaceColors.countdownUrgentText : RaceColors.countdownText)
+            .frame(width: RaceLayout.countdownWidth, height: RaceLayout.countdownMinHeight)
+            .background(isUrgent ? RaceColors.countdownUrgentBackground : RaceColors.countdownNormal)
+            .clipShape(Capsule())
             .accessibilityLabel(accessibilityLabel)
             .accessibilityValue(text)
     }

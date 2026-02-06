@@ -50,37 +50,24 @@ public struct RaceRowView: View {
                     .foregroundStyle(RaceColors.locationText)
                     .lineLimit(1)
             }
+            .fixedSize(horizontal: false, vertical: true)
 
             Spacer()
 
-            // Race flag and number (right side)
-            HStack(spacing: RaceLayout.spacingS) {
-                Image(systemName: "flag.fill")
-                    .font(.system(size: RaceLayout.raceFlagSize))
-                    .foregroundStyle(RaceColors.raceFlagBlue)
-                    .accessibilityHidden(true)
-
-                Text(viewModel.raceNumberText(for: race))
-                    .font(RaceTypography.raceNumber)
-                    .foregroundStyle(RaceColors.meetingNameText)
-            }
+            // Race number (right side)
+            Text(viewModel.raceNumberText(for: race))
+                .font(RaceTypography.raceNumber)
+                .foregroundStyle(RaceColors.meetingNameText)
 
             // Countdown badge (far right)
             CountdownBadge(
-                text: viewModel.countdownText(for: race, at: viewModel.currentTime),
-                isUrgent: viewModel.isCountdownUrgent(for: race, at: viewModel.currentTime),
-                accessibilityLabel: viewModel.countdownAccessibilityLabel(for: race, at: viewModel.currentTime)
+                text: viewModel.countdownText(for: race),
+                isUrgent: viewModel.isCountdownUrgent(for: race),
+                accessibilityLabel: viewModel.countdownAccessibilityLabel(for: race)
             )
         }
         .padding(RaceLayout.cardPadding)
         .frame(height: RaceLayout.raceRowHeight)
-        .background(RaceColors.raceCardBackground)
-        .clipShape(RoundedRectangle(cornerRadius: RaceLayout.cardCornerRadius))
-        .shadow(
-            color: .black.opacity(RaceLayout.cardShadowOpacity),
-            radius: RaceLayout.cardShadowRadius,
-            y: RaceLayout.cardShadowY
-        )
         .accessibilityElement(children: .combine)
         .accessibilityLabel(accessibilityLabel)
     }
@@ -88,7 +75,7 @@ public struct RaceRowView: View {
     // MARK: - Accessibility
 
     private var accessibilityLabel: String {
-        viewModel.raceAccessibilityLabel(for: race, at: viewModel.currentTime)
+        viewModel.raceAccessibilityLabel(for: race)
     }
 
 }

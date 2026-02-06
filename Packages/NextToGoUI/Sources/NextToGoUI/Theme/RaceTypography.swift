@@ -14,8 +14,8 @@ public enum RaceTypography {
     /// Subheadline style for location text (automatically scales with Dynamic Type)
     public static let location: Font = .subheadline
 
-    /// Monospaced subheadline for countdown timer (automatically scales with Dynamic Type)
-    public static let countdown: Font = .subheadline.monospacedDigit()
+    /// Monospaced semibold subheadline for countdown timer (automatically scales with Dynamic Type)
+    public static let countdown: Font = .subheadline.monospacedDigit().weight(.semibold)
 
     /// Semibold footnote for category chip labels (automatically scales with Dynamic Type)
     public static let categoryChip: Font = .footnote.weight(.semibold)

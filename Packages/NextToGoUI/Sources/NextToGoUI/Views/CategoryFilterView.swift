@@ -24,7 +24,8 @@ public struct CategoryFilterView: View {
     // MARK: - Body
 
     public var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
+        HStack {
+            Spacer()
             HStack(spacing: RaceLayout.spacingM) {
                 ForEach(RaceCategory.allCases, id: \.self) { category in
                     CategoryChip(
@@ -35,9 +36,9 @@ public struct CategoryFilterView: View {
                     }
                 }
             }
-            .padding(.horizontal, RaceLayout.spacingL)
-            .padding(.vertical, RaceLayout.spacingS)
+            Spacer()
         }
+        .padding(.vertical, RaceLayout.spacingS)
         .accessibilityElement(children: .contain)
         .accessibilityLabel("Race category filters")
     }

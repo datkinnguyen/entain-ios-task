@@ -29,7 +29,7 @@ public final class RacesViewModel {
     }
 
     /// Loading state indicator
-    public private(set) var isLoading = false
+    public private(set) var isLoading = true
 
     /// Current error state, if any
     public private(set) var error: Error?
@@ -201,34 +201,28 @@ public final class RacesViewModel {
     }
 
     /// Returns the countdown display string for a race
-    /// - Parameters:
-    ///   - race: The race
-    ///   - currentTime: The current time
+    /// - Parameter race: The race
     /// - Returns: Formatted countdown string
-    public func countdownText(for race: Race, at currentTime: Date) -> String {
+    public func countdownText(for race: Race) -> String {
         race.advertisedStart.countdownString(from: currentTime)
     }
 
-    /// Returns whether the countdown should show urgent state (≤5 minutes)
-    /// - Parameters:
-    ///   - race: The race
-    ///   - currentTime: The current time
+    /// Returns whether the countdown should show urgent state (≤5 minutes or started)
+    /// - Parameter race: The race
     /// - Returns: True if countdown is urgent
-    public func isCountdownUrgent(for race: Race, at currentTime: Date) -> Bool {
+    public func isCountdownUrgent(for race: Race) -> Bool {
         let interval = race.advertisedStart.timeIntervalSince(currentTime)
         return interval <= AppConfiguration.countdownUrgentThreshold
     }
 
     /// Returns the accessibility label for a countdown badge
-    /// - Parameters:
-    ///   - race: The race
-    ///   - currentTime: The current time
+    /// - Parameter race: The race
     /// - Returns: Accessibility label
-    public func countdownAccessibilityLabel(for race: Race, at currentTime: Date) -> String {
+    public func countdownAccessibilityLabel(for race: Race) -> String {
         let interval = race.advertisedStart.timeIntervalSince(currentTime)
         if interval < 0 {
             return LocalizedString.countdownStarted
-        } else if isCountdownUrgent(for: race, at: currentTime) {
+        } else if isCountdownUrgent(for: race) {
             return LocalizedString.countdownStartingSoon
         } else {
             return LocalizedString.countdownStartsIn
@@ -236,13 +230,11 @@ public final class RacesViewModel {
     }
 
     /// Returns the accessibility label for a race row
-    /// - Parameters:
-    ///   - race: The race
-    ///   - currentTime: The current time
+    /// - Parameter race: The race
     /// - Returns: Complete accessibility label
-    public func raceAccessibilityLabel(for race: Race, at currentTime: Date) -> String {
+    public func raceAccessibilityLabel(for race: Race) -> String {
         let categoryName = categoryDisplayName(for: race.category, withRacingSuffix: true)
-        let countdown = countdownText(for: race, at: currentTime)
+        let countdown = countdownText(for: race)
         return LocalizedString.raceAccessibility(
             category: categoryName,
             meeting: race.meetingName,
