@@ -1,58 +1,56 @@
 import Foundation
-
-// swiftlint:disable uk_english_spelling
-// Reason: This file uses Foundation's NSLocalizedString API which uses US spelling
+import NextToGoCore
 
 /// Helper for accessing localized strings from the ViewModel package bundle
 enum LocalizedString {
 
     // MARK: - Navigation
 
-    static let navigationTitle = localized("navigation.title")
+    static let navigationTitle = localised("navigation.title")
 
     // MARK: - Loading States
 
-    static let loadingRaces = localized("loading.races")
+    static let loadingRaces = localised("loading.races")
 
     // MARK: - Empty States
 
-    static let emptyTitle = localized("empty.title")
-    static let emptyMessage = localized("empty.message")
-    static let emptyAccessibility = localized("empty.accessibility")
+    static let emptyTitle = localised("empty.title")
+    static let emptyMessage = localised("empty.message")
+    static let emptyAccessibility = localised("empty.accessibility")
 
     // MARK: - Error States
 
-    static let errorTitle = localized("error.title")
-    static let errorRetry = localized("error.retry")
-    static let errorRetryAccessibility = localized("error.retry.accessibility")
+    static let errorTitle = localised("error.title")
+    static let errorRetry = localised("error.retry")
+    static let errorRetryAccessibility = localised("error.retry.accessibility")
 
     // MARK: - Countdown
 
-    static let countdownStarted = localized("countdown.started")
-    static let countdownStartingSoon = localized("countdown.starting_soon")
-    static let countdownStartsIn = localized("countdown.starts_in")
+    static let countdownStarted = localised("countdown.started")
+    static let countdownStartingSoon = localised("countdown.starting_soon")
+    static let countdownStartsIn = localised("countdown.starts_in")
 
     // MARK: - Race Display
 
-    static let raceNumberPrefix = localized("race.number.prefix")
+    static let raceNumberPrefix = localised("race.number.prefix")
 
     // MARK: - Category
 
-    static let categoryHorse = localized("category.horse")
-    static let categoryHarness = localized("category.harness")
-    static let categoryGreyhound = localized("category.greyhound")
+    static let categoryHorse = localised("category.horse")
+    static let categoryHarness = localised("category.harness")
+    static let categoryGreyhound = localised("category.greyhound")
 
-    static let categoryHorseRacing = localized("category.horse.racing")
-    static let categoryHarnessRacing = localized("category.harness.racing")
-    static let categoryGreyhoundRacing = localized("category.greyhound.racing")
+    static let categoryHorseRacing = localised("category.horse.racing")
+    static let categoryHarnessRacing = localised("category.harness.racing")
+    static let categoryGreyhoundRacing = localised("category.greyhound.racing")
 
-    static let categorySelectedHint = localized("category.selected.hint")
-    static let categoryNotSelectedHint = localized("category.not_selected.hint")
+    static let categorySelectedHint = localised("category.selected.hint")
+    static let categoryNotSelectedHint = localised("category.not_selected.hint")
 
     // MARK: - Helper
 
-    private static func localized(_ key: String) -> String {
-        NSLocalizedString(key, bundle: .module, comment: "")
+    private static func localised(_ key: String) -> String {
+        Localization.string(forKey: key, bundle: .module)
     }
 
     /// Formats race accessibility label
@@ -71,11 +69,9 @@ enum LocalizedString {
         countdown: String
     ) -> String {
         String(
-            format: localized("race.accessibility.format"),
+            format: localised("race.accessibility.format"),
             category, meeting, raceNumber, raceName, countdown
         )
     }
 
 }
-
-// swiftlint:enable uk_english_spelling
