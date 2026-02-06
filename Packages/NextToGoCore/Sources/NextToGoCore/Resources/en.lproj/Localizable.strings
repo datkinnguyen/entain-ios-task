@@ -1,0 +1,4 @@
+/* Countdown format strings */
+"countdown.minutes.only" = "%dm";
+"countdown.minutes.seconds" = "%dm %ds";
+"countdown.seconds.only" = "%ds";
