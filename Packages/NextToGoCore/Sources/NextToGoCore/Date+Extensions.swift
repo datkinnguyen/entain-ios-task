@@ -20,7 +20,11 @@ extension Date {
 
         let sign = interval < 0 ? "-" : ""
 
-        // Format with monospaced digits
-        return "\(sign)\(minutes)m \(seconds)s"
+        // Only show minutes if >= 1 minute, otherwise show seconds only
+        if minutes >= 1 {
+            return "\(sign)\(minutes)m \(seconds)s"
+        } else {
+            return "\(sign)\(seconds)s"
+        }
     }
 }

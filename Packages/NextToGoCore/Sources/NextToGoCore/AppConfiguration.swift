@@ -1,6 +1,6 @@
 import Foundation
 
-/// Centralized configuration constants for the Next To Go application.
+/// Centralised configuration constants for the Next To Go application.
 public enum AppConfiguration {
     /// The base URL for the racing API
     public static let apiBaseURL = "https://api.neds.com.au/rest/v1/racing/"

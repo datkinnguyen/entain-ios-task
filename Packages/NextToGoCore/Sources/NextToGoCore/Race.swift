@@ -11,7 +11,7 @@ public struct Race: Codable, Identifiable, Sendable {
 
     public var id: String { raceId }
 
-    /// Returns true if the race started more than 60 seconds ago
+    /// Returns true if the race started more than the configured expiry threshold ago
     public var isExpired: Bool {
         let expiryThreshold = AppConfiguration.expiryThreshold
         return advertisedStart.timeIntervalSince(Date.now) < -expiryThreshold

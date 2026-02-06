@@ -29,21 +29,22 @@ struct DateExtensionsTests {
         #expect(countdown == "1m 0s")
     }
 
-    @Test("Countdown string for less than 1 minute in future")
+    @Test("Countdown string for less than 1 minute in future shows seconds only")
     func testCountdownStringUnderMinute() {
         let futureDate = Date.now.addingTimeInterval(45) // 45 seconds
         let countdown = futureDate.countdownString()
 
-        #expect(countdown == "0m 45s")
+        // Allow for 1 second tolerance due to execution time
+        #expect(countdown == "45s" || countdown == "44s")
     }
 
-    @Test("Countdown string for 0 seconds shows 0m 0s")
+    @Test("Countdown string for 0 seconds shows 0s")
     func testCountdownStringZero() {
         let now = Date.now
         let countdown = now.countdownString()
 
         // Allow for slight timing differences
-        #expect(countdown == "0m 0s" || countdown == "-0m 0s")
+        #expect(countdown == "0s" || countdown == "-0s")
     }
 
     @Test("Countdown string for 5 minutes 30 seconds in future")
@@ -93,14 +94,14 @@ struct DateExtensionsTests {
     @Test("Countdown string format consistency")
     func testCountdownStringFormat() {
         let testCases: [(TimeInterval, [String])] = [
-            (0, ["0m 0s", "-0m 0s"]),
-            (30, ["0m 30s", "0m 29s"]),
-            (60, ["1m 0s", "0m 59s"]),
+            (0, ["0s", "-0s"]),
+            (30, ["30s", "29s"]),
+            (60, ["1m 0s", "59s"]),
             (90, ["1m 30s", "1m 29s"]),
             (120, ["2m 0s", "1m 59s"]),
             (125, ["2m 5s", "2m 4s"]),
             (300, ["5m 0s", "4m 59s"]),
-            (-30, ["-0m 30s", "-0m 31s"]),
+            (-30, ["-30s", "-31s"]),
             (-60, ["-1m 0s", "-1m 1s"]),
             (-125, ["-2m 5s", "-2m 6s"])
         ]
