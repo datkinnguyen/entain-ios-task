@@ -40,7 +40,7 @@ public struct RacesListView: View {
                 // Main content - check empty first, then loading/error/success
                 if viewModel.races.isEmpty {
                     if viewModel.isLoading {
-                        LoadingView(message: viewModel.loadingMessage)
+                        loadingStateView
                     } else if let error = viewModel.error {
                         errorStateView(for: error)
                     } else {
@@ -82,6 +82,22 @@ public struct RacesListView: View {
         }
         .listStyle(.plain)
         .scrollContentBackground(.hidden)
+    }
+
+    private var loadingStateView: some View {
+        VStack(spacing: RaceLayout.spacingL) {
+            ProgressView()
+                .scaleEffect(1.5)
+                .progressViewStyle(.circular)
+
+            Text(viewModel.loadingMessage)
+                .font(RaceTypography.location)
+                .foregroundStyle(RaceColors.locationText)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(RaceColors.listBackground)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(viewModel.loadingMessage)
     }
 
     private var emptyStateView: some View {
