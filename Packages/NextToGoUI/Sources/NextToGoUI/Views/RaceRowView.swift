@@ -57,12 +57,10 @@ public struct RaceRowView: View {
                 Text(race.meetingName)
                     .font(RaceTypography.meetingName)
                     .foregroundStyle(RaceColors.meetingNameText)
-                    .lineLimit(1)
 
                 Text(race.raceName)
                     .font(RaceTypography.location)
                     .foregroundStyle(RaceColors.locationText)
-                    .lineLimit(1)
             }
 
             Spacer(minLength: RaceLayout.spacingM)
@@ -85,7 +83,7 @@ public struct RaceRowView: View {
     private var verticalLayout: some View {
         VStack(spacing: RaceLayout.spacingM) {
             // Top row: Icon + Meeting info
-            HStack(spacing: RaceLayout.spacingM) {
+            HStack(alignment: .top, spacing: RaceLayout.spacingM) {
                 Image(systemName: race.category.iconName)
                     .font(.system(size: RaceLayout.categoryIconSize))
                     .foregroundStyle(RaceColors.categoryIcon)
@@ -96,12 +94,10 @@ public struct RaceRowView: View {
                     Text(race.meetingName)
                         .font(RaceTypography.meetingName)
                         .foregroundStyle(RaceColors.meetingNameText)
-                        .lineLimit(2)
 
                     Text(race.raceName)
                         .font(RaceTypography.location)
                         .foregroundStyle(RaceColors.locationText)
-                        .lineLimit(2)
                 }
 
                 Spacer(minLength: 0)

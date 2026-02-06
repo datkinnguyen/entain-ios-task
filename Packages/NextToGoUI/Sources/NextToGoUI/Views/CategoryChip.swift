@@ -47,7 +47,7 @@ public struct CategoryChip: View {
     public var body: some View {
         Button(action: action) {
             Image(systemName: category.iconName)
-                .font(.title2.weight(.semibold))
+                .font(.footnote.weight(.semibold))
                 .foregroundStyle(iconColor)
                 .frame(width: 60, height: 60)
                 .background(backgroundColor)
