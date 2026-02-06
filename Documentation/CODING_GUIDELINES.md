@@ -535,19 +535,65 @@ ChildView(scrollOffset: scrollOffset)
   - **NextToGoViewModel** - for presentation-level strings
 - Never add localisation to other packages
 
-```swift
-// Correct - using localised strings
-let format = NSLocalizedString("countdown.minutes.only", bundle: .module, comment: "Countdown format for minutes only")
+### Centralised Localisation Helper
 
-// Incorrect - hardcoded user-facing string
+**ALWAYS use the `Localization.string()` helper from NextToGoCore** for accessing localised strings:
+
+```swift
+import NextToGoCore
+
+// ✅ CORRECT - Use Localization.string() helper
+let format = Localization.string(
+    forKey: "countdown.minutes.only",
+    bundle: .module,
+    comment: "Countdown format for minutes only"
+)
+
+// ❌ WRONG - Never use NSLocalizedString directly
+let format = NSLocalizedString("countdown.minutes.only", bundle: .module, comment: "...")
+
+// ❌ WRONG - Never hardcode user-facing strings
 let format = "%dm"
 ```
 
+**Benefits of using `Localization.string()`:**
+- Single source of truth for localisation logic
+- Consistent API across all packages
+- Easier to mock/test localisation
+- Centralised place to add logging or fallback logic if needed
+
+### Package-Specific Localisation Helpers
+
+Each package should create a type-safe helper enum that wraps `Localization.string()`:
+
+```swift
+import NextToGoCore
+
+enum LocalizedString {
+    static let errorTitle = localised("error.title")
+    static let errorRetry = localised("error.retry")
+
+    private static func localised(_ key: String) -> String {
+        Localization.string(forKey: key, bundle: .module)
+    }
+}
+
+// Usage in ViewModel
+@Observable
+class MyViewModel {
+    var errorTitle: String { LocalizedString.errorTitle }
+    var errorRetryText: String { LocalizedString.errorRetry }
+}
+```
+
 ### Countdown String Formats
+
 User-facing countdown strings must use these localised keys:
 - `countdown.minutes.only` - Format: "%dm"
 - `countdown.minutes.seconds` - Format: "%dm %ds"
 - `countdown.seconds.only` - Format: "%ds"
+
+All countdown formatting is handled in `Date+Extensions.swift` using `Localization.string()`.
 
 ## Testing
 
