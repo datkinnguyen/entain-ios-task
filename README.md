@@ -48,10 +48,10 @@ A native iOS app that displays the next 5 upcoming races with category filtering
 - **Progressive Concurrency**: Started single-threaded, added concurrency only where needed
 
 ### 🧪 Well Tested
-- **48+ Unit Tests**: All domain logic and networking thoroughly tested
-- **Snapshot Tests**: UI components verified visually
+- **61+ Unit Tests**: All domain logic and networking thoroughly tested (100% passing)
 - **Mock Infrastructure**: Complete mocking for testing without network calls
-- **80%+ Coverage**: Comprehensive test coverage across all packages
+- **High Coverage**: Comprehensive test coverage across all packages
+- **CI/CD Integration**: Automated testing on every PR
 
 ## Requirements
 
@@ -159,13 +159,15 @@ This project uses **Swift 6** with strict concurrency checking:
 ### Test Coverage
 - ✅ NextToGoCore: 22/22 tests passing
 - ✅ NextToGoNetworking: 26/26 tests passing
-- **Total:** 48/48 tests passing
+- ✅ NextToGoViewModel: 6/6 tests passing
+- ✅ NextToGoRepository: 7/7 tests passing
+- **Total:** 61/61 tests passing (100%)
 
 ### Test Strategy
 - **Unit tests** for all domain logic and networking
-- **Snapshot tests** for UI components (planned)
-- **Integration tests** for end-to-end flows (planned)
-- **Target coverage:** ≥80%
+- **Mock-based testing** with dependency injection
+- **Swift Testing framework** for modern test patterns
+- **Comprehensive coverage** across all packages
 
 See [Documentation/TESTING.md](./Documentation/TESTING.md) for detailed testing guide.
 
@@ -221,22 +223,41 @@ All documentation is located in the `Documentation/` folder:
 - [x] Task #6: Main app target with dependency injection
 - [x] Task #7: SwiftLint integration with Swift 6 concurrency rules
 - [x] GitHub Actions CI/CD pipeline
-- [x] Comprehensive test coverage (48+ unit tests + snapshot tests)
+- [x] Comprehensive test coverage (61+ unit tests passing)
 - [x] Full accessibility support (VoiceOver, Dynamic Type, ReduceMotion)
 - [x] Documentation (Architecture, Testing, Contributing, Coding Guidelines, Accessibility)
 - [x] Adaptive layouts for all screen sizes and text sizes
 - [x] Smart sorting (primary by time, secondary by category)
 - [x] Debounced API refresh architecture
+- [x] Task usage review and optimization
 
 ### 🚧 In Progress
 - [ ] Performance profiling with Instruments
 - [ ] Memory leak detection and optimization
-- [ ] Task usage review and optimization
 
 ### 📋 Planned
 - [ ] UI polish and animations
 - [ ] App Store submission preparation
 - [ ] Additional edge case testing
+
+### 💡 Further Improvements (Out of Scope)
+Future enhancements that could be added when time permits:
+- [ ] **Snapshot Tests** - Visual regression testing for UI components
+  - RaceRowView snapshot tests (light/dark mode, Dynamic Type sizes)
+  - CategoryFilterView snapshot tests (selected/unselected states)
+  - CountdownBadge snapshot tests (urgent/normal/negative states)
+  - *Note: swift-snapshot-testing dependency is already configured in NextToGoUI package*
+- [ ] **Performance Optimizations**
+  - On-demand countdown calculation (alternative to countdown timer task)
+  - Combine expiry check and countdown timer tasks
+- [ ] **Enhanced Error Handling**
+  - Retry with exponential backoff for network failures
+  - Offline mode with cached data
+- [ ] **Additional Features**
+  - Race details screen
+  - Favorite races
+  - Push notifications for race starts
+  - Search and filter by venue
 
 ## License
 
