@@ -32,6 +32,8 @@ public enum RaceCategory: String, Codable, CaseIterable, Sendable {
     }
 
     /// Initialize from a category ID
+    /// - Parameter id: The category UUID string
+    /// - Returns: The matching RaceCategory, or nil if the ID is not recognised (unsupported categories are ignored)
     public init?(id: String) {
         switch id {
         case "9daef0d7-bf3c-4f50-921d-8e818c60fe61":

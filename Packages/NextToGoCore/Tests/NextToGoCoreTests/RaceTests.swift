@@ -199,5 +199,13 @@ struct RaceTests {
         let category = RaceCategory(id: race.categoryId)
         #expect(category == .harness)
     }
+
+    @Test("Race category returns nil for unsupported category ID")
+    func testUnsupportedCategoryMapping() {
+        let unsupportedId = "00000000-0000-0000-0000-000000000000"
+        let category = RaceCategory(id: unsupportedId)
+
+        #expect(category == nil)
+    }
 }
 
