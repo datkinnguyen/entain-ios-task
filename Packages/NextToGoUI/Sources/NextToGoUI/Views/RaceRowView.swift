@@ -13,6 +13,8 @@ public struct RaceRowView: View {
     private let race: Race
     private let viewModel: RacesViewModel
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     // MARK: - Initialisation
 
     /// Creates a race row view.
@@ -28,17 +30,23 @@ public struct RaceRowView: View {
     // MARK: - Body
 
     public var body: some View {
-        ViewThatFits {
-            // Horizontal layout - try this first
-            horizontalLayout
-
-            // Vertical layout - fallback for large text sizes
-            verticalLayout
+        Group {
+            if shouldUseVerticalLayout {
+                verticalLayout
+            } else {
+                horizontalLayout
+            }
         }
         .padding(RaceLayout.cardPadding)
         .frame(minHeight: RaceLayout.raceRowHeight)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(accessibilityLabel)
+    }
+
+    // MARK: - Layout Logic
+
+    private var shouldUseVerticalLayout: Bool {
+        dynamicTypeSize >= .accessibility1
     }
 
     // MARK: - Layout Variants
@@ -81,7 +89,7 @@ public struct RaceRowView: View {
     }
 
     private var verticalLayout: some View {
-        VStack(spacing: RaceLayout.spacingM) {
+        VStack(alignment: .leading, spacing: RaceLayout.spacingM) {
             // Top row: Icon + Meeting info
             HStack(alignment: .top, spacing: RaceLayout.spacingM) {
                 Image(systemName: race.category.iconName)
@@ -94,13 +102,13 @@ public struct RaceRowView: View {
                     Text(race.meetingName)
                         .font(RaceTypography.meetingName)
                         .foregroundStyle(RaceColors.meetingNameText)
+                        .frame(maxWidth: .infinity, alignment: .leading)
 
                     Text(race.raceName)
                         .font(RaceTypography.location)
                         .foregroundStyle(RaceColors.locationText)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
-
-                Spacer(minLength: 0)
             }
 
             // Bottom row: Race number + Countdown
