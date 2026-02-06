@@ -16,7 +16,6 @@ struct RaceTests {
         #expect(race.meetingName == "Test Meeting")
         #expect(race.categoryId == RaceCategory.horse.id)
         #expect(race.advertisedStart == date)
-        #expect(race.id == "test-id")
     }
 
     @Test("Race is not expired when in the future")

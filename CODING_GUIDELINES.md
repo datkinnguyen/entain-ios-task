@@ -114,6 +114,7 @@ struct APIClientTests {
 ### Test Assertions
 - Verify complete expected values rather than checking parts separately
 - Avoid trivial tests that only verify type conformance or obvious behavior
+- **Always use exact error types** when testing error throwing, never use generic `Error.self`
 
 ```swift
 // Correct - verify complete URL
@@ -122,6 +123,20 @@ struct APIClientTests {
 // Incorrect - checking parts separately
 #expect(url?.absoluteString.contains("path") == true)
 #expect(url?.absoluteString.contains("param=value") == true)
+
+// Correct - use exact error type
+#expect(throws: DecodingError.self) {
+    try decoder.decode(MyType.self, from: data)
+}
+
+#expect(throws: APIError.self) {
+    try await apiClient.fetch(.endpoint)
+}
+
+// Incorrect - using generic Error type
+#expect(throws: Error.self) {  // ❌ Too generic
+    try decoder.decode(MyType.self, from: data)
+}
 ```
 
 ## Pull Requests

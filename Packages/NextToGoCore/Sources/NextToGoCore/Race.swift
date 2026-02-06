@@ -1,7 +1,7 @@
 import Foundation
 
 /// Represents a race with details including timing, category, and identification.
-public struct Race: Decodable, Identifiable, Sendable {
+public struct Race: Decodable, Sendable {
 
     public let raceId: String
     public let raceName: String
@@ -9,8 +9,6 @@ public struct Race: Decodable, Identifiable, Sendable {
     public let meetingName: String
     public let categoryId: String
     public let advertisedStart: Date
-
-    public var id: String { raceId }
 
     /// Returns true if the race started more than the configured expiry threshold ago
     public var isExpired: Bool {

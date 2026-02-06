@@ -56,6 +56,14 @@ struct RaceResponseTests {
         #expect(race1.raceNumber == 1)
         #expect(race1.meetingName == "Meeting 1")
         #expect(race1.categoryId == "9daef0d7-bf3c-4f50-921d-8e818c60fe61")
+
+        // Verify second race
+        let race2 = response.races[1]
+        #expect(race2.raceId == "race-2")
+        #expect(race2.raceName == "Race 2")
+        #expect(race2.raceNumber == 2)
+        #expect(race2.meetingName == "Meeting 2")
+        #expect(race2.categoryId == "161d9be2-e909-4326-8c2c-35ed71fb460b")
     }
 
     @Test("RaceResponse sorts races by advertised start")
@@ -156,7 +164,7 @@ struct RaceResponseTests {
         let decoder = JSONDecoder()
         let data = json.data(using: .utf8)!
 
-        #expect(throws: Error.self) {
+        #expect(throws: DecodingError.self) {
             _ = try decoder.decode(RaceResponse.self, from: data)
         }
     }
@@ -174,7 +182,7 @@ struct RaceResponseTests {
         let decoder = JSONDecoder()
         let data = json.data(using: .utf8)!
 
-        #expect(throws: Error.self) {
+        #expect(throws: DecodingError.self) {
             _ = try decoder.decode(RaceResponse.self, from: data)
         }
     }
@@ -193,7 +201,7 @@ struct RaceResponseTests {
         let decoder = JSONDecoder()
         let data = json.data(using: .utf8)!
 
-        #expect(throws: Error.self) {
+        #expect(throws: DecodingError.self) {
             _ = try decoder.decode(RaceResponse.self, from: data)
         }
     }
@@ -219,42 +227,5 @@ struct RaceResponseTests {
         // Then: Status should be preserved
         #expect(response.status == 500)
         #expect(response.races.isEmpty)
-    }
-
-    @Test("RaceResponse correctly unwraps nested dictionary structure")
-    func testUnwrapNestedDictionary() throws {
-        // Given: API response with nested structure
-        let json = """
-        {
-            "status": 200,
-            "data": {
-                "race_summaries": {
-                    "abc-123": {
-                        "race_id": "abc-123",
-                        "race_name": "Test Race",
-                        "race_number": 5,
-                        "meeting_name": "Test Meeting",
-                        "category_id": "9daef0d7-bf3c-4f50-921d-8e818c60fe61",
-                        "advertised_start": {
-                            "seconds": 1706745600
-                        }
-                    }
-                }
-            }
-        }
-        """
-
-        // When: Decoding JSON
-        let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-        let data = json.data(using: .utf8)!
-        let response = try decoder.decode(RaceResponse.self, from: data)
-
-        // Then: Dictionary should be unwrapped to array
-        #expect(response.races.count == 1)
-        #expect(response.races[0].raceId == "abc-123")
-
-        // The dictionary key should not be used (Race.id comes from race_id field)
-        #expect(response.races[0].id == "abc-123")
     }
 }
