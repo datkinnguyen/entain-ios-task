@@ -140,4 +140,3 @@ struct DateExtensionsTests {
         #expect(countdown == "-2m 30s")
     }
 }
-

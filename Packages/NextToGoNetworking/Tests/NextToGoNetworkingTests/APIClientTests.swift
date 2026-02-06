@@ -69,7 +69,7 @@ struct APIClientTests {
         configuration.protocolClasses = [MockURLProtocol.self]
         let urlSession = URLSession(configuration: configuration)
 
-        MockURLProtocol.requestHandler = { request in
+        MockURLProtocol.requestHandler = { _ in
             throw NSError(domain: NSURLErrorDomain, code: NSURLErrorNotConnectedToInternet)
         }
 
@@ -154,6 +154,7 @@ struct APIClientTests {
     }
 
     @Test("Fetch handles multiple concurrent requests safely")
+    // swiftlint:disable:next function_body_length
     func testConcurrentRequests() async throws {
         // Given: A mock URLSession with successful responses
         let configuration = URLSessionConfiguration.ephemeral

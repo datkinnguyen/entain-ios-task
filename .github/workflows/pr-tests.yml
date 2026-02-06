@@ -11,9 +11,28 @@ on:
     types: [opened, synchronize, reopened]
 
 jobs:
+  swiftlint:
+    name: SwiftLint
+    runs-on: macos-14
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install SwiftLint
+        run: |
+          brew install swiftlint
+          swiftlint version
+
+      - name: Run SwiftLint
+        run: |
+          echo "Running SwiftLint..."
+          swiftlint lint --strict --reporter github-actions-logging
+
   test:
     name: Run Unit Tests
     runs-on: macos-14
+    needs: swiftlint
 
     steps:
       - name: Checkout code

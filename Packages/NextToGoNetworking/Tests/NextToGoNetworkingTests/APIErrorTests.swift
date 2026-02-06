@@ -57,7 +57,7 @@ struct APIErrorTests {
     }
 
     @Test("APIError conforms to LocalizedError")
-    func testAPIErrorConformsToLocalizedError() {
+    func testAPIErrorConformsToLocalisedError() {
         // Given: Various API errors
         let errors: [APIError] = [
             .invalidURL,
@@ -66,7 +66,7 @@ struct APIErrorTests {
             .decodingError(NSError(domain: "test", code: 0))
         ]
 
-        // Then: All errors should provide localized descriptions
+        // Then: All errors should provide localised descriptions
         for error in errors {
             #expect(!error.localizedDescription.isEmpty)
         }

@@ -2,7 +2,7 @@ import Foundation
 import NextToGoCore
 
 /// Actor-based API client for thread-safe networking operations
-public actor APIClient: Sendable {
+public actor APIClient {
     private let urlSession: URLSession
     private let decoder: JSONDecoder
     private let baseURL: String
