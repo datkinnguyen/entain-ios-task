@@ -66,11 +66,8 @@ struct APIEndpointTests {
         // When: Building URL
         let url = endpoint.buildURL(baseURL: baseURL)
 
-        // Then: URL should be properly formed
-        #expect(url != nil)
-        #expect(url?.absoluteString.contains("racing/nextraces") == true)
-        #expect(url?.absoluteString.contains("method=nextraces") == true)
-        #expect(url?.absoluteString.contains("count=10") == true)
+        // Then: URL should match expected format
+        #expect(url?.absoluteString == "https://api.neds.com.au/rest/v1/racing/nextraces?method=nextraces&count=10")
     }
 
     @Test("Build URL creates valid URL with trailing slash")
@@ -82,10 +79,8 @@ struct APIEndpointTests {
         // When: Building URL
         let url = endpoint.buildURL(baseURL: baseURL)
 
-        // Then: URL should be properly formed without double slash
-        #expect(url != nil)
-        #expect(url?.absoluteString.contains("racing/nextraces") == true)
-        #expect(url?.absoluteString.contains("racing//nextraces") == false)
+        // Then: URL should match expected format without double slash
+        #expect(url?.absoluteString == "https://api.neds.com.au/rest/v1/racing/nextraces?method=nextraces&count=10")
     }
 
     @Test("Build URL includes all query parameters")
@@ -98,12 +93,8 @@ struct APIEndpointTests {
         // When: Building URL
         let url = endpoint.buildURL(baseURL: baseURL)
 
-        // Then: URL should include all parameters
-        #expect(url != nil)
-        let urlString = url?.absoluteString ?? ""
-        #expect(urlString.contains("method=nextraces"))
-        #expect(urlString.contains("count=15"))
-        #expect(urlString.contains("category_ids=9daef0d7-bf3c-4f50-921d-8e818c60fe61"))
+        // Then: URL should match expected format with all parameters
+        #expect(url?.absoluteString == "https://api.neds.com.au/rest/v1/racing/nextraces?method=nextraces&count=15&category_ids=9daef0d7-bf3c-4f50-921d-8e818c60fe61")
     }
 
     @Test("Build URL returns nil for invalid base URL")
