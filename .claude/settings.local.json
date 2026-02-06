@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(textutil:*)",
+      "Bash(claude mcp:*)",
+      "Bash(git init:*)",
+      "Bash(git remote add:*)",
+      "Bash(git branch:*)",
+      "Bash(git checkout:*)",
+      "Bash(xcodebuild:*)",
+      "Bash(git add:*)"
+    ]
+  }
+}
