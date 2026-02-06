@@ -57,6 +57,24 @@ git checkout -b feature/your-descriptive-name
 # git checkout -b docs/update-architecture-guide
 ```
 
+### ⚠️ Important: Working After Merged PRs
+
+**If a PR has been merged and the branch deleted, ALWAYS create a NEW branch:**
+
+```bash
+# Pull latest main
+git checkout main
+git pull origin main
+
+# Create NEW branch (not the old branch name)
+git checkout -b fix/new-fix-description
+
+# Make changes, commit, and push
+git push -u origin fix/new-fix-description
+```
+
+**Why?** Once a branch is merged and deleted remotely, continuing on a local copy creates merge conflicts and confusion. Always start fresh from the latest `main`.
+
 ### Making Changes
 1. **Make small, focused commits**
    ```bash
