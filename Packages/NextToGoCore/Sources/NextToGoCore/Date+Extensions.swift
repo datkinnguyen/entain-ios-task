@@ -25,7 +25,8 @@ extension Date {
         let minutes = Int(absoluteInterval) / 60
         let seconds = Int(absoluteInterval) % 60
 
-        // Show negative sign when interval is negative (even for -0)
+        // Show negative sign only when interval is negative AND has non-zero time
+        // This prevents showing "-0s" or "-0m"
         let sign = (roundedInterval < 0 && (minutes > 0 || seconds > 0)) ? "-" : ""
 
         // Format based on time value:
