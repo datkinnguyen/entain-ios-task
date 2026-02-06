@@ -278,32 +278,7 @@ private extension RaceRepositoryImplTests {
     }
 
     func createMockResponse(races: [Race]) -> RaceResponse {
-        // Create a manual RaceResponse since it uses custom decoding
-        // We'll use the raw JSON approach
-        let raceSummaries = races.enumerated().reduce(into: [String: Any]()) { dict, item in
-            let (index, race) = item
-            dict["race\(index)"] = [
-                "race_id": race.raceId,
-                "race_name": race.raceName,
-                "race_number": race.raceNumber,
-                "meeting_name": race.meetingName,
-                "category_id": race.categoryId,
-                "advertised_start": ["seconds": race.advertisedStart.timeIntervalSince1970]
-            ]
-        }
-
-        let json: [String: Any] = [
-            "status": 200,
-            "data": [
-                "race_summaries": raceSummaries
-            ]
-        ]
-
-        guard let data = try? JSONSerialization.data(withJSONObject: json),
-              let response = try? JSONDecoder().decode(RaceResponse.self, from: data) else {
-            fatalError("Failed to create mock response - invalid test data")
-        }
-        return response
+        RaceResponse(status: 200, races: races)
     }
 }
 

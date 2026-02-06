@@ -6,6 +6,15 @@ public struct RaceResponse: Decodable, Sendable {
     public let status: Int
     public let races: [Race]
 
+    /// Public initializer for testing purposes
+    /// - Parameters:
+    ///   - status: HTTP status code
+    ///   - races: Array of races
+    public init(status: Int, races: [Race]) {
+        self.status = status
+        self.races = races
+    }
+
     enum CodingKeys: String, CodingKey {
         case status
         case data
