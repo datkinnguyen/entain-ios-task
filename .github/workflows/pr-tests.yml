@@ -1,0 +1,45 @@
+name: Pull Request Tests
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+  pull_request_target:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+
+jobs:
+  test:
+    name: Run Unit Tests
+    runs-on: macos-14
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Select Xcode version
+        run: sudo xcode-select -s /Applications/Xcode_16.2.app/Contents/Developer
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: Show Swift version
+        run: swift --version
+
+      - name: Test NextToGoCore
+        run: |
+          echo "Testing NextToGoCore package..."
+          swift test --package-path Packages/NextToGoCore
+
+      - name: Test NextToGoNetworking
+        run: |
+          echo "Testing NextToGoNetworking package..."
+          swift test --package-path Packages/NextToGoNetworking
+
+      - name: Test Summary
+        if: always()
+        run: |
+          echo "✓ All tests completed"
+          echo "Check individual test steps for results"

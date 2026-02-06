@@ -45,6 +45,11 @@ public enum APIEndpoint {
             return nil
         }
 
+        // Validate that the base URL has a valid scheme (http or https)
+        guard let scheme = components.scheme, ["http", "https"].contains(scheme) else {
+            return nil
+        }
+
         components.path += (components.path.hasSuffix("/") ? "" : "/") + path
         components.queryItems = queryItems
 

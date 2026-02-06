@@ -3,7 +3,7 @@ import Foundation
 @testable import NextToGoNetworking
 import NextToGoCore
 
-@Suite("APIClient Tests")
+@Suite("APIClient Tests", .serialized)
 struct APIClientTests {
 
     @Test("Fetch successfully decodes valid response")
