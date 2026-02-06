@@ -101,3 +101,6 @@ iOSInjectionProject/
 
 # Build artifacts
 Build/
+
+# Claude Code settings
+.claude/settings.local.json
