@@ -1,56 +1,54 @@
-import Testing
 import Foundation
 import NextToGoCore
 import NextToGoNetworking
 @testable import NextToGoRepository
+import Testing
 
 @Suite("RaceRepositoryImpl Tests")
 struct RaceRepositoryImplTests {
 
     // MARK: - Helper Methods
 
+    // swiftlint:disable:next function_parameter_count
+    func createRace(
+        id: String,
+        name: String,
+        number: Int,
+        meeting: String,
+        category: RaceCategory,
+        offset: TimeInterval
+    ) -> Race {
+        Race(
+            raceId: id,
+            raceName: name,
+            raceNumber: number,
+            meetingName: meeting,
+            categoryId: category.id,
+            advertisedStart: Date.now.addingTimeInterval(offset)
+        )
+    }
+
     func createMockRaces() -> [Race] {
-        let now = Date.now
-        return [
-            Race(
-                raceId: "race1",
-                raceName: "Race 1",
-                raceNumber: 1,
-                meetingName: "Meeting A",
-                categoryId: RaceCategory.horse.id,
-                advertisedStart: now.addingTimeInterval(300) // 5 minutes from now
+        [
+            createRace(
+                id: "race1", name: "Race 1", number: 1, meeting: "Meeting A",
+                category: .horse, offset: 300
             ),
-            Race(
-                raceId: "race2",
-                raceName: "Race 2",
-                raceNumber: 2,
-                meetingName: "Meeting B",
-                categoryId: RaceCategory.greyhound.id,
-                advertisedStart: now.addingTimeInterval(600) // 10 minutes from now
+            createRace(
+                id: "race2", name: "Race 2", number: 2, meeting: "Meeting B",
+                category: .greyhound, offset: 600
             ),
-            Race(
-                raceId: "race3",
-                raceName: "Race 3",
-                raceNumber: 3,
-                meetingName: "Meeting C",
-                categoryId: RaceCategory.harness.id,
-                advertisedStart: now.addingTimeInterval(150) // 2.5 minutes from now
+            createRace(
+                id: "race3", name: "Race 3", number: 3, meeting: "Meeting C",
+                category: .harness, offset: 150
             ),
-            Race(
-                raceId: "race4",
-                raceName: "Race 4",
-                raceNumber: 4,
-                meetingName: "Meeting D",
-                categoryId: RaceCategory.horse.id,
-                advertisedStart: now.addingTimeInterval(900) // 15 minutes from now
+            createRace(
+                id: "race4", name: "Race 4", number: 4, meeting: "Meeting D",
+                category: .horse, offset: 900
             ),
-            Race(
-                raceId: "expired_race",
-                raceName: "Expired Race",
-                raceNumber: 5,
-                meetingName: "Meeting E",
-                categoryId: RaceCategory.horse.id,
-                advertisedStart: now.addingTimeInterval(-120) // 2 minutes ago (expired)
+            createRace(
+                id: "expired_race", name: "Expired Race", number: 5, meeting: "Meeting E",
+                category: .horse, offset: -120
             )
         ]
     }
@@ -77,9 +75,11 @@ struct RaceRepositoryImplTests {
             ]
         ]
 
-        let data = try! JSONSerialization.data(withJSONObject: json)
-        let decoder = JSONDecoder()
-        return try! decoder.decode(RaceResponse.self, from: data)
+        guard let data = try? JSONSerialization.data(withJSONObject: json),
+              let response = try? JSONDecoder().decode(RaceResponse.self, from: data) else {
+            fatalError("Failed to create mock response - invalid test data")
+        }
+        return response
     }
 
     // MARK: - Tests
@@ -92,7 +92,7 @@ struct RaceRepositoryImplTests {
         let mockRaces = createMockRaces()
         let mockResponse = createMockResponse(races: mockRaces)
 
-        await mockClient.configure { endpoint in
+        await mockClient.configure { _ in
             return mockResponse
         }
 
@@ -117,7 +117,7 @@ struct RaceRepositoryImplTests {
         let mockRaces = createMockRaces()
         let mockResponse = createMockResponse(races: mockRaces)
 
-        await mockClient.configure { endpoint in
+        await mockClient.configure { _ in
             return mockResponse
         }
 
@@ -143,7 +143,7 @@ struct RaceRepositoryImplTests {
         let mockRaces = createMockRaces()
         let mockResponse = createMockResponse(races: mockRaces)
 
-        await mockClient.configure { endpoint in
+        await mockClient.configure { _ in
             return mockResponse
         }
 
@@ -198,7 +198,7 @@ struct RaceRepositoryImplTests {
 
         let mockResponse = createMockResponse(races: expiredRaces)
 
-        await mockClient.configure { endpoint in
+        await mockClient.configure { _ in
             return mockResponse
         }
 
@@ -228,7 +228,7 @@ struct RaceRepositoryImplTests {
 
         let mockResponse = createMockResponse(races: horseRaces)
 
-        await mockClient.configure { endpoint in
+        await mockClient.configure { _ in
             return mockResponse
         }
 
@@ -329,7 +329,7 @@ struct RaceRepositoryImplTests {
 
         let mockResponse = createMockResponse(races: unsortedRaces)
 
-        await mockClient.configure { endpoint in
+        await mockClient.configure { _ in
             return mockResponse
         }
 
