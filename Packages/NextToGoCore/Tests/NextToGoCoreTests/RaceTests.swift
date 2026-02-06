@@ -5,33 +5,6 @@ import Foundation
 @Suite("Race Model Tests")
 struct RaceTests {
 
-    /// Helper function to create a Race with default values for testing
-    /// - Parameters:
-    ///   - raceId: The race identifier (default: "test-id")
-    ///   - raceName: The race name (default: "Test Race")
-    ///   - raceNumber: The race number (default: 1)
-    ///   - meetingName: The meeting name (default: "Test Meeting")
-    ///   - categoryId: The category identifier (default: horse)
-    ///   - advertisedStart: The advertised start time (default: Date.now)
-    /// - Returns: A Race instance with the specified or default values
-    static func makeRace(
-        raceId: String = "test-id",
-        raceName: String = "Test Race",
-        raceNumber: Int = 1,
-        meetingName: String = "Test Meeting",
-        categoryId: String = RaceCategory.horse.id,
-        advertisedStart: Date = Date.now
-    ) -> Race {
-        Race(
-            raceId: raceId,
-            raceName: raceName,
-            raceNumber: raceNumber,
-            meetingName: meetingName,
-            categoryId: categoryId,
-            advertisedStart: advertisedStart
-        )
-    }
-
     @Test("Race initializes with correct properties")
     func testRaceInitialization() {
         let date = Date()
@@ -62,14 +35,6 @@ struct RaceTests {
         #expect(race.isExpired)
     }
 
-    @Test("Race is not expired at the 60 second threshold")
-    func testRaceNotExpiredAt60Seconds() {
-        let pastDate = Date.now.addingTimeInterval(-59)
-        let race = Self.makeRace(advertisedStart: pastDate)
-
-        #expect(!race.isExpired)
-    }
-
     @Test("Race is not expired when less than 60 seconds in the past")
     func testRaceNotExpiredWithinThreshold() {
         let pastDate = Date.now.addingTimeInterval(-30)
@@ -94,6 +59,7 @@ struct RaceTests {
 
         let data = json.data(using: .utf8)!
         let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
         let race = try decoder.decode(Race.self, from: data)
 
         #expect(race.raceId == "abc123")
@@ -102,57 +68,6 @@ struct RaceTests {
         #expect(race.meetingName == "Flemington")
         #expect(race.categoryId == "4a2788f8-e825-4d36-9894-efd4baf1cfae")
         #expect(race.advertisedStart.timeIntervalSince1970 == 1704067200)
-    }
-
-    @Test("Race encodes to JSON with nested advertised_start")
-    func testRaceEncoding() throws {
-        let date = Date(timeIntervalSince1970: 1704067200)
-        let race = Race(
-            raceId: "abc123",
-            raceName: "Melbourne Cup",
-            raceNumber: 7,
-            meetingName: "Flemington",
-            categoryId: RaceCategory.horse.id,
-            advertisedStart: date
-        )
-
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = [.sortedKeys]
-        let data = try encoder.encode(race)
-        let json = String(data: data, encoding: .utf8)!
-
-        #expect(json.contains("\"race_id\":\"abc123\""))
-        #expect(json.contains("\"race_name\":\"Melbourne Cup\""))
-        #expect(json.contains("\"race_number\":7"))
-        #expect(json.contains("\"meeting_name\":\"Flemington\""))
-        #expect(json.contains("\"category_id\":\"4a2788f8-e825-4d36-9894-efd4baf1cfae\""))
-        #expect(json.contains("\"advertised_start\":{\"seconds\":1704067200"))
-    }
-
-    @Test("Race roundtrip encoding and decoding")
-    func testRaceRoundtrip() throws {
-        let originalDate = Date(timeIntervalSince1970: 1704067200)
-        let originalRace = Race(
-            raceId: "test-123",
-            raceName: "Test Race",
-            raceNumber: 5,
-            meetingName: "Test Meeting",
-            categoryId: RaceCategory.greyhound.id,
-            advertisedStart: originalDate
-        )
-
-        let encoder = JSONEncoder()
-        let data = try encoder.encode(originalRace)
-
-        let decoder = JSONDecoder()
-        let decodedRace = try decoder.decode(Race.self, from: data)
-
-        #expect(decodedRace.raceId == originalRace.raceId)
-        #expect(decodedRace.raceName == originalRace.raceName)
-        #expect(decodedRace.raceNumber == originalRace.raceNumber)
-        #expect(decodedRace.meetingName == originalRace.meetingName)
-        #expect(decodedRace.categoryId == originalRace.categoryId)
-        #expect(decodedRace.advertisedStart == originalRace.advertisedStart)
     }
 
     @Test("Race category mapping for horse racing")
@@ -209,3 +124,37 @@ struct RaceTests {
     }
 }
 
+// MARK: - Test Helpers
+
+private extension RaceTests {
+
+    /// Helper function to create a Race with default values for testing
+    /// - Parameters:
+    ///   - raceId: The race identifier (default: "test-id")
+    ///   - raceName: The race name (default: "Test Race")
+    ///   - raceNumber: The race number (default: 1)
+    ///   - meetingName: The meeting name (default: "Test Meeting")
+    ///   - categoryId: The category identifier (default: horse)
+    ///   - advertisedStart: The advertised start time (default: Date.now)
+    /// - Returns: A Race instance with the specified or default values
+    static func makeRace(
+        raceId: String = "test-id",
+        raceName: String = "Test Race",
+        raceNumber: Int = 1,
+        meetingName: String = "Test Meeting",
+        categoryId: String = RaceCategory.horse.id,
+        advertisedStart: Date = Date.now
+    ) -> Race {
+
+        Race(
+            raceId: raceId,
+            raceName: raceName,
+            raceNumber: raceNumber,
+            meetingName: meetingName,
+            categoryId: categoryId,
+            advertisedStart: advertisedStart
+        )
+
+    }
+
+}

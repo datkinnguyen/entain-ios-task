@@ -1,8 +1,7 @@
 import Foundation
 
 /// Represents a race with details including timing, category, and identification.
-/// Note: Encodable conformance is provided for testing purposes only
-public struct Race: Codable, Identifiable, Sendable {
+public struct Race: Decodable, Identifiable, Sendable {
 
     public let raceId: String
     public let raceName: String
@@ -51,36 +50,17 @@ public struct Race: Codable, Identifiable, Sendable {
         advertisedStart = Date(timeIntervalSince1970: seconds)
     }
 
-    // Custom encoding to produce nested advertised_start structure with snake_case keys
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-
-        try container.encode(raceId, forKey: .raceId)
-        try container.encode(raceName, forKey: .raceName)
-        try container.encode(raceNumber, forKey: .raceNumber)
-        try container.encode(meetingName, forKey: .meetingName)
-        try container.encode(categoryId, forKey: .categoryId)
-
-        // Encode advertised_start as nested structure { "seconds": Int }
-        var advertisedStartContainer = container.nestedContainer(keyedBy: AdvertisedStartKeys.self, forKey: .advertisedStart)
-        try advertisedStartContainer.encode(advertisedStart.timeIntervalSince1970, forKey: .seconds)
-    }
-
     private enum CodingKeys: String, CodingKey {
-
-        case raceId = "race_id"
-        case raceName = "race_name"
-        case raceNumber = "race_number"
-        case meetingName = "meeting_name"
-        case categoryId = "category_id"
-        case advertisedStart = "advertised_start"
-
+        case raceId
+        case raceName
+        case raceNumber
+        case meetingName
+        case categoryId
+        case advertisedStart
     }
 
     private enum AdvertisedStartKeys: String, CodingKey {
-
         case seconds
-
     }
 
 }

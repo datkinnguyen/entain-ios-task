@@ -2,7 +2,7 @@ import Foundation
 import NextToGoCore
 
 /// Response wrapper for the Next to Go API race data
-public struct RaceResponse: Decodable {
+public struct RaceResponse: Decodable, Sendable {
     public let status: Int
     public let races: [Race]
 
@@ -12,9 +12,7 @@ public struct RaceResponse: Decodable {
     }
 
     enum DataKeys: String, CodingKey {
-
         case raceSummaries
-
     }
 
     /// Custom decoder that unwraps the nested dictionary structure and converts to array

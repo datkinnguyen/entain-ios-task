@@ -2,8 +2,9 @@ import Foundation
 
 /// Mock URLProtocol for testing network requests
 final class MockURLProtocol: URLProtocol {
+
     /// Handler to provide mock responses
-    static var requestHandler: ((URLRequest) throws -> (HTTPURLResponse, Data?))?
+    nonisolated(unsafe) static var requestHandler: ((URLRequest) throws -> (HTTPURLResponse, Data?))?
 
     override class func canInit(with request: URLRequest) -> Bool {
         return true

@@ -149,17 +149,6 @@ struct APIClientTests {
         }
     }
 
-    @Test("APIClient is actor-isolated for thread safety")
-    func testActorIsolation() async throws {
-        // Given: An API client
-        let apiClient = APIClient(baseURL: "https://api.neds.com.au/rest/v1/racing/")
-
-        // Then: APIClient should be an actor (this compiles only if it's an actor)
-        _ = apiClient
-        // If this test compiles, it proves APIClient is an actor
-        #expect(true)
-    }
-
     @Test("Fetch handles multiple concurrent requests safely")
     func testConcurrentRequests() async throws {
         // Given: A mock URLSession with successful responses

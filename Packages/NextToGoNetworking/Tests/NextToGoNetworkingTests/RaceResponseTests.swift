@@ -41,6 +41,7 @@ struct RaceResponseTests {
 
         // When: Decoding JSON
         let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
         let data = json.data(using: .utf8)!
         let response = try decoder.decode(RaceResponse.self, from: data)
 
@@ -102,6 +103,7 @@ struct RaceResponseTests {
 
         // When: Decoding JSON
         let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
         let data = json.data(using: .utf8)!
         let response = try decoder.decode(RaceResponse.self, from: data)
 
@@ -130,6 +132,7 @@ struct RaceResponseTests {
 
         // When: Decoding JSON
         let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
         let data = json.data(using: .utf8)!
         let response = try decoder.decode(RaceResponse.self, from: data)
 
@@ -209,6 +212,7 @@ struct RaceResponseTests {
 
         // When: Decoding JSON
         let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
         let data = json.data(using: .utf8)!
         let response = try decoder.decode(RaceResponse.self, from: data)
 
@@ -242,6 +246,7 @@ struct RaceResponseTests {
 
         // When: Decoding JSON
         let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
         let data = json.data(using: .utf8)!
         let response = try decoder.decode(RaceResponse.self, from: data)
 

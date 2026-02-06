@@ -137,7 +137,6 @@ struct DateExtensionsTests {
 
         // Verify negative sign is at the beginning
         // < 5 minutes: show minutes and seconds
-        #expect(countdown.hasPrefix("-"))
         #expect(countdown == "-2m 30s")
     }
 }
