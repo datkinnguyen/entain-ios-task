@@ -106,52 +106,32 @@ git push -u origin fix/new-fix-description
 
 ### Creating a Pull Request
 
-**MANDATORY SELF-REVIEW PROCESS:**
+**Before creating any PR, you MUST complete the mandatory self-review process.**
 
-Before creating any PR, you MUST:
+See [CODING_GUIDELINES.md - PR Self-Review Process](./CODING_GUIDELINES.md#pr-self-review-process) for the complete checklist including:
+- Self-review all code changes
+- Run SwiftLint with zero violations
+- Verify all tests pass
+- Check documentation is up to date
 
-1. **Self-review all code changes**
-   - Review every file and every line changed
-   - Check against [CODING_GUIDELINES.md](./CODING_GUIDELINES.md)
-   - Verify naming conventions
-   - Check for code quality issues
+Once self-review is complete:
 
-2. **Fix all issues found**
-   - Address any problems or inconsistencies
-   - Fix coding guideline violations
-   - Improve unclear code
-   - Add missing documentation
+```bash
+git push -u origin <your-branch-name>
+gh pr create --title "feat: Add feature description" --body "$(cat <<'EOF'
+## Summary
+- Brief description of changes
+- Why these changes were made
 
-3. **Verify tests pass**
-   ```bash
-   swift test --package-path Packages/NextToGoCore
-   swift test --package-path Packages/NextToGoNetworking
-   ```
+## Test plan
+- [ ] All unit tests pass
+- [ ] Tested feature X manually
+- [ ] Verified on simulator
 
-4. **Check documentation**
-   - Ensure all docs are up to date
-   - Add doc comments for public APIs
-   - Update README if needed
-
-5. **Only then create the PR**
-   ```bash
-   git push -u origin <your-branch-name>
-   gh pr create --title "feat: Add feature description" --body "$(cat <<'EOF'
-   ## Summary
-   - Brief description of changes
-   - Why these changes were made
-
-   ## Test plan
-   - [ ] All unit tests pass
-   - [ ] Tested feature X manually
-   - [ ] Verified on simulator
-
-   🤖 Generated with [Claude Code](https://claude.com/claude-code)
-   EOF
-   )"
-   ```
-
-**This self-review process prevents wasted review cycles and ensures high-quality submissions.**
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+EOF
+)"
+```
 
 ### PR Guidelines
 
@@ -208,16 +188,15 @@ This is our single source of truth for all coding conventions.
 
 ## Testing
 
-### Running Tests
+For detailed testing instructions, see [TESTING.md](./TESTING.md).
+
+### Quick Test Commands
 ```bash
 # Run all tests for a package
 swift test --package-path Packages/NextToGoCore
 
 # Run specific test suite
 swift test --filter "Race Model Tests"
-
-# Run specific test
-swift test --filter "Race is not expired when in the future"
 ```
 
 ### Writing Tests
@@ -343,31 +322,20 @@ let package = Package(
 
 ## Accessibility
 
-### Requirements
-- Support VoiceOver
-- Support Dynamic Type (all sizes)
-- Support Voice Control
-- Support Reduced Motion
-- Meet WCAG AA colour contrast (4.5:1)
+All code must meet WCAG AA accessibility standards. See [ACCESSIBILITY.md](./ACCESSIBILITY.md) for:
+- Complete accessibility requirements and testing procedures
+- VoiceOver, Dynamic Type, and Voice Control support
+- Colour contrast standards (WCAG AA 4.5:1)
+- Accessibility testing tools and checklists
 
-### Testing Accessibility
-- Enable VoiceOver (⌘F5)
-- Test all Dynamic Type sizes
-- Verify colour contrast
-- Test with Reduced Motion enabled
-
-### Adding Accessibility
+### Quick Reference
 ```swift
 Text("Race Name")
     .accessibilityLabel("Race name: Melbourne Cup")
     .accessibilityHint("Tap to view race details")
-
-Button("Filter") {
-    // Action
-}
-.accessibilityLabel("Filter races")
-.accessibilityHint("Opens filter options")
 ```
+
+For comprehensive accessibility guidelines, see [ACCESSIBILITY.md](./ACCESSIBILITY.md).
 
 ## Common Issues
 

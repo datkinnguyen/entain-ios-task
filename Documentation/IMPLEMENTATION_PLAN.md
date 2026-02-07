@@ -32,15 +32,7 @@ Build a native iOS app that displays the next 5 upcoming races from a racing API
 ## Git Workflow
 
 ### Branch Strategy
-- **Main branch:** `main` (protected)
-- **Feature branches:** Use descriptive names that reflect the work
-  - For specific tasks: `feature/task-N-description` (e.g., `feature/task-2-core-package`)
-  - For other work: `feature/descriptive-name` (e.g., `feature/documentation-enhancement`, `feature/fix-memory-leak`)
-  - For bug fixes: `fix/descriptive-name`
-  - For refactoring: `refactor/descriptive-name`
-- **PR required for all merges**
-
-**Philosophy:** Branch names should clearly communicate what work is being done. The `task-N` format is useful for tracking planned tasks, but not required for all work.
+See [CONTRIBUTING.md](./CONTRIBUTING.md#branch-strategy) for complete branch naming conventions and workflow.
 
 ### PR Workflow
 1. Create feature branch from main with descriptive name
@@ -53,13 +45,7 @@ Build a native iOS app that displays the next 5 upcoming races from a racing API
 8. **DO NOT MERGE** - wait for manual approval
 
 ### Commit Message Format
-```
-<type>: <description>
-
-Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>
-```
-
-**Types:** feat, fix, refactor, test, docs, ci, chore
+See [CONTRIBUTING.md](./CONTRIBUTING.md#making-changes) for detailed commit message format and types.
 
 ---
 
