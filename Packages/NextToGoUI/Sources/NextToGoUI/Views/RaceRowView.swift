@@ -102,14 +102,14 @@ public struct RaceRowView: View {
         Text(race.meetingName)
             .font(RaceTypography.meetingName)
             .foregroundStyle(RaceColors.meetingNameText)
-            .conditionalFullWidth(fullWidth)
+            .frame(maxWidth: fullWidth ? .infinity : nil, alignment: .leading)
     }
 
     private func raceNameText(fullWidth: Bool = false) -> some View {
         Text(race.raceName)
             .font(RaceTypography.location)
             .foregroundStyle(RaceColors.locationText)
-            .conditionalFullWidth(fullWidth)
+            .frame(maxWidth: fullWidth ? .infinity : nil, alignment: .leading)
     }
 
     private var raceNumberText: some View {
