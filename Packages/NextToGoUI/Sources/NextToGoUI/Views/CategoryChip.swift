@@ -12,6 +12,7 @@ public struct CategoryChip: View {
 
     private let category: RaceCategory
     private let isSelected: Bool
+    private let accessibilityHint: String
     private let action: () -> Void
 
     // MARK: - Initialisation
@@ -21,14 +22,17 @@ public struct CategoryChip: View {
     /// - Parameters:
     ///   - category: The race category to display
     ///   - isSelected: Whether the category is currently selected
+    ///   - accessibilityHint: The accessibility hint for VoiceOver users
     ///   - action: Closure called when the chip is tapped
     public init(
         category: RaceCategory,
         isSelected: Bool,
+        accessibilityHint: String,
         action: @escaping () -> Void
     ) {
         self.category = category
         self.isSelected = isSelected
+        self.accessibilityHint = accessibilityHint
         self.action = action
     }
 
@@ -57,11 +61,9 @@ public struct CategoryChip: View {
                 .clipShape(RoundedRectangle(cornerRadius: RaceLayout.chipCornerRadius))
         }
         .buttonStyle(.plain)
-        .accessibilityConfiguration(
-            label: "\(category.accessibleLabel) racing",
-            hint: isSelected ? "Selected, tap to deselect" : "Not selected, tap to select",
-            traits: isSelected ? [.isButton, .isSelected] : [.isButton]
-        )
+        .accessibilityLabel("\(category.accessibleLabel) racing")
+        .accessibilityHint(accessibilityHint)
+        .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : [.isButton])
     }
 
 }
@@ -70,27 +72,27 @@ public struct CategoryChip: View {
 
 #Preview("Selected State") {
     HStack(spacing: RaceLayout.spacingM) {
-        CategoryChip(category: .horse, isSelected: true) {}
-        CategoryChip(category: .harness, isSelected: true) {}
-        CategoryChip(category: .greyhound, isSelected: true) {}
+        CategoryChip(category: .horse, isSelected: true, accessibilityHint: "Tap to deselect") {}
+        CategoryChip(category: .harness, isSelected: true, accessibilityHint: "Tap to deselect") {}
+        CategoryChip(category: .greyhound, isSelected: true, accessibilityHint: "Tap to deselect") {}
     }
     .padding()
 }
 
 #Preview("Unselected State") {
     HStack(spacing: RaceLayout.spacingM) {
-        CategoryChip(category: .horse, isSelected: false) {}
-        CategoryChip(category: .harness, isSelected: false) {}
-        CategoryChip(category: .greyhound, isSelected: false) {}
+        CategoryChip(category: .horse, isSelected: false, accessibilityHint: "Tap to select") {}
+        CategoryChip(category: .harness, isSelected: false, accessibilityHint: "Tap to select") {}
+        CategoryChip(category: .greyhound, isSelected: false, accessibilityHint: "Tap to select") {}
     }
     .padding()
 }
 
 #Preview("Mixed State") {
     HStack(spacing: RaceLayout.spacingM) {
-        CategoryChip(category: .horse, isSelected: true) {}
-        CategoryChip(category: .harness, isSelected: false) {}
-        CategoryChip(category: .greyhound, isSelected: true) {}
+        CategoryChip(category: .horse, isSelected: true, accessibilityHint: "Tap to deselect") {}
+        CategoryChip(category: .harness, isSelected: false, accessibilityHint: "Tap to select") {}
+        CategoryChip(category: .greyhound, isSelected: true, accessibilityHint: "Tap to deselect") {}
     }
     .padding()
 }

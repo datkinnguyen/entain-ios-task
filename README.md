@@ -1,13 +1,13 @@
 # Next To Go Races
 
-A native iOS app that displays the next 5 upcoming races with category filtering and auto-refresh functionality.
+A native iOS app that displays the next 5 upcoming races with category filtering and smart debounced refresh.
 
 ## Features
 
-- ✅ Display next 5 upcoming races sorted by start time (with secondary sorting by category)
+- ✅ Display next 5 upcoming races sorted by start time (with secondary sorting by race name)
 - ✅ Category filtering (Horse, Harness, Greyhound) with real-time API refresh
 - ✅ Custom SF Symbols using Neds brand icons for racing categories
-- ✅ Auto-refresh every 60 seconds with debounced API calls
+- ✅ Smart debouncing prevents excessive API calls during rapid filter changes
 - ✅ Countdown timer updating every second with smooth transitions
 - ✅ Auto-remove races 60 seconds after start
 - ✅ Real-time race expiry checking
@@ -18,7 +18,7 @@ A native iOS app that displays the next 5 upcoming races with category filtering
 
 ### 🎯 Smart Sorting
 - **Primary sort**: By advertised start time (earliest first)
-- **Secondary sort**: Alphabetically by category when countdown values are equal
+- **Secondary sort**: Alphabetically by race name when start times are equal
 - Ensures consistent race ordering even with simultaneous starts
 
 ### 🎨 Adaptive Layouts
@@ -53,8 +53,7 @@ A native iOS app that displays the next 5 upcoming races with category filtering
 ### ⚡️ Performance Optimized
 - **Smart Debouncing**: Intelligent 500ms debounce prevents excessive API calls
   - **Rapid Filter Changes**: When users quickly select/deselect categories, only the last request is sent
-  - **Race Expiry**: When races expire (>60 seconds after start), refresh is debounced
-  - **Any Data Trigger**: All refresh triggers (filters, expiry, manual refresh) use the same debounce logic
+  - **Race Expiry**: When races expire (>60 seconds after start), refresh is triggered to fetch new races
   - **Request Coalescing**: If a previous request was sent within 500ms, it's cancelled and only the most recent request proceeds
   - **Result**: Significantly reduces server load and improves app responsiveness during rapid user interactions
 - **Structured Concurrency**: TaskGroup manages all background tasks safely
@@ -97,11 +96,6 @@ To work around this limitation, the app implements a client-side filtering strat
    - Increases the likelihood of having enough races after client-side filtering
 
 2. **Client-side filtering**: Filter the fetched races by selected categories on the device
-
-3. **Retry mechanism**: If the filtered results contain fewer than the required count:
-   - The app can retry the fetch up to a maximum number of attempts (configurable)
-   - Currently set to fetch once without additional retries
-   - During testing, most category filter combinations yield sufficient results on the first attempt
 
 **Known Edge Cases:**
 

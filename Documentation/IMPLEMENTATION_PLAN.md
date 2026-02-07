@@ -9,7 +9,7 @@
 
 ## Project Overview
 
-Build a native iOS app that displays the next 5 upcoming races from a racing API, with category filtering (Horse, Harness, Greyhound) and auto-refresh functionality.
+Build a native iOS app that displays the next 5 upcoming races from a racing API, with category filtering (Horse, Harness, Greyhound) and smart debounced refresh functionality.
 
 ### Technical Requirements
 - **Language:** Swift 6 with strict concurrency checking
@@ -229,21 +229,17 @@ Create the ViewModel layer package.
 **Implementation:**
 - Initialize Swift Package: `Packages/NextToGoViewModel`
 - Add dependency on NextToGoCore
-- Add dependency on Swift Async Algorithms for AsyncChannel and debounce
 - Create `RacesViewModel.swift` with @Observable macro
 - Implement centralized refresh architecture:
-  * Single `scheduleRefresh()` method that sends signals to debounced channel
-  * All refresh triggers (auto-refresh timer, category changes, expiry-based) call `scheduleRefresh()`
-  * Debounce handler processes all signals with 500ms delay to prevent excessive API calls
-- Use TaskGroup to manage all background tasks safely:
-  * Auto-refresh task: Sends refresh signals at configurable intervals
-  * Expiry check task: Removes expired races every second
-  * Debounce handler task: Processes debounced refresh signals
-- Implement category filtering logic
+  * Debounced refresh (500ms) prevents excessive API calls during rapid filter changes
+  * All refresh triggers (category changes, expiry-based) use the same debounce logic
+- Use structured concurrency to manage background tasks:
+  * Countdown timer task: Updates countdown display every second using AsyncStream
+  * Expiry check task: Removes expired races (>60 seconds after start) and triggers refresh
+- Implement category filtering with immediate API refresh on filter change
 - Add comprehensive unit tests for all scenarios:
   * Filter toggling
   * Race expiry
-  * Auto-refresh timing
   * Debounce logic
   * Error handling
 
@@ -260,11 +256,11 @@ Packages/NextToGoViewModel/
 ```
 
 **Key Logic:**
-- **Auto-refresh:** At configurable intervals (default: 60 seconds)
-- **Expiry check:** Every 1 second, remove races where `advertised_start < now - 60s`
-- **Centralized debounced refresh:** ALL refresh requests (auto-refresh, category changes, expiry-triggered) go through a single debounced channel (500ms delay) to prevent excessive API calls
-- **Category filtering:** When toggled, triggers refresh through the debounced channel
-- **Task management:** All background tasks (auto-refresh, expiry check, debounce handler) are managed using TaskGroup for safe lifecycle management
+- **Countdown timer:** Updates every 1 second using AsyncStream for smooth countdown display
+- **Expiry check:** Every 1 second, removes races where `advertised_start < now - 60s` and triggers refresh to fetch new races
+- **Debounced refresh:** 500ms debounce prevents excessive API calls during rapid filter changes
+- **Category filtering:** When toggled, triggers immediate API refresh (debounced)
+- **Task management:** Background tasks (countdown timer, expiry check) use structured concurrency for safe lifecycle management
 
 **PR Title:** `feat: Add NextToGoViewModel package with state management`
 
@@ -552,18 +548,18 @@ Final testing and verification.
 **Manual Testing:**
 - [ ] Launch app, verify 5 races display
 - [ ] Test category filtering (all combinations)
-- [ ] Wait for auto-refresh (60s), verify updates
+- [ ] Test rapid filter changes, verify debouncing works
 - [ ] Verify race expiry and removal (60s after start)
+- [ ] Verify countdown timer updates every second
 - [ ] Test accessibility with VoiceOver
 - [ ] Test different Dynamic Type sizes
 - [ ] Test error scenarios (network off)
-- [ ] Test pull-to-refresh
 - [ ] Test loading states
 - [ ] Test empty states
 
 **Performance Testing:**
 - [ ] Verify no memory leaks (Instruments)
-- [ ] Check CPU usage during auto-refresh
+- [ ] Check CPU usage during countdown updates
 - [ ] Verify smooth scrolling
 - [ ] Test on iPhone SE (small screen)
 - [ ] Test on iPad (large screen)
@@ -579,7 +575,7 @@ Final testing and verification.
 **Performance Profiling:**
 - [ ] Profile with Instruments (Time Profiler)
 - [ ] Check countdown timer performance impact
-- [ ] Verify no excessive CPU usage during auto-refresh
+- [ ] Verify no excessive CPU usage during countdown updates
 - [ ] Profile memory usage over time
 - [ ] Check for memory leaks with Memory Graph Debugger
 - [ ] Verify proper Task lifecycle management
@@ -717,7 +713,7 @@ Final polish before submission.
 ### Functional Requirements
 - ✅ Display next 5 races sorted by start time
 - ✅ Category filtering (Horse, Harness, Greyhound)
-- ✅ Auto-refresh every 60 seconds
+- ✅ Smart debounced refresh prevents excessive API calls
 - ✅ Remove races 60 seconds after start
 - ✅ Countdown timer updates every second
 - ✅ Display negative countdown for started races

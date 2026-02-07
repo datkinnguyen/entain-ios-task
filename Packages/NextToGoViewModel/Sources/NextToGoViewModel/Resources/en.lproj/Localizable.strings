@@ -33,8 +33,9 @@
 "category.greyhound.racing" = "Greyhound racing";
 
 /* MARK: - Category Accessibility */
-"category.selected.hint" = "Selected, tap to deselect";
-"category.not_selected.hint" = "Not selected, tap to select";
+"category.filters.label" = "Race category filters";
+"category.selected.hint" = "Tap to deselect";
+"category.not_selected.hint" = "Tap to select";
 
 /* MARK: - Race Accessibility */
 "race.accessibility.format" = "%@, %@, %@, Race %d, %@";

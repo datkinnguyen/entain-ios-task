@@ -55,6 +55,7 @@ enum LocalizedString {
     static let categoryHarnessRacing = localised("category.harness.racing")
     static let categoryGreyhoundRacing = localised("category.greyhound.racing")
 
+    static let categoryFiltersLabel = localised("category.filters.label")
     static let categorySelectedHint = localised("category.selected.hint")
     static let categoryNotSelectedHint = localised("category.not_selected.hint")
 
