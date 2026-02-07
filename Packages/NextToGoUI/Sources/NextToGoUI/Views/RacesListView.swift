@@ -30,18 +30,24 @@ public struct RacesListView: View {
 
     public var body: some View {
         NavigationStack {
-            Group {
+            ZStack {
+                // Full-height grey background
+                RaceColors.listBackground
+                    .ignoresSafeArea()
+
                 // Main content - check empty first, then loading/error/success
-                if viewModel.races.isEmpty {
-                    if viewModel.isLoading {
-                        loadingStateView
-                    } else if let error = viewModel.error {
-                        errorStateView(for: error)
+                Group {
+                    if viewModel.races.isEmpty {
+                        if viewModel.isLoading {
+                            loadingStateView
+                        } else if let error = viewModel.error {
+                            errorStateView(for: error)
+                        } else {
+                            emptyStateView
+                        }
                     } else {
-                        emptyStateView
+                        racesList
                     }
-                } else {
-                    racesList
                 }
             }
             .safeAreaInset(edge: .top, spacing: 0) {
@@ -55,7 +61,6 @@ public struct RacesListView: View {
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
             #endif
-            .background(RaceColors.listBackground)
             .task {
                 viewModel.startTasks()
             }
