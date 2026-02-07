@@ -35,7 +35,7 @@ A native iOS app that displays the next 5 upcoming races with category filtering
 - **Brand Consistency**: Custom SF Symbols created using the same icons from the Neds website and iOS app
 - **Native Integration**: SF Symbols automatically adapt to Dynamic Type sizes and rendering modes
 - **Three Racing Categories**: Horse, Harness, and Greyhound racing symbols in vector format (SVG)
-- **SwiftUI Optimized**: Works seamlessly with `.renderingMode(.template)` for dynamic theming
+- **SwiftUI Optimised**: Works seamlessly with `.renderingMode(.template)` for dynamic theming
 - **Scalable**: Vector-based symbols maintain quality at any size
 
 ### ♿️ Accessibility First
@@ -47,10 +47,10 @@ A native iOS app that displays the next 5 upcoming races with category filtering
   - **Automatic Layout Switching**: Seamlessly switches from horizontal to vertical layout at accessibility1+ text sizes
   - **No Truncation**: All text wraps properly at any size, ensuring content is never cut off
 - **ReduceMotion**: Not specifically implemented. This is a simple app with minimal animations (only subtle button press effects). The animations used are already very subtle and do not involve heavy motion that would require special treatment for users with motion sensitivity.
-- **Color Contrast**: WCAG AA compliant (4.5:1 for text, 3:1 for UI)
+- **Colour Contrast**: WCAG AA compliant (4.5:1 for text, 3:1 for UI)
 - **Touch Targets**: All interactive elements meet 44x44pt minimum
 
-### ⚡️ Performance Optimized
+### ⚡️ Performance Optimised
 - **Smart Debouncing**: Intelligent 500ms debounce prevents excessive API calls
   - **Rapid Filter Changes**: When users quickly select/deselect categories, only the last request is sent
   - **Race Expiry**: When races expire (>60 seconds after start), refresh is triggered to fetch new races
@@ -278,11 +278,11 @@ All documentation is located in the `Documentation/` folder:
 - [x] Adaptive layouts for all screen sizes and text sizes
 - [x] Smart sorting (primary by time, secondary by category)
 - [x] Debounced API refresh architecture
-- [x] Task usage review and optimization
+- [x] Task usage review and optimisation
 
 ### 🚧 In Progress
 - [ ] Performance profiling with Instruments
-- [ ] Memory leak detection and optimization
+- [ ] Memory leak detection and optimisation
 
 ### 📋 Planned
 - [ ] UI polish and animations
@@ -296,7 +296,7 @@ Future enhancements that could be added when time permits:
   - CategoryFilterView snapshot tests (selected/unselected states)
   - CountdownBadge snapshot tests (urgent/normal/negative states)
   - *Note: swift-snapshot-testing dependency is already configured in NextToGoUI package*
-- [ ] **Performance Optimizations**
+- [ ] **Performance Optimisations**
   - On-demand countdown calculation (alternative to countdown timer task)
   - Combine expiry check and countdown timer tasks
 - [ ] **Enhanced Error Handling**

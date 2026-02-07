@@ -279,7 +279,7 @@ Create the UI components package with detailed UI/UX specifications.
 - Add swift-snapshot-testing dependency
 
 **Create Theme Components:**
-- `RaceColors.swift` - All color constants matching screenshot
+- `RaceColors.swift` - All colour constants matching screenshot
 - `RaceTypography.swift` - Font styles and sizes
 - `RaceLayout.swift` - Spacing, padding, and layout constants
 
@@ -309,7 +309,7 @@ Create the UI components package with detailed UI/UX specifications.
   * Location: regular 14pt
   * Countdown: monospaced 15pt
 
-**Behavior:**
+**Behaviour:**
 - Category change triggers immediate API refresh (not just client-side filtering)
 - Countdown updates every second using AsyncStream
 - Always display maximum 5 races
@@ -570,7 +570,7 @@ Final testing and verification.
 - [ ] Voice Control commands
 - [ ] Dynamic Type (all sizes from -3 to +12)
 - [ ] Reduced Motion (verify animations respect system setting)
-- [ ] Color contrast (WCAG AA compliance)
+- [ ] Colour contrast (WCAG AA compliance)
 
 **Performance Profiling:**
 - [ ] Profile with Instruments (Time Profiler)
@@ -629,7 +629,7 @@ Final polish before submission.
 **Accessibility:**
 - [ ] VoiceOver works correctly
 - [ ] Dynamic Type is supported
-- [ ] Color contrast meets WCAG AA
+- [ ] Colour contrast meets WCAG AA
 - [ ] Reduced Motion is respected
 - [ ] Voice Control is compatible
 
@@ -703,7 +703,7 @@ Final polish before submission.
 - Support Dynamic Type
 - Support Voice Control
 - Support Reduced Motion
-- Meet WCAG AA color contrast
+- Meet WCAG AA colour contrast
 - Provide meaningful accessibility labels
 
 ---

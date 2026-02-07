@@ -370,12 +370,12 @@ let package = Package(
 - Support Dynamic Type (all sizes)
 - Support Voice Control
 - Support Reduced Motion
-- Meet WCAG AA color contrast (4.5:1)
+- Meet WCAG AA colour contrast (4.5:1)
 
 ### Testing Accessibility
 - Enable VoiceOver (⌘F5)
 - Test all Dynamic Type sizes
-- Verify color contrast
+- Verify colour contrast
 - Test with Reduced Motion enabled
 
 ### Adding Accessibility

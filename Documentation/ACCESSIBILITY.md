@@ -81,11 +81,11 @@ Every interactive element has proper accessibility labels and hints:
    - Double-tap to activate buttons
    - Verify selection state is announced
 
-### 3. Color Contrast
+### 3. Colour Contrast
 
 **Status:** ✅ WCAG AA Compliant
 
-All color combinations meet WCAG AA standards:
+All colour combinations meet WCAG AA standards:
 
 #### Contrast Ratios
 - **Unselected Chips:** Uses `Color.secondary` for automatic high contrast
@@ -94,9 +94,9 @@ All color combinations meet WCAG AA standards:
 - **Meeting Name:** Primary text color (system-managed contrast)
 - **Location Text:** Secondary text color (system-managed contrast)
 
-#### Testing Color Contrast
+#### Testing Colour Contrast
 
-1. **Use Color Contrast Analyzer:**
+1. **Use Colour Contrast Analyzer:**
    - Download from [TPGi](https://www.tpgi.com/color-contrast-checker/)
    - Take screenshots of app
    - Measure text vs background ratios
@@ -167,12 +167,12 @@ The app includes dedicated accessibility previews for testing:
         .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
 }
 
-#Preview("Color Contrast - Light Mode") {
-    // Tests all color combinations in light mode
+#Preview("Colour Contrast - Light Mode") {
+    // Tests all colour combinations in light mode
 }
 
-#Preview("Color Contrast - Dark Mode") {
-    // Tests all color combinations in dark mode
+#Preview("Colour Contrast - Dark Mode") {
+    // Tests all colour combinations in dark mode
 }
 ```
 
@@ -205,14 +205,14 @@ The app includes dedicated accessibility previews for testing:
 - Two-finger swipe: Navigate by heading
 - Three-finger swipe: Navigate by container
 
-### Color Contrast Analyzer
+### Colour Contrast Analyzer
 
-**Download:** [TPGi Color Contrast Checker](https://www.tpgi.com/color-contrast-checker/)
+**Download:** [TPGi Colour Contrast Checker](https://www.tpgi.com/color-contrast-checker/)
 
 **Usage:**
 1. Take screenshot of UI
-2. Use eyedropper to select foreground color
-3. Use eyedropper to select background color
+2. Use eyedropper to select foreground colour
+3. Use eyedropper to select background colour
 4. Check if ratio meets WCAG AA (4.5:1 for text)
 
 ---
@@ -235,11 +235,11 @@ Before submitting to App Store, verify:
 - [ ] Error messages are announced
 - [ ] Loading states are announced
 
-### Color Contrast
+### Colour Contrast
 - [ ] All text meets 4.5:1 ratio (or 3:1 for large text)
 - [ ] UI components meet 3:1 ratio
 - [ ] Both light and dark mode compliant
-- [ ] No color-only indicators
+- [ ] No colour-only indicators
 
 ### Touch Targets
 - [ ] All buttons minimum 44x44pt
@@ -268,7 +268,7 @@ The app meets the following WCAG 2.1 standards:
 - ✅ **1.4.11 Non-text Contrast** - 3:1 UI components
 
 ### Level AAA (Enhanced) - Partial
-- ⚠️ **1.4.6 Contrast (Enhanced)** - 7:1 text (some colors)
+- ⚠️ **1.4.6 Contrast (Enhanced)** - 7:1 text (some colours)
 - ⚠️ **2.5.5 Target Size** - 44x44pt minimum (exceeds)
 
 ---
@@ -289,16 +289,16 @@ The app meets the following WCAG 2.1 standards:
 .fixedSize(horizontal: false, vertical: true)
 ```
 
-### Issue: Low Color Contrast
+### Issue: Low Colour Contrast
 
-**Symptom:** Color Contrast Analyzer shows ratio < 4.5:1
+**Symptom:** Colour Contrast Analyzer shows ratio < 4.5:1
 
 **Solution:**
 ```swift
-// ❌ WRONG - Custom gray may have low contrast
+// ❌ WRONG - Custom grey may have low contrast
 .foregroundColor(Color.gray)
 
-// ✅ CORRECT - System colors ensure contrast
+// ✅ CORRECT - System colours ensure contrast
 .foregroundColor(Color.secondary)
 ```
 
@@ -335,7 +335,7 @@ Button(action: {}) {
 
 ### Tools
 - [Xcode Accessibility Inspector](https://developer.apple.com/library/archive/documentation/Accessibility/Conceptual/AccessibilityMacOSX/OSXAXTestingApps.html)
-- [Color Contrast Analyzer](https://www.tpgi.com/color-contrast-checker/)
+- [Colour Contrast Analyzer](https://www.tpgi.com/color-contrast-checker/)
 
 ---
 
@@ -349,7 +349,7 @@ For accessibility-related questions or issues:
 4. File an issue with:
    - Device and iOS version
    - Accessibility setting being used
-   - Expected vs actual behavior
+   - Expected vs actual behaviour
    - Screenshots if applicable
 
 ---

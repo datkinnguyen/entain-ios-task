@@ -1,6 +1,6 @@
 # Claude Instructions for Neds Task Project
 
-## Session Initialization
+## Session Initialisation
 
 When starting a new session for this project, automatically load and read the following files to understand the project context:
 
@@ -23,4 +23,4 @@ This includes but is not limited to:
 - Testing conventions
 - Security practices
 
-Do NOT add coding guidelines to this file (CLAUDE.md). CLAUDE.md is only for session initialization and project-specific instructions for Claude.
+Do NOT add coding guidelines to this file (CLAUDE.md). CLAUDE.md is only for session initialisation and project-specific instructions for Claude.
