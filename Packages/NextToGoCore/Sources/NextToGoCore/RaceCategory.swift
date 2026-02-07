@@ -3,9 +3,9 @@ import Foundation
 /// Represents the category of a race with associated metadata.
 public enum RaceCategory: String, Codable, CaseIterable, Sendable {
 
+    case horse
     case greyhound
     case harness
-    case horse
 
     /// The unique identifier for this category used in API responses
     public var id: String {
@@ -19,15 +19,15 @@ public enum RaceCategory: String, Codable, CaseIterable, Sendable {
         }
     }
 
-    /// The SF Symbol icon name for this category
+    /// The custom icon name for this category from Assets catalog
     public var iconName: String {
         switch self {
         case .greyhound:
-            return "dog.fill"
+            return "greyhound-racing-icon"
         case .harness:
-            return "figure.walk"
+            return "harness-racing-icon"
         case .horse:
-            return "figure.equestrian.sports"
+            return "horse-racing-icon"
         }
     }
 

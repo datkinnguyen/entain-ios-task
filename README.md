@@ -28,7 +28,12 @@ A native iOS app that displays the next 5 upcoming races with category filtering
 
 ### ♿️ Accessibility First
 - **VoiceOver**: Comprehensive labels, hints, and announcements for all UI elements
+  - **Smart Status Announcements**: Auto-announces when a focused race changes status (normal → starts soon → started)
+  - **Natural Language**: Countdown reads as "starts in 5 minutes" or "starting soon in 2 minutes 30 seconds"
+  - **Focus Management**: Automatic initial focus on first race, maintains focus during list updates
 - **Dynamic Type**: Full support from -3 to +12 text sizes with adaptive layouts
+  - **Automatic Layout Switching**: Seamlessly switches from horizontal to vertical layout at accessibility1+ text sizes
+  - **No Truncation**: All text wraps properly at any size, ensuring content is never cut off
 - **ReduceMotion**: Respects system animation preferences
 - **Color Contrast**: WCAG AA compliant (4.5:1 for text, 3:1 for UI)
 - **Touch Targets**: All interactive elements meet 44x44pt minimum
