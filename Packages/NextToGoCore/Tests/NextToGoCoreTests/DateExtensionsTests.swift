@@ -97,27 +97,38 @@ struct DateExtensionsTests {
 
     @Test("Countdown string format consistency")
     func testCountdownStringFormat() {
-        let testCases: [(TimeInterval, String, String)] = [
-            (0, "0s", "0 seconds"),
-            (30, "30s", "30 seconds"),
-            (60, "1m", "1 minute"),
-            (90, "1m 30s", "1 minute 30 seconds"),
-            (120, "2m", "2 minutes"),
-            (125, "2m 5s", "2 minutes 5 seconds"),
-            (300, "5m", "5 minutes"),
-            (-30, "-30s", "30 seconds"),
-            (-60, "-1m", "1 minute"),
-            (-125, "-2m 5s", "2 minutes 5 seconds")
+        struct TestCase {
+            let interval: TimeInterval
+            let expectedText: String
+            let expectedAccessibility: String
+        }
+
+        let testCases: [TestCase] = [
+            TestCase(interval: 0, expectedText: "0s", expectedAccessibility: "0 seconds"),
+            TestCase(interval: 30, expectedText: "30s", expectedAccessibility: "30 seconds"),
+            TestCase(interval: 60, expectedText: "1m", expectedAccessibility: "1 minute"),
+            TestCase(interval: 90, expectedText: "1m 30s", expectedAccessibility: "1 minute"),
+            TestCase(interval: 120, expectedText: "2m", expectedAccessibility: "2 minutes"),
+            TestCase(interval: 125, expectedText: "2m 5s", expectedAccessibility: "2 minutes"),
+            TestCase(interval: 300, expectedText: "5m", expectedAccessibility: "5 minutes"),
+            TestCase(interval: -30, expectedText: "-30s", expectedAccessibility: "30 seconds"),
+            TestCase(interval: -60, expectedText: "-1m", expectedAccessibility: "1 minute"),
+            TestCase(interval: -125, expectedText: "-2m 5s", expectedAccessibility: "2 minutes")
         ]
 
-        for (interval, expectedText, expectedAccessibility) in testCases {
-            let date = Self.referenceDate.addingTimeInterval(interval)
+        for testCase in testCases {
+            let date = Self.referenceDate.addingTimeInterval(testCase.interval)
             let countdown = date.countdownString(from: Self.referenceDate)
 
-            #expect(countdown.text == expectedText,
-                    "Expected text \(expectedText) for interval \(interval), got \(countdown.text)")
-            #expect(countdown.accessibilityText == expectedAccessibility,
-                    "Expected accessibility \(expectedAccessibility) for interval \(interval), got \(countdown.accessibilityText)")
+            #expect(
+                countdown.text == testCase.expectedText,
+                "Expected text \(testCase.expectedText) for interval \(testCase.interval), got \(countdown.text)"
+            )
+            #expect(
+                countdown.accessibilityText == testCase.expectedAccessibility,
+                "Expected accessibility \(testCase.expectedAccessibility) for interval \(testCase.interval), " +
+                "got \(countdown.accessibilityText)"
+            )
         }
     }
 

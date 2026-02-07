@@ -163,36 +163,34 @@ public struct RacesListView: View {
         )
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
-	
-	// MARK: - VoiceOver Focus Management
-	
-	/// Resets VoiceOver focus to the first race when the race list changes.
-	///
-	/// This ensures focus always moves to the first item after any list update,
-	/// preventing focus from jumping to the navigation title.
-	private func handleFocusAfterRaceListChange(oldRaces: [Race], newRaces: [Race]) {
-		// Use a small delay to ensure the state is updated before refocusing
-		DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-			// Reset focus to first race if the list changed
-			if !newRaces.isEmpty && oldRaces != newRaces {
-				focusedRaceId = newRaces.first?.raceId
-				viewModel.focusedRaceId = newRaces.first?.raceId
-			}
-		}
-	}
-	
-	
-	/// Refocuses a race by clearing and restoring focus after a delay.
-	///
-	/// - Parameter raceId: The race ID to refocus
-	private func refocusRace(_ raceId: String) {
-		focusedRaceId = nil
-		// Use a small delay to ensure the state is updated before refocusing
-		DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-			focusedRaceId = raceId
-		}
-	}
 
+    // MARK: - VoiceOver Focus Management
+
+    /// Resets VoiceOver focus to the first race when the race list changes.
+    ///
+    /// This ensures focus always moves to the first item after any list update,
+    /// preventing focus from jumping to the navigation title.
+    private func handleFocusAfterRaceListChange(oldRaces: [Race], newRaces: [Race]) {
+        // Use a small delay to ensure the state is updated before refocusing
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            // Reset focus to first race if the list changed
+            if !newRaces.isEmpty && oldRaces != newRaces {
+                focusedRaceId = newRaces.first?.raceId
+                viewModel.focusedRaceId = newRaces.first?.raceId
+            }
+        }
+    }
+
+    /// Refocuses a race by clearing and restoring focus after a delay.
+    ///
+    /// - Parameter raceId: The race ID to refocus
+    private func refocusRace(_ raceId: String) {
+        focusedRaceId = nil
+        // Use a small delay to ensure the state is updated before refocusing
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            focusedRaceId = raceId
+        }
+    }
 
 }
 
