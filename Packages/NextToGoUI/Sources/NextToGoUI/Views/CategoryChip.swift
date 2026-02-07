@@ -61,7 +61,7 @@ public struct CategoryChip: View {
                 .clipShape(RoundedRectangle(cornerRadius: RaceLayout.chipCornerRadius))
         }
         .buttonStyle(.plain)
-        .accessibilityLabel("\(category.accessibleLabel) racing")
+        .accessibilityLabel(category.accessibleLabel)
         .accessibilityHint(accessibilityHint)
         .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : [.isButton])
     }
