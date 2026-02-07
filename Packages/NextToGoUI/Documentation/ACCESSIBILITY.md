@@ -1,8 +1,8 @@
 # Accessibility Compliance
 
-## WCAG AA Color Contrast Ratios
+## WCAG AA Colour Contrast Ratios
 
-This document verifies that all color combinations in the NextToGoUI package meet WCAG AA accessibility standards for color contrast.
+This document verifies that all colour combinations in the NextToGoUI package meet WCAG AA accessibility standards for colour contrast.
 
 ### Standards
 
@@ -10,7 +10,7 @@ This document verifies that all color combinations in the NextToGoUI package mee
 - **Large text** (≥ 18pt or ≥ 14pt bold): Minimum 3:1 contrast ratio
 - **UI components**: Minimum 3:1 contrast ratio
 
-### Color Combinations
+### Colour Combinations
 
 #### 1. Selected Category Chip
 - **Background**: #FF5733 (RGB: 255, 87, 51)
@@ -60,7 +60,7 @@ This document verifies that all color combinations in the NextToGoUI package mee
 
 **Problem (Original)**: Light gray background (#F3F4F6) with white text in dark mode only achieved 1.31:1 contrast ratio.
 
-**Solution Applied**: Changed to adaptive system colors that automatically adjust based on color scheme.
+**Solution Applied**: Changed to adaptive system colours that automatically adjust based on colour scheme.
 
 ### Fix Applied (Commit d43beb2)
 
@@ -121,7 +121,7 @@ All text uses SwiftUI's scalable fonts via `RaceTypography`:
 - [x] VoiceOver navigation tested
 - [x] Voice Control compatibility verified
 - [x] Dynamic Type tested at extreme sizes
-- [x] Color contrast ratios calculated
+- [x] Colour contrast ratios calculated
 - [x] Touch target sizes measured
 - [x] **Fix countdown colors for dark mode** (completed in commit d43beb2)
 
@@ -130,15 +130,15 @@ All text uses SwiftUI's scalable fonts via `RaceTypography`:
 **Overall**: ✅ **Full Compliance**
 
 **All WCAG AA Requirements Met**:
-- ✅ Color contrast ratios ≥4.5:1 for normal text (all combinations)
-- ✅ Color contrast ratios ≥3:1 for large text and UI components
+- ✅ Colour contrast ratios ≥4.5:1 for normal text (all combinations)
+- ✅ Colour contrast ratios ≥3:1 for large text and UI components
 - ✅ Touch targets ≥44x44pt (Apple HIG)
 - ✅ VoiceOver labels and hints present
 - ✅ Dynamic Type support implemented
 - ✅ Reduce Motion support implemented
 
 **Action Completed**:
-Countdown colors updated to adaptive system colors (commit d43beb2). All accessibility issues resolved.
+Countdown colours updated to adaptive system colours (commit d43beb2). All accessibility issues resolved.
 
 ---
 

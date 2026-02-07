@@ -513,7 +513,7 @@ ChildView(scrollOffset: scrollOffset)
 ```
 
 **Environment is great for:**
-- Color scheme
+- Colour scheme
 - Locale
 - Accessibility settings
 - Other stable values
