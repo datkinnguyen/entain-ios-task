@@ -23,7 +23,7 @@ final class MockURLProtocol: URLProtocol {
             let (response, data) = try handler(request)
             client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
 
-            if let data = data {
+            if let data {
                 client?.urlProtocol(self, didLoad: data)
             }
 

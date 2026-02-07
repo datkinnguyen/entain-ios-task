@@ -3,6 +3,7 @@ import NextToGoCore
 
 /// Response wrapper for the Next to Go API race data
 public struct RaceResponse: Decodable, Sendable {
+
     public let status: Int
     public let races: [Race]
 
@@ -38,4 +39,5 @@ public struct RaceResponse: Decodable, Sendable {
         // Convert dictionary values to array and sort by advertisedStart
         races = raceSummaries.values.sorted { $0.advertisedStart < $1.advertisedStart }
     }
+
 }
