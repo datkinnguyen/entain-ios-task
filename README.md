@@ -65,6 +65,39 @@ A native iOS app that displays the next 5 upcoming races with category filtering
 - **Swift:** 6.0+
 - **macOS:** 14.0+ (for development)
 
+## Assumptions & Limitations
+
+### API Category Filtering Limitation
+
+**The API does not support filtering races by category IDs.** The `/rest/v1/racing/?method=nextraces&count=N` endpoint returns a mixed list of all race categories without providing a category filter parameter.
+
+**Workaround Strategy:**
+
+To work around this limitation, the app implements a client-side filtering strategy:
+
+1. **Fetch more than needed**: Request 2x the display count from the API (e.g., fetch 10 races to display 5)
+   - This multiplier is configurable via `RaceRepositoryImpl.apiFetchMultiplier`
+   - Increases the likelihood of having enough races after client-side filtering
+
+2. **Client-side filtering**: Filter the fetched races by selected categories on the device
+
+3. **Retry mechanism**: If the filtered results contain fewer than the required count:
+   - The app can retry the fetch up to a maximum number of attempts (configurable)
+   - Currently set to fetch once without additional retries
+   - During testing, most category filter combinations yield sufficient results on the first attempt
+
+**Known Edge Cases:**
+
+- When filtering by a single category (e.g., only "Horse"), there may be cases where the API doesn't return enough races of that category within the fetched set
+- In these rare cases, the app will display fewer than 5 races (e.g., 3-4 races) until the next refresh cycle
+- The countdown timer automatically triggers a refresh when races expire, which typically resolves the issue within 60 seconds
+
+**Trade-offs:**
+
+- ✅ **Pros**: Works with the current API without backend changes, simple implementation
+- ❌ **Cons**: May occasionally display fewer than 5 races, requires fetching extra data
+- 🔄 **Future Improvement**: If the API adds support for `category_ids` parameter, this workaround can be removed
+
 ## Architecture
 
 The app follows **Clean Architecture** with modular Swift packages:
