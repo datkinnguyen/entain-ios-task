@@ -25,6 +25,10 @@ A native iOS app that displays the next 5 upcoming races with category filtering
 - **Horizontal layout**: For normal text sizes with center-aligned elements
 - **Vertical layout**: Automatically switches at accessibility1+ text size
 - **No text truncation**: All text wraps properly at any Dynamic Type size
+- **Height-Dynamic Race Rows**: Deliberately designed to expand vertically to accommodate all content
+  - **Design Rationale**: This is a simple app without a detail screen - if text gets truncated, users have no way to see the full content
+  - **Real-World Alternative**: In a production app with race detail screens, longer text could be truncated since users can tap to see more
+  - **Current Approach**: Race rows grow to fit all content, ensuring complete information is always visible
 - **Responsive design**: Works seamlessly from iPhone SE to iPad
 
 ### 🎨 Custom SF Symbols
