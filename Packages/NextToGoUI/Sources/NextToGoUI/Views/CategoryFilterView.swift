@@ -1,4 +1,5 @@
 import NextToGoCore
+import NextToGoViewModel
 import SwiftUI
 
 /// A horizontal scrollable view of category filter chips.
@@ -11,14 +12,18 @@ public struct CategoryFilterView: View {
     // MARK: - Properties
 
     @Binding private var selectedCategories: Set<RaceCategory>
+    private let viewModel: RacesViewModel
 
     // MARK: - Initialisation
 
     /// Creates a category filter view.
     ///
-    /// - Parameter selectedCategories: Binding to the set of selected categories
-    public init(selectedCategories: Binding<Set<RaceCategory>>) {
+    /// - Parameters:
+    ///   - selectedCategories: Binding to the set of selected categories
+    ///   - viewModel: The view model providing localized strings
+    public init(selectedCategories: Binding<Set<RaceCategory>>, viewModel: RacesViewModel) {
         self._selectedCategories = selectedCategories
+        self.viewModel = viewModel
     }
 
     // MARK: - Body
@@ -28,9 +33,11 @@ public struct CategoryFilterView: View {
             Spacer()
             HStack(spacing: RaceLayout.spacingL) {
                 ForEach(RaceCategory.allCases, id: \.self) { category in
+                    let isSelected = selectedCategories.contains(category)
                     CategoryChip(
                         category: category,
-                        isSelected: selectedCategories.contains(category)
+                        isSelected: isSelected,
+                        accessibilityHint: viewModel.categoryAccessibilityHint(isSelected: isSelected)
                     ) {
                         toggleCategory(category)
                     }
@@ -40,7 +47,7 @@ public struct CategoryFilterView: View {
         }
         .padding(.vertical, RaceLayout.spacingS)
         .accessibilityElement(children: .contain)
-        .accessibilityLabel("Race category filters")
+        .accessibilityLabel(viewModel.categoryFiltersLabel)
     }
 
     // MARK: - Private Methods
@@ -59,20 +66,28 @@ public struct CategoryFilterView: View {
 
 #Preview("All Selected") {
     @Previewable @State var selectedCategories: Set<RaceCategory> = Set(RaceCategory.allCases)
-    return CategoryFilterView(selectedCategories: $selectedCategories)
+    let mockRepository = MockRaceRepository()
+    let viewModel = RacesViewModel(repository: mockRepository)
+    CategoryFilterView(selectedCategories: $selectedCategories, viewModel: viewModel)
 }
 
 #Preview("Horse Selected") {
     @Previewable @State var selectedCategories: Set<RaceCategory> = [.horse]
-    return CategoryFilterView(selectedCategories: $selectedCategories)
+    let mockRepository = MockRaceRepository()
+    let viewModel = RacesViewModel(repository: mockRepository)
+    CategoryFilterView(selectedCategories: $selectedCategories, viewModel: viewModel)
 }
 
 #Preview("Multiple Selected") {
     @Previewable @State var selectedCategories: Set<RaceCategory> = [.horse, .greyhound]
-    return CategoryFilterView(selectedCategories: $selectedCategories)
+    let mockRepository = MockRaceRepository()
+    let viewModel = RacesViewModel(repository: mockRepository)
+    CategoryFilterView(selectedCategories: $selectedCategories, viewModel: viewModel)
 }
 
 #Preview("None Selected") {
     @Previewable @State var selectedCategories: Set<RaceCategory> = []
-    return CategoryFilterView(selectedCategories: $selectedCategories)
+    let mockRepository = MockRaceRepository()
+    let viewModel = RacesViewModel(repository: mockRepository)
+    CategoryFilterView(selectedCategories: $selectedCategories, viewModel: viewModel)
 }

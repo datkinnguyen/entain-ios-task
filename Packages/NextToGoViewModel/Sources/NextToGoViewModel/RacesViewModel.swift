@@ -276,8 +276,13 @@ public final class RacesViewModel {
     /// Returns the accessibility hint for a category chip
     /// - Parameter isSelected: Whether the category is selected
     /// - Returns: Accessibility hint
-    private func categoryAccessibilityHint(isSelected: Bool) -> String {
+    public func categoryAccessibilityHint(isSelected: Bool) -> String {
         isSelected ? LocalizedString.categorySelectedHint : LocalizedString.categoryNotSelectedHint
+    }
+
+    /// Returns the accessibility label for the category filters container
+    public var categoryFiltersLabel: String {
+        LocalizedString.categoryFiltersLabel
     }
 
     /// Schedules a debounced refresh by sending a signal to the refresh channel

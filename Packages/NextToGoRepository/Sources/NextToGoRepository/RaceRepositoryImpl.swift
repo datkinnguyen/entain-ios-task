@@ -43,13 +43,13 @@ public actor RaceRepositoryImpl: RaceRepositoryProtocol {
             }
         }
 
-        // Filter out expired races and sort by start time, then by category
+        // Filter out expired races and sort by start time, then by race name
         // Note: Backend should not send expired races, but we filter client-side as defensive programming
         let activeRaces = validRaces
             .filter { !$0.isExpired }
             .sorted { lhs, rhs in
                 if lhs.advertisedStart == rhs.advertisedStart {
-                    return lhs.category.rawValue < rhs.category.rawValue
+                    return lhs.raceName < rhs.raceName
                 }
                 return lhs.advertisedStart < rhs.advertisedStart
             }

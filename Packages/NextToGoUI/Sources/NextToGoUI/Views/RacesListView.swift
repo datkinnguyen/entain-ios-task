@@ -30,24 +30,33 @@ public struct RacesListView: View {
 
     public var body: some View {
         NavigationStack {
-            Group {
+            ZStack {
+                // Full-height grey background
+                RaceColors.listBackground
+                    .ignoresSafeArea()
+
                 // Main content - check empty first, then loading/error/success
-                if viewModel.races.isEmpty {
-                    if viewModel.isLoading {
-                        loadingStateView
-                    } else if let error = viewModel.error {
-                        errorStateView(for: error)
+                Group {
+                    if viewModel.races.isEmpty {
+                        if viewModel.isLoading {
+                            loadingStateView
+                        } else if let error = viewModel.error {
+                            errorStateView(for: error)
+                        } else {
+                            emptyStateView
+                        }
                     } else {
-                        emptyStateView
+                        racesList
                     }
-                } else {
-                    racesList
                 }
             }
             .safeAreaInset(edge: .top, spacing: 0) {
                 VStack(spacing: 0) {
-                    CategoryFilterView(selectedCategories: $viewModel.selectedCategories)
-                        .background(RaceColors.raceCardBackground)
+                    CategoryFilterView(
+                        selectedCategories: $viewModel.selectedCategories,
+                        viewModel: viewModel
+                    )
+                    .background(RaceColors.raceCardBackground)
                     Divider()
                 }
             }
@@ -55,7 +64,6 @@ public struct RacesListView: View {
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
             #endif
-            .background(RaceColors.listBackground)
             .task {
                 viewModel.startTasks()
             }
@@ -91,9 +99,10 @@ public struct RacesListView: View {
             .padding(.top, RaceLayout.spacingM)
         }
         .onChange(of: viewModel.races) { oldRaces, newRaces in
-			DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-				handleFocusAfterRaceListChange(oldRaces: oldRaces, newRaces: newRaces)
-			}
+            Task { @MainActor in
+                try? await Task.sleep(for: .milliseconds(300))
+                handleFocusAfterRaceListChange(oldRaces: oldRaces, newRaces: newRaces)
+            }
         }
         .onChange(of: focusedRaceId) { _, newValue in
             // Update ViewModel when focus changes so it can track status changes
@@ -172,7 +181,8 @@ public struct RacesListView: View {
     /// preventing focus from jumping to the navigation title.
     private func handleFocusAfterRaceListChange(oldRaces: [Race], newRaces: [Race]) {
         // Use a small delay to ensure the state is updated before refocusing
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(500))
             // Reset focus to first race if the list changed
             if !newRaces.isEmpty && oldRaces != newRaces {
                 focusedRaceId = newRaces.first?.raceId
@@ -187,7 +197,8 @@ public struct RacesListView: View {
     private func refocusRace(_ raceId: String) {
         focusedRaceId = nil
         // Use a small delay to ensure the state is updated before refocusing
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+        Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(300))
             focusedRaceId = raceId
         }
     }

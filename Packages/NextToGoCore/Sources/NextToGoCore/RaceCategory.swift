@@ -35,11 +35,11 @@ public enum RaceCategory: String, Codable, CaseIterable, Sendable {
     public var accessibleLabel: String {
         switch self {
         case .greyhound:
-            return "Greyhound"
+            return "Greyhound Racing"
         case .harness:
-            return "Harness"
+            return "Harness Racing"
         case .horse:
-            return "Horse"
+            return "Horse Racing"
         }
     }
 
