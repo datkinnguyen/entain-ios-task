@@ -2,8 +2,6 @@
 //  NextToGoRacesApp.swift
 //  NextToGoRaces
 //
-//  Created by Claude on 2026-02-06.
-//
 
 import NextToGoUI
 import SwiftUI

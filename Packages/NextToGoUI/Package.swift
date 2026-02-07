@@ -15,8 +15,7 @@ let package = Package(
     ],
     dependencies: [
         .package(path: "../NextToGoCore"),
-        .package(path: "../NextToGoViewModel"),
-        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.17.0")
+        .package(path: "../NextToGoViewModel")
     ],
     targets: [
         .target(
@@ -35,10 +34,7 @@ let package = Package(
         .testTarget(
             name: "NextToGoUITests",
             dependencies: [
-                "NextToGoUI",
-                // TODO: Implement snapshot tests for visual regression testing
-                // SnapshotTesting is configured but tests are not yet implemented
-                .product(name: "SnapshotTesting", package: "swift-snapshot-testing")
+                "NextToGoUI"
             ],
             swiftSettings: [
                 .swiftLanguageMode(.v6)

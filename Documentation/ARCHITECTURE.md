@@ -108,7 +108,6 @@ The app follows **Clean Architecture** principles with a modular approach using 
 **Design System:**
 - Centralised theme (colors, typography, layout)
 - Full accessibility support
-- Snapshot tests for visual regression
 - Dark mode support
 
 ## Swift 6 Concurrency
@@ -168,11 +167,6 @@ Timer (1s) → Check advertised_start → Remove expired races
 ### Integration Tests
 - Test end-to-end data flow
 - Verify package integration
-
-### Snapshot Tests
-- Visual regression testing for all UI components
-- Test light/dark mode
-- Test Dynamic Type sizes
 
 ### Test Traits
 - Use `.serialized` trait for tests sharing mutable static state

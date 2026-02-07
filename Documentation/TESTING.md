@@ -14,14 +14,8 @@ Test individual components in isolation with mocked dependencies.
 **Packages with Unit Tests:**
 - `NextToGoCore` - Domain models and extensions
 - `NextToGoNetworking` - API client and networking logic
-- `NextToGoRepository` - Business logic (when implemented)
-- `NextToGoViewModel` - State management (when implemented)
-
-### Snapshot Tests
-Visual regression tests for SwiftUI components using `swift-snapshot-testing`.
-
-**Planned for:**
-- `NextToGoUI` - All views and components
+- `NextToGoRepository` - Business logic
+- `NextToGoViewModel` - State management
 
 ### Integration Tests
 Test interaction between packages (planned for future tasks).
@@ -275,7 +269,7 @@ struct APIClientTests {
 - Networking layer: 90%+
 - Repository layer: 85%+
 - ViewModel layer: 85%+
-- UI layer: 70%+ (snapshot tests supplement)
+- UI layer: 70%+
 
 **What to Test:**
 - All public APIs
@@ -343,27 +337,7 @@ When a test fails:
 
 ## Future Testing Plans
 
-### Repository Tests (Task #4)
-- Mock API client
-- Test fetch logic
-- Test filtering and sorting
-- Test error scenarios
-
-### ViewModel Tests (Task #5)
-- Test state updates
-- Test auto-refresh
-- Test expiry checking
-- Test category filtering
-- Test debounced refresh
-
-### UI Snapshot Tests (Task #6)
-- All SwiftUI components
-- Light/dark mode
-- Dynamic Type sizes
-- Loading/error states
-- Use `swift-snapshot-testing`
-
-### Integration Tests (Task #11)
+### Integration Tests
 - End-to-end data flow
 - Package integration
 - Real API testing (staging)

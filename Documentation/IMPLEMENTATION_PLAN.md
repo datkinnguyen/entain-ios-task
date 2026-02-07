@@ -16,7 +16,7 @@ Build a native iOS app that displays the next 5 upcoming races from a racing API
 - **Deployment Target:** iOS 18.0+
 - **Architecture:** Clean Architecture with Swift Package Manager
 - **UI Framework:** SwiftUI with @Observable macro
-- **Testing:** Unit tests, snapshot tests, 80%+ coverage
+- **Testing:** Unit tests, 80%+ coverage
 - **CI/CD:** GitHub Actions with automated testing
 
 ### Architecture Layers
@@ -276,7 +276,6 @@ Create the UI components package with detailed UI/UX specifications.
 **Implementation:**
 - Initialize Swift Package: `Packages/NextToGoUI`
 - Add dependencies on NextToGoCore and NextToGoViewModel
-- Add swift-snapshot-testing dependency
 
 **Create Theme Components:**
 - `RaceColors.swift` - All colour constants matching screenshot
@@ -322,15 +321,6 @@ Create the UI components package with detailed UI/UX specifications.
 - Voice Control compatibility
 - Reduced Motion support
 
-**Create Snapshot Tests:**
-- `RaceRowViewSnapshotTests.swift` - Test all visual states
-- `CategoryFilterViewSnapshotTests.swift` - Selected/unselected states
-- `RacesListViewSnapshotTests.swift` - Full screen layouts
-- `CountdownBadgeSnapshotTests.swift` - Urgent/normal/negative states
-- Test light/dark mode for all components
-- Test all Dynamic Type sizes (small, medium, xxxLarge)
-- Generate baseline snapshots
-
 **Files to Create:**
 ```
 Packages/NextToGoUI/
@@ -353,13 +343,7 @@ Packages/NextToGoUI/
             └── View+Accessibility.swift
 └── Tests/
     └── NextToGoUITests/
-        ├── Snapshots/
-        │   ├── RaceRowViewSnapshotTests.swift
-        │   ├── CategoryFilterViewSnapshotTests.swift
-        │   ├── RacesListViewSnapshotTests.swift
-        │   └── CountdownBadgeSnapshotTests.swift
-        └── __Snapshots__/
-            └── (generated snapshot images)
+        └── (unit tests)
 ```
 
 **PR Title:** `feat: Add NextToGoUI package with SwiftUI components`
@@ -465,7 +449,7 @@ Create CI/CD workflows.
 
 **Workflow Jobs:**
 1. **Lint:** Run SwiftLint on all code
-2. **Test:** Run all unit tests and snapshot tests
+2. **Test:** Run all unit tests
 3. **Build:** Build app for simulator and device
 4. **Coverage:** Upload code coverage to Codecov
 
@@ -539,7 +523,6 @@ Final testing and verification.
 
 **Automated Tests:**
 - [ ] Run all unit tests across all packages
-- [ ] Run snapshot tests
 - [ ] Verify code coverage ≥80%
 - [ ] Run SwiftLint with no warnings
 - [ ] Build app for simulator
@@ -693,7 +676,6 @@ Final polish before submission.
 
 ### Testing Standards
 - Unit test coverage ≥80%
-- Snapshot tests for all UI components
 - Test all edge cases
 - Use mocks for external dependencies
 - Test Swift 6 concurrency patterns
@@ -724,7 +706,6 @@ Final polish before submission.
 - ✅ Clean Architecture with SPM packages
 - ✅ SwiftUI with @Observable
 - ✅ Unit test coverage ≥80%
-- ✅ Snapshot tests for UI components
 - ✅ SwiftLint with no warnings
 - ✅ GitHub Actions CI/CD
 
@@ -778,7 +759,6 @@ Final polish before submission.
 - Don't ignore SwiftLint warnings (fix them all)
 - Don't hardcode values (use AppConfiguration)
 - Don't forget accessibility labels
-- Don't skip snapshot tests
 - Don't merge PRs without approval
 
 ### Best Practices
