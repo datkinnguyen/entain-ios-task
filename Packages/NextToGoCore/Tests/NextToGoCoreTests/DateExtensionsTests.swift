@@ -126,7 +126,10 @@ struct DateExtensionsTests {
             )
             #expect(
                 countdown.accessibilityText == testCase.expectedAccessibility,
-                "Expected accessibility \(testCase.expectedAccessibility) for interval \(testCase.interval), got \(countdown.accessibilityText)"
+                """
+                Expected accessibility \(testCase.expectedAccessibility) for interval \(testCase.interval), \
+                got \(countdown.accessibilityText)
+                """
             )
         }
     }

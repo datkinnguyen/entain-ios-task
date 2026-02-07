@@ -700,6 +700,30 @@ struct APIClientTests {
 }
 ```
 
+## Pre-Commit Requirements
+
+### Mandatory Checks Before Every Commit
+
+**CRITICAL:** Before committing ANY code changes, you MUST:
+
+1. **Run SwiftLint** - Fix all violations before staging files
+   ```bash
+   swiftlint lint --strict
+   ```
+   - **Zero tolerance** - All violations MUST be fixed
+   - No warnings, no errors in strict mode
+   - Follow project's `.swiftlint.yml` configuration
+   - Run `swiftlint --fix` to auto-fix formatting issues
+
+2. **Run affected tests** - Verify tests pass for changed code
+   ```bash
+   swift test  # Run all tests
+   # Or test specific package:
+   cd Packages/[PackageName] && swift test
+   ```
+
+**This applies to EVERY commit, not just PRs. Never commit code with lint violations or failing tests.**
+
 ## Pull Requests
 
 ### PR Size Limits
