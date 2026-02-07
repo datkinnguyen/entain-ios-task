@@ -14,7 +14,6 @@
 		A1000108000000000000108 /* NextToGoUI in Frameworks */ = {isa = PBXBuildFile; productRef = A1000109000000000000109 /* NextToGoUI */; };
 		A1000110000000000000200 /* NextToGoRacesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002000000000000002 /* NextToGoRacesApp.swift */; };
 		A1000111000000000000201 /* DependencyContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000003000000000000003 /* DependencyContainer.swift */; };
-		A1000112000000000000202 /* PreviewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000005000000000000005 /* PreviewData.swift */; };
 		A1000113000000000000203 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1000004000000000000004 /* Assets.xcassets */; };
 		A1000114000000000000204 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A1000006000000000000006 /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
@@ -24,7 +23,6 @@
 		A1000002000000000000002 /* NextToGoRacesApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextToGoRacesApp.swift; sourceTree = "<group>"; };
 		A1000003000000000000003 /* DependencyContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DependencyContainer.swift; sourceTree = "<group>"; };
 		A1000004000000000000004 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		A1000005000000000000005 /* PreviewData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewData.swift; sourceTree = "<group>"; };
 		A1000006000000000000006 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -58,7 +56,6 @@
 			children = (
 				A1000002000000000000002 /* NextToGoRacesApp.swift */,
 				A1000003000000000000003 /* DependencyContainer.swift */,
-				A1000005000000000000005 /* PreviewData.swift */,
 				A1000004000000000000004 /* Assets.xcassets */,
 				A1000006000000000000006 /* LaunchScreen.storyboard */,
 			);
@@ -167,7 +164,6 @@
 			files = (
 				A1000110000000000000200 /* NextToGoRacesApp.swift in Sources */,
 				A1000111000000000000201 /* DependencyContainer.swift in Sources */,
-				A1000112000000000000202 /* PreviewData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
