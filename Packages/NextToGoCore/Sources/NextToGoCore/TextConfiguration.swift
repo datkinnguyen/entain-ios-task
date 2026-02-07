@@ -6,6 +6,7 @@ import Foundation
 /// sighted users versus VoiceOver users. For example, "5m" displays compactly
 /// but should be spoken as "5 minutes".
 public struct TextConfiguration {
+
     /// The text to display visually in the UI
     public let text: String
 
@@ -21,4 +22,5 @@ public struct TextConfiguration {
         self.text = text
         self.accessibilityText = accessibilityText ?? text
     }
+
 }

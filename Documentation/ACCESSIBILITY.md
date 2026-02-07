@@ -219,7 +219,7 @@ The app includes dedicated accessibility previews for testing:
 
 ## 📋 Testing Checklist
 
-Before submitting to App Store, verify:
+Before release, verify:
 
 ### Dynamic Type
 - [ ] Test at all text sizes (Small to Accessibility XXXLarge)
