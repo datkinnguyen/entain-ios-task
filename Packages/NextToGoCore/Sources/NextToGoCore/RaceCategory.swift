@@ -23,11 +23,11 @@ public enum RaceCategory: String, Codable, CaseIterable, Sendable {
     public var iconName: String {
         switch self {
         case .greyhound:
-            return "greyhound-racing-icon"
+            return "greyhound-racing"
         case .harness:
-            return "harness-racing-icon"
+            return "harness-racing"
         case .horse:
-            return "horse-racing-icon"
+            return "horse-racing"
         }
     }
 
