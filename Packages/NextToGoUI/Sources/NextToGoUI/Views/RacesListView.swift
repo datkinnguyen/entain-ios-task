@@ -68,27 +68,23 @@ public struct RacesListView: View {
     // MARK: - Subviews
 
     private var racesList: some View {
-        ScrollView {
-            VStack(spacing: 0) {
-                ForEach(viewModel.races, id: \.raceId) { race in
-                    RaceRowView(race: race, viewModel: viewModel)
-                        .accessibilityFocused($focusedRaceId, equals: race.raceId)
+        GeometryReader { geometry in
+            ScrollView {
+                VStack(spacing: 0) {
+                    ForEach(viewModel.races, id: \.raceId) { race in
+                        RaceRowView(race: race, viewModel: viewModel)
+                            .accessibilityFocused($focusedRaceId, equals: race.raceId)
 
-                    if race.raceId != viewModel.races.last?.raceId {
-                        Divider()
-                            .padding(.horizontal, RaceLayout.cardPadding)
+                        if race.raceId != viewModel.races.last?.raceId {
+                            Divider()
+                                .padding(.horizontal, RaceLayout.cardPadding)
+                        }
                     }
                 }
+                .padding(.top, RaceLayout.spacingM)
+                .frame(minHeight: geometry.size.height - RaceLayout.spacingM)
             }
             .background(RaceColors.raceCardBackground)
-            .clipShape(RoundedRectangle(cornerRadius: RaceLayout.cardCornerRadius))
-            .shadow(
-                color: .black.opacity(RaceLayout.cardShadowOpacity),
-                radius: RaceLayout.cardShadowRadius,
-                y: RaceLayout.cardShadowY
-            )
-            .padding(.horizontal, RaceLayout.spacingL)
-            .padding(.top, RaceLayout.spacingM)
         }
         .onChange(of: viewModel.races) { oldRaces, newRaces in
 			DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {

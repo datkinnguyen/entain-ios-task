@@ -51,7 +51,8 @@ public enum RaceColors {
     // MARK: - General Colors
 
     /// Adaptive background for the main list view (automatically adapts to dark mode)
-    public static let listBackground = Color(.systemGroupedBackground)
+    /// Uses secondarySystemBackground for better contrast with race cards in dark mode
+    public static let listBackground = Color(.secondarySystemBackground)
 
     /// Adaptive separator color for dividers (automatically adapts to dark mode)
     public static let separator = Color(.separator)
