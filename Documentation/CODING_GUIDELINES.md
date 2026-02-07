@@ -963,7 +963,7 @@ import Foundation
 - Unclear root cause
 
 **Time cost of guessing wrong:**
-- 24-hour App Store review delay
+- Production issues remain unfixed
 - Continued user suffering
 - Reputational damage
 

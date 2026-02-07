@@ -144,4 +144,4 @@ Countdown colours updated to adaptive system colours (commit d43beb2). All acces
 
 **Last Updated**: 2026-02-07
 **Verified By**: Automated analysis + manual review
-**Next Review**: Before App Store submission
+**Next Review**: As needed for future updates
