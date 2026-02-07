@@ -151,8 +151,8 @@ private actor MockRaceRepository: RaceRepositoryProtocol {
             throw MockError.fetchFailed
         }
 
-        // Return races sorted by advertised start time
-        return racesToReturn.sorted { $0.advertisedStart < $1.advertisedStart }
+        // Return races sorted by advertised start time, capped at requested count
+        return Array(racesToReturn.sorted { $0.advertisedStart < $1.advertisedStart }.prefix(count))
     }
 
     enum MockError: Error {

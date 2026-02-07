@@ -131,8 +131,9 @@ struct RaceRepositoryImplTests {
 
         await mockClient.configure { endpoint in
             // Verify the endpoint is correct (API doesn't support category filtering)
+            // Repository fetches 2x the requested count to increase likelihood of having enough races
             if case .nextRaces(let count) = endpoint {
-                #expect(count == 10)
+                #expect(count == 20) // 10 requested * 2 multiplier
             } else {
                 Issue.record("Expected nextRaces endpoint")
             }
@@ -157,8 +158,9 @@ struct RaceRepositoryImplTests {
 
         await mockClient.configure { endpoint in
             // Verify endpoint parameters (API doesn't support category filtering)
+            // Repository fetches 2x the requested count
             if case .nextRaces(let count) = endpoint {
-                #expect(count == 10)
+                #expect(count == 20) // 10 requested * 2 multiplier
             } else {
                 Issue.record("Expected nextRaces endpoint")
             }

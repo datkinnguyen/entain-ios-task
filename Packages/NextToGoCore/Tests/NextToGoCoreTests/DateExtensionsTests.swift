@@ -14,7 +14,7 @@ struct DateExtensionsTests {
         let countdown = futureDate.countdownString(from: Self.referenceDate)
 
         #expect(countdown.text == "2m 30s")
-        #expect(countdown.accessibilityText == "2 minutes 30 seconds")
+        #expect(countdown.accessibilityText == "2 minutes")
     }
 
     @Test("Countdown string for past date shows negative time")
@@ -23,7 +23,7 @@ struct DateExtensionsTests {
         let countdown = pastDate.countdownString(from: Self.referenceDate)
 
         #expect(countdown.text == "-1m 30s")
-        #expect(countdown.accessibilityText == "1 minute 30 seconds")
+        #expect(countdown.accessibilityText == "1 minute")
     }
 
     @Test("Countdown string for exactly 1 minute in future")
@@ -68,9 +68,9 @@ struct DateExtensionsTests {
         let pastDate = Self.referenceDate.addingTimeInterval(-225) // 3 minutes 45 seconds in the past
         let countdown = pastDate.countdownString(from: Self.referenceDate)
 
-        // < 5 minutes: show minutes and seconds
+        // < 5 minutes: show minutes and seconds (visual), only minutes (accessibility)
         #expect(countdown.text == "-3m 45s")
-        #expect(countdown.accessibilityText == "3 minutes 45 seconds")
+        #expect(countdown.accessibilityText == "3 minutes")
     }
 
     @Test("Countdown string handles DST-aware calculation")
@@ -126,8 +126,7 @@ struct DateExtensionsTests {
             )
             #expect(
                 countdown.accessibilityText == testCase.expectedAccessibility,
-                "Expected accessibility \(testCase.expectedAccessibility) for interval \(testCase.interval), " +
-                "got \(countdown.accessibilityText)"
+                "Expected accessibility \(testCase.expectedAccessibility) for interval \(testCase.interval), got \(countdown.accessibilityText)"
             )
         }
     }
@@ -161,7 +160,7 @@ struct DateExtensionsTests {
 
         // Verify negative sign is at the beginning for visual text only
         #expect(countdown.text == "-2m 30s")
-        // Accessibility text omits the negative sign
-        #expect(countdown.accessibilityText == "2 minutes 30 seconds")
+        // Accessibility text omits the negative sign and seconds
+        #expect(countdown.accessibilityText == "2 minutes")
     }
 }
