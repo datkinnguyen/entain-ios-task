@@ -14,19 +14,14 @@ A native iOS app displaying the next 5 upcoming races with category filtering, s
 <table>
   <tr>
     <td><img src="screenshots/main-screen.png" width="250" alt="Main Screen"/><br/><em>Main screen with race list</em></td>
-    <td><img src="screenshots/category-filter.png" width="250" alt="Category Filter"/><br/><em>Category filtering</em></td>
-    <td><img src="screenshots/accessibility.png" width="250" alt="Accessibility"/><br/><em>Dynamic Type support</em></td>
+    <td><img src="screenshots/empty-state.png" width="250" alt="Empty State"/><br/><em>Empty State</em></td>
+    <td><img src="screenshots/error-state.png" width="250" alt="Error State"/><br/><em>Error State</em></td>
   </tr>
 </table>
 
 ### Demo Video
-<!-- Embed video or link to demo video -->
-<video width="250" controls>
-  <source src="demo/app-demo.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
 
-*Or link to video: [Watch Demo Video](link-to-demo-video)*
+[![Neds Next To Go - Demo](https://img.youtube.com/vi/osR6DAl9qCg/0.jpg)](https://www.youtube.com/watch?v=osR6DAl9qCg)
 
 ---
 
