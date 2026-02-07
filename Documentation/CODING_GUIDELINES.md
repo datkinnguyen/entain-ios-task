@@ -535,6 +535,43 @@ ChildView(scrollOffset: scrollOffset)
   - **NextToGoViewModel** - for presentation-level strings
 - Never add localisation to other packages
 
+### CRITICAL: Use Complete Phrases with Placeholders
+
+**NEVER define localized strings as fragments to be concatenated. Always use complete, meaningful phrases or sentences with placeholders.**
+
+**❌ WRONG - String Fragments**:
+```swift
+// Localizable.strings
+"countdown.started" = "started";
+"countdown.ago" = "ago";
+
+// Code (WRONG - concatenation doesn't localize well)
+"\(LocalizedString.countdownStarted) \(time) \(LocalizedString.countdownAgo)"
+// Result: "started 5 minutes ago"
+```
+
+**✅ CORRECT - Complete Phrases**:
+```swift
+// Localizable.strings
+"countdown.started.format" = "started %@ ago";
+
+// Code (CORRECT - complete translatable phrase)
+String(format: LocalizedString.countdownStarted(time: time), time)
+// Result: "started 5 minutes ago"
+```
+
+**Why This Matters**:
+- Different languages have different word orders and grammar structures
+- Concatenated fragments cannot be properly translated
+- Translators need complete context to provide accurate translations
+- Format strings allow flexibility for different language structures
+
+**Examples**:
+- ✅ `"race.accessibility.format" = "%@ racing, %@, Race %d, %@, %@"`
+- ✅ `"countdown.started.format" = "started %@ ago"`
+- ✅ `"countdown.starts_in.format" = "starts in %@"`
+- ❌ `"countdown.prefix" = "started"` + `"countdown.suffix" = "ago"`
+
 ### Centralised Localisation Helper
 
 **ALWAYS use the `Localization.string()` helper from NextToGoCore** for accessing localised strings:

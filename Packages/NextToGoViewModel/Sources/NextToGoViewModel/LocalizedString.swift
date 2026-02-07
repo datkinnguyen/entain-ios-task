@@ -26,9 +26,20 @@ enum LocalizedString {
 
     // MARK: - Countdown
 
-    static let countdownStarted = localised("countdown.started")
-    static let countdownStartingSoon = localised("countdown.starting_soon")
-    static let countdownStartsIn = localised("countdown.starts_in")
+    /// Returns "started" accessibility text (no time specified)
+    static var countdownStarted: String {
+        localised("countdown.started")
+    }
+
+    /// Formats "starting soon in X" accessibility text
+    static func countdownStartingSoon(time: String) -> String {
+        String(format: localised("countdown.starting_soon.format"), time)
+    }
+
+    /// Formats "starts in X" accessibility text
+    static func countdownStartsIn(time: String) -> String {
+        String(format: localised("countdown.starts_in.format"), time)
+    }
 
     // MARK: - Race Display
 
@@ -57,20 +68,20 @@ enum LocalizedString {
     /// - Parameters:
     ///   - category: The race category name
     ///   - meeting: The meeting name
-    ///   - raceNumber: The race number
     ///   - raceName: The race name
+    ///   - raceNumber: The race number
     ///   - countdown: The countdown string
     /// - Returns: Formatted accessibility label
     static func raceAccessibility(
         category: String,
         meeting: String,
-        raceNumber: Int,
         raceName: String,
+        raceNumber: Int,
         countdown: String
     ) -> String {
         String(
             format: localised("race.accessibility.format"),
-            category, meeting, raceNumber, raceName, countdown
+            category, meeting, raceName, raceNumber, countdown
         )
     }
 

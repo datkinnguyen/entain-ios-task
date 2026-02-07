@@ -2,3 +2,11 @@
 "countdown.minutes.only" = "%dm";
 "countdown.minutes.seconds" = "%dm %ds";
 "countdown.seconds.only" = "%ds";
+
+/* Accessibility countdown format strings */
+"countdown.accessibility.minute.singular" = "%d minute";
+"countdown.accessibility.minute.plural" = "%d minutes";
+"countdown.accessibility.second.singular" = "%d second";
+"countdown.accessibility.second.plural" = "%d seconds";
+"countdown.accessibility.minutes.seconds" = "%d minutes %d seconds";
+"countdown.accessibility.minute.seconds" = "%d minute %d seconds";

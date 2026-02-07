@@ -39,8 +39,9 @@ public struct RaceRowView: View {
         }
         .padding(RaceLayout.cardPadding)
         .frame(minHeight: RaceLayout.raceRowHeight)
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel(accessibilityLabel)
+        .accessibilityElement()
+        .accessibilityLabel(viewModel.raceAccessibilityLabel(for: race))
+        .accessibilityAddTraits(.isStaticText)
     }
 
     // MARK: - Layout Logic
@@ -53,84 +54,76 @@ public struct RaceRowView: View {
 
     private var horizontalLayout: some View {
         HStack(alignment: .center, spacing: RaceLayout.spacingM) {
-            // Category icon
-            Image(systemName: race.category.iconName)
-                .font(.system(size: RaceLayout.categoryIconSize))
-                .foregroundStyle(RaceColors.categoryIcon)
-                .frame(width: RaceLayout.categoryIconSize, height: RaceLayout.categoryIconSize)
-                .accessibilityHidden(true)
+            categoryIconView
 
             // Meeting info and race details
             VStack(alignment: .leading, spacing: RaceLayout.spacingXS) {
-                Text(race.meetingName)
-                    .font(RaceTypography.meetingName)
-                    .foregroundStyle(RaceColors.meetingNameText)
-
-                Text(race.raceName)
-                    .font(RaceTypography.location)
-                    .foregroundStyle(RaceColors.locationText)
+                meetingNameText()
+                raceNameText()
             }
 
             Spacer(minLength: RaceLayout.spacingM)
 
-            // Race number
-            Text(viewModel.raceNumberText(for: race))
-                .font(RaceTypography.raceNumber)
-                .foregroundStyle(RaceColors.meetingNameText)
-                .lineLimit(1)
-
-            // Countdown badge
-            CountdownBadge(
-                text: viewModel.countdownText(for: race),
-                isUrgent: viewModel.isCountdownUrgent(for: race),
-                accessibilityLabel: viewModel.countdownAccessibilityLabel(for: race)
-            )
+            raceNumberText
+            countdownBadge
         }
     }
 
     private var verticalLayout: some View {
         HStack(alignment: .center, spacing: RaceLayout.spacingM) {
-            // Category icon
-            Image(systemName: race.category.iconName)
-                .font(.system(size: RaceLayout.categoryIconSize))
-                .foregroundStyle(RaceColors.categoryIcon)
-                .frame(width: RaceLayout.categoryIconSize, height: RaceLayout.categoryIconSize)
-                .accessibilityHidden(true)
+            categoryIconView
 
             // Meeting info, race number, and countdown
             VStack(alignment: .leading, spacing: RaceLayout.spacingXS) {
-                Text(race.meetingName)
-                    .font(RaceTypography.meetingName)
-                    .foregroundStyle(RaceColors.meetingNameText)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-
-                Text(race.raceName)
-                    .font(RaceTypography.location)
-                    .foregroundStyle(RaceColors.locationText)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                meetingNameText(fullWidth: true)
+                raceNameText(fullWidth: true)
 
                 HStack(spacing: RaceLayout.spacingM) {
-                    Text(viewModel.raceNumberText(for: race))
-                        .font(RaceTypography.raceNumber)
-                        .foregroundStyle(RaceColors.meetingNameText)
-                        .lineLimit(1)
-
+                    raceNumberText
                     Spacer(minLength: 0)
-
-                    CountdownBadge(
-                        text: viewModel.countdownText(for: race),
-                        isUrgent: viewModel.isCountdownUrgent(for: race),
-                        accessibilityLabel: viewModel.countdownAccessibilityLabel(for: race)
-                    )
+                    countdownBadge
                 }
             }
         }
     }
 
-    // MARK: - Accessibility
+    // MARK: - Reusable Components
 
-    private var accessibilityLabel: String {
-        viewModel.raceAccessibilityLabel(for: race)
+    private var categoryIconView: some View {
+        Image(race.category.iconName, bundle: .module)
+            .resizable()
+            .renderingMode(.template)
+            .foregroundStyle(RaceColors.categoryIcon)
+            .frame(width: RaceLayout.categoryIconSize, height: RaceLayout.categoryIconSize)
+            .accessibilityHidden(true)
+    }
+
+    private func meetingNameText(fullWidth: Bool = false) -> some View {
+        Text(race.meetingName)
+            .font(RaceTypography.meetingName)
+            .foregroundStyle(RaceColors.meetingNameText)
+            .conditionalFullWidth(fullWidth)
+    }
+
+    private func raceNameText(fullWidth: Bool = false) -> some View {
+        Text(race.raceName)
+            .font(RaceTypography.location)
+            .foregroundStyle(RaceColors.locationText)
+            .conditionalFullWidth(fullWidth)
+    }
+
+    private var raceNumberText: some View {
+        Text(viewModel.raceNumberText(for: race))
+            .font(RaceTypography.raceNumber)
+            .foregroundStyle(RaceColors.meetingNameText)
+            .lineLimit(1)
+    }
+
+    private var countdownBadge: some View {
+        CountdownBadge(
+            text: viewModel.countdownText(for: race),
+            isUrgent: viewModel.isCountdownUrgent(for: race)
+        )
     }
 
 }

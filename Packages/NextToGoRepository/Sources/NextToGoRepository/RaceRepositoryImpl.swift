@@ -6,6 +6,9 @@ import NextToGoNetworking
 public actor RaceRepositoryImpl: RaceRepositoryProtocol {
     private let apiClient: any APIClientProtocol
 
+    /// Number of races to fetch from API (fetch more than requested to ensure enough after filtering)
+    private let apiFetchMultiplier = 2
+
     /// Creates a new race repository with the specified API client
     /// - Parameter apiClient: The API client to use for network requests
     public init(apiClient: any APIClientProtocol) {
@@ -14,24 +17,30 @@ public actor RaceRepositoryImpl: RaceRepositoryProtocol {
 
     /// Fetches the next races to go based on the specified count and categories
     /// - Parameters:
-    ///   - count: The maximum number of races to fetch
-    ///   - categories: The set of race categories to filter by. Empty set means all categories.
-    /// - Returns: An array of Race objects sorted by advertised start time
+    ///   - count: The maximum number of races to return
+    ///   - categories: The set of race categories to filter by. Empty set returns all categories.
+    /// - Returns: An array of up to `count` Race objects sorted by advertised start time
     /// - Throws: An error if the fetch operation fails
     public func fetchNextRaces(count: Int, categories: Set<RaceCategory>) async throws -> [Race] {
-        // Empty categories means "all categories" - pass all category IDs to API
-        let categoryIds = categories.isEmpty ? RaceCategory.allCases.map { $0.id } : categories.map { $0.id }
-
-        // Create endpoint
-        let endpoint = APIEndpoint.nextRaces(count: count, categoryIds: categoryIds)
+        // Fetch more races from API than requested to ensure we have enough after filtering
+        // API doesn't support category filtering, so we need extra races
+        let apiCount = count * apiFetchMultiplier
+        let endpoint = APIEndpoint.nextRaces(count: apiCount)
 
         // Fetch data from API
         let response: RaceResponse = try await apiClient.fetch(endpoint)
 
-        // Filter races by category (client-side validation)
+        // Filter races by category (client-side filtering)
+        // Empty categories means "all categories"
         // Note: Races with unknown categories are already filtered out during decoding
-        let validRaces = response.races.filter { race in
-            categoryIds.contains(race.category.id)
+        let validRaces: [Race]
+        if categories.isEmpty {
+            validRaces = response.races
+        } else {
+            let categoryIds = categories.map { $0.id }
+            validRaces = response.races.filter { race in
+                categoryIds.contains(race.category.id)
+            }
         }
 
         // Filter out expired races and sort by start time, then by category
@@ -45,6 +54,7 @@ public actor RaceRepositoryImpl: RaceRepositoryProtocol {
                 return lhs.advertisedStart < rhs.advertisedStart
             }
 
-        return activeRaces
+        // Cap the results to the requested count
+        return Array(activeRaces.prefix(count))
     }
 }

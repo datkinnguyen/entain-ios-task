@@ -2,7 +2,7 @@ import Foundation
 
 /// Represents an API endpoint with configuration for building requests
 public enum APIEndpoint: Sendable {
-    case nextRaces(count: Int, categoryIds: [String]?)
+    case nextRaces(count: Int)
 
     /// HTTP method for the endpoint
     public var method: String {
@@ -23,17 +23,11 @@ public enum APIEndpoint: Sendable {
     /// Query items for the endpoint
     public var queryItems: [URLQueryItem] {
         switch self {
-        case .nextRaces(let count, let categoryIds):
-            var items = [
+        case .nextRaces(let count):
+            return [
                 URLQueryItem(name: "method", value: "nextraces"),
                 URLQueryItem(name: "count", value: String(count))
             ]
-
-            if let categoryIds = categoryIds, !categoryIds.isEmpty {
-                items.append(URLQueryItem(name: "category_ids", value: categoryIds.joined(separator: ",")))
-            }
-
-            return items
         }
     }
 

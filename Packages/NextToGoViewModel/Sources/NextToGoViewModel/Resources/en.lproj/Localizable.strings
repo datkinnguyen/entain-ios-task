@@ -16,10 +16,10 @@
 "error.retry" = "Retry";
 "error.retry.accessibility" = "Retry loading races";
 
-/* MARK: - Countdown */
-"countdown.started" = "Race started";
-"countdown.starting_soon" = "Race starting soon";
-"countdown.starts_in" = "Race starts in";
+/* MARK: - Countdown Accessibility */
+"countdown.started" = "started";
+"countdown.starting_soon.format" = "starting soon in %@";
+"countdown.starts_in.format" = "starts in %@";
 
 /* MARK: - Race Display */
 "race.number.prefix" = "R";
@@ -37,4 +37,4 @@
 "category.not_selected.hint" = "Not selected, tap to select";
 
 /* MARK: - Race Accessibility */
-"race.accessibility.format" = "%@ racing, %@, Race %d, %@, starts in %@";
+"race.accessibility.format" = "%@, %@, %@, Race %d, %@";

@@ -25,6 +25,9 @@ let package = Package(
                 "NextToGoCore",
                 "NextToGoViewModel"
             ],
+            resources: [
+                .process("Resources")
+            ],
             swiftSettings: [
                 .swiftLanguageMode(.v6)
             ]

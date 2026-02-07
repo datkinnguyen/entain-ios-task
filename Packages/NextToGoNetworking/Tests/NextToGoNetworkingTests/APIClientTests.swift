@@ -53,7 +53,7 @@ struct APIClientTests {
         )
 
         // When: Fetching from an endpoint
-        let response: RaceResponse = try await apiClient.fetch(.nextRaces(count: 10, categoryIds: nil))
+        let response: RaceResponse = try await apiClient.fetch(.nextRaces(count: \1))
 
         // Then: Response should be properly decoded
         #expect(response.status == 200)
@@ -80,7 +80,7 @@ struct APIClientTests {
 
         // When/Then: Fetching should throw a network error
         await #expect(throws: APIError.self) {
-            let _: RaceResponse = try await apiClient.fetch(.nextRaces(count: 10, categoryIds: nil))
+            let _: RaceResponse = try await apiClient.fetch(.nextRaces(count: \1))
         }
     }
 
@@ -108,7 +108,7 @@ struct APIClientTests {
 
         // When/Then: Fetching should throw an invalid response error
         do {
-            let _: RaceResponse = try await apiClient.fetch(.nextRaces(count: 10, categoryIds: nil))
+            let _: RaceResponse = try await apiClient.fetch(.nextRaces(count: \1))
             Issue.record("Expected APIError to be thrown")
         } catch let error as APIError {
             if case .invalidResponse(let statusCode) = error {
@@ -149,7 +149,7 @@ struct APIClientTests {
 
         // When/Then: Fetching should throw a decoding error
         await #expect(throws: APIError.self) {
-            let _: RaceResponse = try await apiClient.fetch(.nextRaces(count: 10, categoryIds: nil))
+            let _: RaceResponse = try await apiClient.fetch(.nextRaces(count: \1))
         }
     }
 
@@ -197,9 +197,9 @@ struct APIClientTests {
         )
 
         // When: Making multiple concurrent requests
-        async let response1: RaceResponse = try apiClient.fetch(.nextRaces(count: 10, categoryIds: nil))
-        async let response2: RaceResponse = try apiClient.fetch(.nextRaces(count: 10, categoryIds: nil))
-        async let response3: RaceResponse = try apiClient.fetch(.nextRaces(count: 10, categoryIds: nil))
+        async let response1: RaceResponse = try apiClient.fetch(.nextRaces(count: \1))
+        async let response2: RaceResponse = try apiClient.fetch(.nextRaces(count: \1))
+        async let response3: RaceResponse = try apiClient.fetch(.nextRaces(count: \1))
 
         let results = try await [response1, response2, response3]
 
