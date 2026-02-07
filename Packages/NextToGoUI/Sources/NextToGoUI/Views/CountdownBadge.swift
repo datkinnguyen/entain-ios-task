@@ -10,7 +10,6 @@ public struct CountdownBadge: View {
 
     private let text: String
     private let isUrgent: Bool
-    private let accessibilityLabel: String
 
     // MARK: - Initialisation
 
@@ -19,11 +18,9 @@ public struct CountdownBadge: View {
     /// - Parameters:
     ///   - text: The countdown text to display
     ///   - isUrgent: Whether to show urgent state (light red background + red text for <5min or started)
-    ///   - accessibilityLabel: The accessibility label
-    public init(text: String, isUrgent: Bool, accessibilityLabel: String) {
+    public init(text: String, isUrgent: Bool) {
         self.text = text
         self.isUrgent = isUrgent
-        self.accessibilityLabel = accessibilityLabel
     }
 
     // MARK: - Body
@@ -39,8 +36,7 @@ public struct CountdownBadge: View {
             .frame(minWidth: RaceLayout.countdownWidth, minHeight: RaceLayout.countdownMinHeight)
             .background(isUrgent ? RaceColors.countdownUrgentBackground : RaceColors.countdownNormal)
             .clipShape(Capsule())
-            .accessibilityLabel(accessibilityLabel)
-            .accessibilityValue(text)
+            .accessibilityHidden(true)
     }
 
 }
@@ -50,8 +46,7 @@ public struct CountdownBadge: View {
 #Preview("Normal State") {
     CountdownBadge(
         text: "10m 0s",
-        isUrgent: false,
-        accessibilityLabel: "Race starts in"
+        isUrgent: false
     )
     .padding()
 }
@@ -59,8 +54,7 @@ public struct CountdownBadge: View {
 #Preview("Urgent State") {
     CountdownBadge(
         text: "4m 0s",
-        isUrgent: true,
-        accessibilityLabel: "Race starting soon"
+        isUrgent: true
     )
     .padding()
 }
@@ -68,8 +62,7 @@ public struct CountdownBadge: View {
 #Preview("Negative State") {
     CountdownBadge(
         text: "-1m 30s",
-        isUrgent: true,
-        accessibilityLabel: "Race started"
+        isUrgent: true
     )
     .padding()
 }

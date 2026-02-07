@@ -29,6 +29,9 @@ public enum RaceLayout {
     public static let chipPaddingHorizontal: CGFloat = 12
     public static let chipPaddingVertical: CGFloat = 8
 
+    /// Internal padding inside category chip buttons (10pt)
+    public static let categoryChipInternalPadding: CGFloat = 10
+
     /// Padding for countdown badge (8pt horizontal, 4pt vertical)
     public static let countdownPaddingHorizontal: CGFloat = 8
     public static let countdownPaddingVertical: CGFloat = 4
@@ -38,8 +41,11 @@ public enum RaceLayout {
     /// Race row height (70-80pt)
     public static let raceRowHeight: CGFloat = 75
 
-    /// Category icon size (24x24pt) - smaller for better visual balance
-    public static let categoryIconSize: CGFloat = 24
+    /// Category icon size in race rows (32x32pt)
+    public static let categoryIconSize: CGFloat = 32
+
+    /// Category chip button size (54x54pt)
+    public static let categoryChipSize: CGFloat = 54
 
     /// Race flag icon size (24x24pt)
     public static let raceFlagSize: CGFloat = 24
@@ -57,7 +63,7 @@ public enum RaceLayout {
     public static let cardCornerRadius: CGFloat = 12
 
     /// Corner radius for chips and badges
-    public static let chipCornerRadius: CGFloat = 8
+    public static let chipCornerRadius: CGFloat = 12
 
     // MARK: - Shadow
 

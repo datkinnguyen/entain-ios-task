@@ -46,14 +46,18 @@ public struct CategoryChip: View {
 
     public var body: some View {
         Button(action: action) {
-            Image(systemName: category.iconName)
-                .font(.system(size: 28, weight: .semibold))
+            Image(category.iconName, bundle: .module)
+                .resizable()
+                .renderingMode(.template)
+                .aspectRatio(contentMode: .fit)
                 .foregroundStyle(iconColor)
-                .frame(width: 60, height: 60)
+                .padding(RaceLayout.categoryChipInternalPadding)
+                .frame(width: RaceLayout.categoryChipSize, height: RaceLayout.categoryChipSize)
                 .background(backgroundColor)
                 .clipShape(RoundedRectangle(cornerRadius: RaceLayout.chipCornerRadius))
         }
         .buttonStyle(.plain)
+        .reducedMotionTransaction()
         .accessibilityConfiguration(
             label: "\(category.accessibleLabel) racing",
             hint: isSelected ? "Selected, tap to deselect" : "Not selected, tap to select",

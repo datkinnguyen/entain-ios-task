@@ -130,12 +130,10 @@ struct RaceRepositoryImplTests {
         let mockResponse = createMockResponse(races: [])
 
         await mockClient.configure { endpoint in
-            // Verify the endpoint is correct
-            if case .nextRaces(let count, let categoryIds) = endpoint {
-                #expect(count == 10)
-                // Compare as sets since order doesn't matter
-                let expectedIds = Set([RaceCategory.horse.id, RaceCategory.greyhound.id])
-                #expect(Set(categoryIds ?? []) == expectedIds)
+            // Verify the endpoint is correct (API doesn't support category filtering)
+            // Repository fetches 2x the requested count to increase likelihood of having enough races
+            if case .nextRaces(let count) = endpoint {
+                #expect(count == 20) // 10 requested * 2 multiplier
             } else {
                 Issue.record("Expected nextRaces endpoint")
             }
@@ -151,20 +149,18 @@ struct RaceRepositoryImplTests {
         #expect(callCount == 1)
     }
 
-    @Test("Fetch races with empty categories passes all category IDs to endpoint")
-    func fetchRacesWithEmptyCategoriesPassesAllCategories() async throws {
+    @Test("Fetch races with empty categories requests all races from API")
+    func fetchRacesWithEmptyCategoriesRequestsAllRaces() async throws {
         let mockClient = MockAPIClient()
         let repository = RaceRepositoryImpl(apiClient: mockClient)
 
         let mockResponse = createMockResponse(races: [])
 
         await mockClient.configure { endpoint in
-            // Verify all category IDs are passed when categories set is empty
-            if case .nextRaces(let count, let categoryIds) = endpoint {
-                #expect(count == 10)
-                // Empty categories means "all categories" - should pass all category IDs
-                let allCategoryIds = Set(RaceCategory.allCases.map { $0.id })
-                #expect(Set(categoryIds ?? []) == allCategoryIds)
+            // Verify endpoint parameters (API doesn't support category filtering)
+            // Repository fetches 2x the requested count
+            if case .nextRaces(let count) = endpoint {
+                #expect(count == 20) // 10 requested * 2 multiplier
             } else {
                 Issue.record("Expected nextRaces endpoint")
             }

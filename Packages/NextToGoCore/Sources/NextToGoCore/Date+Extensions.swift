@@ -2,19 +2,20 @@ import Foundation
 
 extension Date {
 
-    /// Returns a countdown string in the format "Xm Ys" or "-Xm Ys" for expired times.
+    /// Returns a countdown configuration with both visual and accessibility text.
+    /// Visual text uses abbreviated format ("5m"), while accessibility text uses full words ("5 minutes").
     /// Uses DST-aware time calculation and monospaced digits for consistent UI layout.
     ///
     /// - Parameter startDate: The reference date to calculate the interval from. Defaults to `Date.now`.
     ///                        This parameter allows for deterministic testing with static dates.
-    /// - Returns: A formatted string representing the time until or since this date
+    /// - Returns: A TextConfiguration with visual and accessibility representations
     ///
     /// Examples:
-    /// - "5m" - 5 minutes or more in the future (seconds omitted when >= 5 minutes)
-    /// - "4m 59s" - Less than 5 minutes in the future (shows both minutes and seconds)
-    /// - "-2m 15s" - 2 minutes and 15 seconds in the past
-    /// - "5s" - 5 seconds in the future (minutes omitted when 0)
-    public func countdownString(from startDate: Date = Date.now) -> String {
+    /// - Visual: "5m", Accessibility: "5 minutes"
+    /// - Visual: "4m 59s", Accessibility: "4 minutes" (seconds omitted for VoiceOver)
+    /// - Visual: "-2m 15s", Accessibility: "2 minutes" (seconds omitted for VoiceOver)
+    /// - Visual: "5s", Accessibility: "5 seconds"
+    public func countdownString(from startDate: Date = Date.now) -> TextConfiguration {
         // Use timeIntervalSince for DST-aware calculation
         let interval = self.timeIntervalSince(startDate)
 
@@ -29,41 +30,89 @@ extension Date {
         // This prevents showing "-0s" or "-0m"
         let sign = (roundedInterval < 0 && (minutes > 0 || seconds > 0)) ? "-" : ""
 
-        // Format based on time value:
-        // >= 5 minutes: show only minutes (e.g., "5m")
-        // < 5 minutes with minutes > 0: show minutes and seconds, but omit seconds if 0 (e.g., "4m 59s" or "1m")
-        // < 1 minute: show only seconds (e.g., "45s")
-        if minutes >= 5 {
-            let format = Localization.string(
-                forKey: "countdown.minutes.only",
-                bundle: .module,
-                comment: "Countdown format for minutes only"
-            )
-            return "\(sign)\(String(format: format, minutes))"
+        // Build visual text and accessibility text
+        let visualText: String
+        let accessibilityText: String
+
+        // Format based on time value
+        if minutes >= 5 || (minutes > 0 && seconds == 0) {
+            (visualText, accessibilityText) = formatMinutesOnly(minutes: minutes, sign: sign)
         } else if minutes > 0 {
-            if seconds == 0 {
-                let format = Localization.string(
-                    forKey: "countdown.minutes.only",
-                    bundle: .module,
-                    comment: "Countdown format for minutes only"
-                )
-                return "\(sign)\(String(format: format, minutes))"
-            } else {
-                let format = Localization.string(
-                    forKey: "countdown.minutes.seconds",
-                    bundle: .module,
-                    comment: "Countdown format for minutes and seconds"
-                )
-                return "\(sign)\(String(format: format, minutes, seconds))"
-            }
+            (visualText, accessibilityText) = formatMinutesAndSeconds(minutes: minutes, seconds: seconds, sign: sign)
         } else {
-            let format = Localization.string(
-                forKey: "countdown.seconds.only",
-                bundle: .module,
-                comment: "Countdown format for seconds only"
-            )
-            return "\(sign)\(String(format: format, seconds))"
+            (visualText, accessibilityText) = formatSecondsOnly(seconds: seconds, sign: sign)
         }
+
+        return TextConfiguration(text: visualText, accessibilityText: accessibilityText)
+    }
+
+    // MARK: - Private Helper Methods
+
+    private func formatMinutesOnly(minutes: Int, sign: String) -> (visual: String, accessibility: String) {
+        let visualFormat = Localization.string(
+            forKey: "countdown.minutes.only",
+            bundle: .module,
+            comment: "Countdown format for minutes only"
+        )
+        let visualText = "\(sign)\(String(format: visualFormat, minutes))"
+
+        let accessibilityKey = minutes == 1
+            ? "countdown.accessibility.minute.singular"
+            : "countdown.accessibility.minute.plural"
+        let accessibilityFormat = Localization.string(
+            forKey: accessibilityKey,
+            bundle: .module,
+            comment: "Accessibility countdown for minutes"
+        )
+        let accessibilityText = String(format: accessibilityFormat, minutes)
+
+        return (visualText, accessibilityText)
+    }
+
+    private func formatMinutesAndSeconds(
+        minutes: Int,
+        seconds: Int,
+        sign: String
+    ) -> (visual: String, accessibility: String) {
+        let visualFormat = Localization.string(
+            forKey: "countdown.minutes.seconds",
+            bundle: .module,
+            comment: "Countdown format for minutes and seconds"
+        )
+        let visualText = "\(sign)\(String(format: visualFormat, minutes, seconds))"
+
+        let accessibilityKey = minutes == 1
+            ? "countdown.accessibility.minute.singular"
+            : "countdown.accessibility.minute.plural"
+        let accessibilityFormat = Localization.string(
+            forKey: accessibilityKey,
+            bundle: .module,
+            comment: "Accessibility countdown for minutes"
+        )
+        let accessibilityText = String(format: accessibilityFormat, minutes)
+
+        return (visualText, accessibilityText)
+    }
+
+    private func formatSecondsOnly(seconds: Int, sign: String) -> (visual: String, accessibility: String) {
+        let visualFormat = Localization.string(
+            forKey: "countdown.seconds.only",
+            bundle: .module,
+            comment: "Countdown format for seconds only"
+        )
+        let visualText = "\(sign)\(String(format: visualFormat, seconds))"
+
+        let accessibilityKey = seconds == 1
+            ? "countdown.accessibility.second.singular"
+            : "countdown.accessibility.second.plural"
+        let accessibilityFormat = Localization.string(
+            forKey: accessibilityKey,
+            bundle: .module,
+            comment: "Accessibility countdown for seconds"
+        )
+        let accessibilityText = String(format: accessibilityFormat, seconds)
+
+        return (visualText, accessibilityText)
     }
 
 }

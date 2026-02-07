@@ -13,7 +13,8 @@ struct DateExtensionsTests {
         let futureDate = Self.referenceDate.addingTimeInterval(150) // 2 minutes 30 seconds in the future
         let countdown = futureDate.countdownString(from: Self.referenceDate)
 
-        #expect(countdown == "2m 30s")
+        #expect(countdown.text == "2m 30s")
+        #expect(countdown.accessibilityText == "2 minutes")
     }
 
     @Test("Countdown string for past date shows negative time")
@@ -21,7 +22,8 @@ struct DateExtensionsTests {
         let pastDate = Self.referenceDate.addingTimeInterval(-90) // 1 minute 30 seconds in the past
         let countdown = pastDate.countdownString(from: Self.referenceDate)
 
-        #expect(countdown == "-1m 30s")
+        #expect(countdown.text == "-1m 30s")
+        #expect(countdown.accessibilityText == "1 minute")
     }
 
     @Test("Countdown string for exactly 1 minute in future")
@@ -29,7 +31,8 @@ struct DateExtensionsTests {
         let futureDate = Self.referenceDate.addingTimeInterval(60) // Exactly 1 minute
         let countdown = futureDate.countdownString(from: Self.referenceDate)
 
-        #expect(countdown == "1m")
+        #expect(countdown.text == "1m")
+        #expect(countdown.accessibilityText == "1 minute")
     }
 
     @Test("Countdown string for less than 1 minute in future shows seconds only")
@@ -37,7 +40,8 @@ struct DateExtensionsTests {
         let futureDate = Self.referenceDate.addingTimeInterval(45) // 45 seconds
         let countdown = futureDate.countdownString(from: Self.referenceDate)
 
-        #expect(countdown == "45s")
+        #expect(countdown.text == "45s")
+        #expect(countdown.accessibilityText == "45 seconds")
     }
 
     @Test("Countdown string for 0 seconds shows 0s without negative sign")
@@ -45,7 +49,8 @@ struct DateExtensionsTests {
         let countdown = Self.referenceDate.countdownString(from: Self.referenceDate)
 
         // Should always be "0s", never "-0s"
-        #expect(countdown == "0s")
+        #expect(countdown.text == "0s")
+        #expect(countdown.accessibilityText == "0 seconds")
     }
 
     @Test("Countdown string for 5 minutes or more shows only minutes")
@@ -54,7 +59,8 @@ struct DateExtensionsTests {
         let countdown = futureDate.countdownString(from: Self.referenceDate)
 
         // >= 5 minutes: show only minutes
-        #expect(countdown == "5m")
+        #expect(countdown.text == "5m")
+        #expect(countdown.accessibilityText == "5 minutes")
     }
 
     @Test("Countdown string for 3 minutes 45 seconds in past shows minutes and seconds")
@@ -62,8 +68,9 @@ struct DateExtensionsTests {
         let pastDate = Self.referenceDate.addingTimeInterval(-225) // 3 minutes 45 seconds in the past
         let countdown = pastDate.countdownString(from: Self.referenceDate)
 
-        // < 5 minutes: show minutes and seconds
-        #expect(countdown == "-3m 45s")
+        // < 5 minutes: show minutes and seconds (visual), only minutes (accessibility)
+        #expect(countdown.text == "-3m 45s")
+        #expect(countdown.accessibilityText == "3 minutes")
     }
 
     @Test("Countdown string handles DST-aware calculation")
@@ -75,7 +82,8 @@ struct DateExtensionsTests {
 
         // The countdown should match our DST-aware calculation
         // < 5 minutes: show minutes and seconds
-        #expect(actualCountdown == "2m")
+        #expect(actualCountdown.text == "2m")
+        #expect(actualCountdown.accessibilityText == "2 minutes")
     }
 
     @Test("Countdown string for exactly 10 minutes")
@@ -83,30 +91,46 @@ struct DateExtensionsTests {
         let futureDate = Self.referenceDate.addingTimeInterval(600) // 10 minutes
         let countdown = futureDate.countdownString(from: Self.referenceDate)
 
-        #expect(countdown == "10m")
+        #expect(countdown.text == "10m")
+        #expect(countdown.accessibilityText == "10 minutes")
     }
 
     @Test("Countdown string format consistency")
     func testCountdownStringFormat() {
-        let testCases: [(TimeInterval, String)] = [
-            (0, "0s"),
-            (30, "30s"),
-            (60, "1m"),
-            (90, "1m 30s"),
-            (120, "2m"),
-            (125, "2m 5s"),
-            (300, "5m"),
-            (-30, "-30s"),
-            (-60, "-1m"),
-            (-125, "-2m 5s")
+        struct TestCase {
+            let interval: TimeInterval
+            let expectedText: String
+            let expectedAccessibility: String
+        }
+
+        let testCases: [TestCase] = [
+            TestCase(interval: 0, expectedText: "0s", expectedAccessibility: "0 seconds"),
+            TestCase(interval: 30, expectedText: "30s", expectedAccessibility: "30 seconds"),
+            TestCase(interval: 60, expectedText: "1m", expectedAccessibility: "1 minute"),
+            TestCase(interval: 90, expectedText: "1m 30s", expectedAccessibility: "1 minute"),
+            TestCase(interval: 120, expectedText: "2m", expectedAccessibility: "2 minutes"),
+            TestCase(interval: 125, expectedText: "2m 5s", expectedAccessibility: "2 minutes"),
+            TestCase(interval: 300, expectedText: "5m", expectedAccessibility: "5 minutes"),
+            TestCase(interval: -30, expectedText: "-30s", expectedAccessibility: "30 seconds"),
+            TestCase(interval: -60, expectedText: "-1m", expectedAccessibility: "1 minute"),
+            TestCase(interval: -125, expectedText: "-2m 5s", expectedAccessibility: "2 minutes")
         ]
 
-        for (interval, expectedValue) in testCases {
-            let date = Self.referenceDate.addingTimeInterval(interval)
+        for testCase in testCases {
+            let date = Self.referenceDate.addingTimeInterval(testCase.interval)
             let countdown = date.countdownString(from: Self.referenceDate)
 
-            #expect(countdown == expectedValue,
-                    "Expected \(expectedValue) for interval \(interval), got \(countdown)")
+            #expect(
+                countdown.text == testCase.expectedText,
+                "Expected text \(testCase.expectedText) for interval \(testCase.interval), got \(countdown.text)"
+            )
+            #expect(
+                countdown.accessibilityText == testCase.expectedAccessibility,
+                """
+                Expected accessibility \(testCase.expectedAccessibility) for interval \(testCase.interval), \
+                got \(countdown.accessibilityText)
+                """
+            )
         }
     }
 
@@ -118,7 +142,8 @@ struct DateExtensionsTests {
         let countdown = futureDate.countdownString(from: Self.referenceDate)
 
         // Verify the countdown is calculated correctly (minutes only)
-        #expect(countdown == "120m")
+        #expect(countdown.text == "120m")
+        #expect(countdown.accessibilityText == "120 minutes")
     }
 
     @Test("Countdown string handles large time intervals")
@@ -127,7 +152,8 @@ struct DateExtensionsTests {
         let futureDate = Self.referenceDate.addingTimeInterval(3600) // 60 minutes
         let countdown = futureDate.countdownString(from: Self.referenceDate)
 
-        #expect(countdown == "60m")
+        #expect(countdown.text == "60m")
+        #expect(countdown.accessibilityText == "60 minutes")
     }
 
     @Test("Countdown string negative sign placement")
@@ -135,8 +161,9 @@ struct DateExtensionsTests {
         let pastDate = Self.referenceDate.addingTimeInterval(-150) // 2m 30s in past
         let countdown = pastDate.countdownString(from: Self.referenceDate)
 
-        // Verify negative sign is at the beginning
-        // < 5 minutes: show minutes and seconds
-        #expect(countdown == "-2m 30s")
+        // Verify negative sign is at the beginning for visual text only
+        #expect(countdown.text == "-2m 30s")
+        // Accessibility text omits the negative sign and seconds
+        #expect(countdown.accessibilityText == "2 minutes")
     }
 }

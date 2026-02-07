@@ -26,7 +26,7 @@ public struct CategoryFilterView: View {
     public var body: some View {
         HStack {
             Spacer()
-            HStack(spacing: RaceLayout.spacingM) {
+            HStack(spacing: RaceLayout.spacingL) {
                 ForEach(RaceCategory.allCases, id: \.self) { category in
                     CategoryChip(
                         category: category,
