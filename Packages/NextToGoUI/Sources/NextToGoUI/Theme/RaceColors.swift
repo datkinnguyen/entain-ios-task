@@ -11,34 +11,30 @@ public enum RaceColors {
     /// White icon color for selected category chips
     public static let selectedChipIcon = Color.white
 
-    /// Light gray background for unselected category chips (#E5E7EB)
-    public static let unselectedChipBackground = Color(red: 0.898, green: 0.906, blue: 0.922)
+    /// Adaptive background for unselected category chips (automatically adapts to dark mode)
+    public static let unselectedChipBackground = Color(.systemGray5)
 
     /// Gray icon color for unselected category chips (uses system secondary for proper contrast)
     public static let unselectedChipIcon = Color.secondary
 
     // MARK: - Countdown Colors
 
-    /// Light red/pink background for urgent countdown state (<5 minutes or started)
-    public static let countdownUrgentBackground = Color(red: 1.0, green: 0.9, blue: 0.9)
+    /// Accent color background for urgent countdown state (<5 minutes or started)
+    public static let countdownUrgentBackground = Color.accentColor.opacity(0.15)
 
-    /// Red text color for urgent countdown state (darker for WCAG AA contrast 4.5:1)
-    public static let countdownUrgentText = Color(red: 0.6, green: 0.1, blue: 0.1)
+    /// Accent color text for urgent countdown state
+    public static let countdownUrgentText = Color.accentColor
 
-    /// Light grey background for normal countdown state when ≥5 minutes
-    public static let countdownNormal = Color(red: 0.95, green: 0.95, blue: 0.95)
+    /// Adaptive background for normal countdown state when ≥5 minutes (automatically adapts to dark mode)
+    public static let countdownNormal = Color(.systemGray6)
 
     /// Text color for countdown badge (normal state)
     public static let countdownText = Color.primary
 
     // MARK: - Race Row Colors
 
-    /// White background for race cards
-    #if canImport(UIKit)
-    public static let raceCardBackground = Color(uiColor: .systemBackground)
-    #else
-    public static let raceCardBackground = Color(.white)
-    #endif
+    /// Adaptive background for race cards (automatically adapts to dark mode)
+    public static let raceCardBackground = Color(.systemBackground)
 
     /// Dark/black color for category icons in race rows
     public static let categoryIcon = Color.primary
@@ -49,23 +45,15 @@ public enum RaceColors {
     /// Primary text color for meeting name
     public static let meetingNameText = Color.primary
 
-    /// Secondary text color for location
+    /// Secondary text color for location/subtitle (automatically adapts to dark mode)
     public static let locationText = Color.secondary
 
     // MARK: - General Colors
 
-    /// Background color for the main list view
-    #if canImport(UIKit)
-    public static let listBackground = Color(uiColor: .systemGroupedBackground)
-    #else
-    public static let listBackground = Color(.gray).opacity(0.1)
-    #endif
+    /// Adaptive background for the main list view (automatically adapts to dark mode)
+    public static let listBackground = Color(.systemGroupedBackground)
 
-    /// Separator color for dividers
-    #if canImport(UIKit)
-    public static let separator = Color(uiColor: .separator)
-    #else
-    public static let separator = Color.gray.opacity(0.3)
-    #endif
+    /// Adaptive separator color for dividers (automatically adapts to dark mode)
+    public static let separator = Color(.separator)
 
 }

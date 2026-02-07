@@ -15,6 +15,7 @@ public struct RacesListView: View {
     // MARK: - Properties
 
     @Bindable private var viewModel: RacesViewModel
+    @AccessibilityFocusState private var focusedRaceId: String?
 
     // MARK: - Initialisation
 
@@ -71,6 +72,7 @@ public struct RacesListView: View {
             VStack(spacing: 0) {
                 ForEach(viewModel.races, id: \.raceId) { race in
                     RaceRowView(race: race, viewModel: viewModel)
+                        .accessibilityFocused($focusedRaceId, equals: race.raceId)
 
                     if race.raceId != viewModel.races.last?.raceId {
                         Divider()
@@ -87,6 +89,21 @@ public struct RacesListView: View {
             )
             .padding(.horizontal, RaceLayout.spacingL)
             .padding(.top, RaceLayout.spacingM)
+        }
+        .onChange(of: viewModel.races) { oldRaces, newRaces in
+			DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+				handleFocusAfterRaceListChange(oldRaces: oldRaces, newRaces: newRaces)
+			}
+        }
+        .onChange(of: focusedRaceId) { _, newValue in
+            // Update ViewModel when focus changes so it can track status changes
+            viewModel.focusedRaceId = newValue
+        }
+        .onChange(of: viewModel.focusedRaceStatusChangeCounter) { _, _ in
+            // Focused race's status changed - refocus to trigger VoiceOver announcement
+            if let focusedId = focusedRaceId {
+                refocusRace(focusedId)
+            }
         }
     }
 
@@ -146,6 +163,36 @@ public struct RacesListView: View {
         )
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
+	
+	// MARK: - VoiceOver Focus Management
+	
+	/// Resets VoiceOver focus to the first race when the race list changes.
+	///
+	/// This ensures focus always moves to the first item after any list update,
+	/// preventing focus from jumping to the navigation title.
+	private func handleFocusAfterRaceListChange(oldRaces: [Race], newRaces: [Race]) {
+		// Use a small delay to ensure the state is updated before refocusing
+		DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+			// Reset focus to first race if the list changed
+			if !newRaces.isEmpty && oldRaces != newRaces {
+				focusedRaceId = newRaces.first?.raceId
+				viewModel.focusedRaceId = newRaces.first?.raceId
+			}
+		}
+	}
+	
+	
+	/// Refocuses a race by clearing and restoring focus after a delay.
+	///
+	/// - Parameter raceId: The race ID to refocus
+	private func refocusRace(_ raceId: String) {
+		focusedRaceId = nil
+		// Use a small delay to ensure the state is updated before refocusing
+		DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+			focusedRaceId = raceId
+		}
+	}
+
 
 }
 

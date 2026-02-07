@@ -7,8 +7,8 @@ import NextToGoCore
 /// Responsibilities:
 /// - Fetches races from the repository
 /// - Manages category filtering
-/// - Auto-refreshes races at configurable intervals
-/// - Removes expired races every second
+/// - Refreshes races when expired races are detected
+/// - Updates countdown timer every second
 /// - Debounces all refresh requests to prevent excessive API calls
 @MainActor
 @Observable
@@ -36,6 +36,13 @@ public final class RacesViewModel {
 
     /// Current time for countdown calculations (updated every second)
     public private(set) var currentTime: Date = .now
+
+    /// Counter that increments when the focused race's status changes (normal → urgent → started)
+    /// Used by the view to detect status changes and trigger VoiceOver announcements
+    public private(set) var focusedRaceStatusChangeCounter: Int = 0
+
+    /// ID of the currently focused race (set by the view)
+    public var focusedRaceId: String?
 
     // MARK: - Display Configurations
 
@@ -118,6 +125,9 @@ public final class RacesViewModel {
     // Channel for debounced refresh signals
     @ObservationIgnored private var refreshChannel = AsyncChannel<Void>()
 
+    // Track previous status of focused race to detect changes
+    @ObservationIgnored private var previousFocusedRaceStatus: (isUrgent: Bool, hasStarted: Bool)?
+
     // MARK: - Initialisation
 
     /// Creates a new RacesViewModel instance.
@@ -129,30 +139,23 @@ public final class RacesViewModel {
 
     // MARK: - Public Methods
 
-    /// Starts all background tasks (auto-refresh, expiry checking, countdown timer, and debounce handling)
+    /// Starts all background tasks (countdown timer and debounce handling)
     public func startTasks() {
         stopTasks()
+
+        // Schedule initial refresh
+        scheduleRefresh()
 
         backgroundTask = Task { [weak self] in
             guard let self = self else { return }
 
             await withTaskGroup(of: Void.self) { group in
-                // Task 1: Auto-refresh timer
-                group.addTask { [weak self] in
-                    await self?.runAutoRefresh()
-                }
-
-                // Task 2: Expiry check
-                group.addTask { [weak self] in
-                    await self?.runExpiryCheck()
-                }
-
-                // Task 3: Countdown timer (updates current time every second)
+                // Task 1: Countdown timer (updates time, removes expired races, checks focused race status)
                 group.addTask { [weak self] in
                     await self?.runCountdownTimer()
                 }
 
-                // Task 4: Debounced refresh handler
+                // Task 2: Debounced refresh handler
                 group.addTask { [weak self] in
                     await self?.runDebounceHandler()
                 }
@@ -177,13 +180,12 @@ public final class RacesViewModel {
         error = nil
 
         do {
-            // Load more races than we display to ensure we always have enough
-            let fetchedRaces = try await repository.fetchNextRaces(
-                count: AppConfiguration.numberOfRacesToLoad,
+            // Request the maximum number of races to display
+            // Repository handles fetching more from API and capping the results
+            races = try await repository.fetchNextRaces(
+                count: AppConfiguration.maxRacesToDisplay,
                 categories: selectedCategories
             )
-            // But only display the configured maximum
-            races = Array(fetchedRaces.prefix(AppConfiguration.maxRacesToDisplay))
         } catch {
             self.error = error
         }
@@ -200,11 +202,11 @@ public final class RacesViewModel {
         "\(LocalizedString.raceNumberPrefix)\(race.raceNumber)"
     }
 
-    /// Returns the countdown display string for a race
+    /// Returns the countdown display string for a race (visual text only)
     /// - Parameter race: The race
-    /// - Returns: Formatted countdown string
+    /// - Returns: Formatted countdown string for display
     public func countdownText(for race: Race) -> String {
-        race.advertisedStart.countdownString(from: currentTime)
+        countdownConfiguration(for: race).text
     }
 
     /// Returns whether the countdown should show urgent state (≤5 minutes or started)
@@ -215,33 +217,43 @@ public final class RacesViewModel {
         return interval <= AppConfiguration.countdownUrgentThreshold
     }
 
-    /// Returns the accessibility label for a countdown badge
-    /// - Parameter race: The race
-    /// - Returns: Accessibility label
-    public func countdownAccessibilityLabel(for race: Race) -> String {
-        let interval = race.advertisedStart.timeIntervalSince(currentTime)
-        if interval < 0 {
-            return LocalizedString.countdownStarted
-        } else if isCountdownUrgent(for: race) {
-            return LocalizedString.countdownStartingSoon
-        } else {
-            return LocalizedString.countdownStartsIn
-        }
-    }
-
     /// Returns the accessibility label for a race row
     /// - Parameter race: The race
-    /// - Returns: Complete accessibility label
+    /// - Returns: Complete accessibility label with natural-sounding countdown
     public func raceAccessibilityLabel(for race: Race) -> String {
         let categoryName = categoryDisplayName(for: race.category, withRacingSuffix: true)
-        let countdown = countdownText(for: race)
+        let interval = race.advertisedStart.timeIntervalSince(currentTime)
+        let config = countdownConfiguration(for: race)
+
+        // Build the complete countdown accessibility text with context
+        let countdown: String
+        if interval < 0 {
+            // Started: "started" (no time specified)
+            countdown = LocalizedString.countdownStarted
+        } else if isCountdownUrgent(for: race) {
+            // Urgent: "starting soon in 4 minutes 30 seconds"
+            countdown = LocalizedString.countdownStartingSoon(time: config.accessibilityText)
+        } else {
+            // Normal: "starts in 5 minutes"
+            countdown = LocalizedString.countdownStartsIn(time: config.accessibilityText)
+        }
+
         return LocalizedString.raceAccessibility(
             category: categoryName,
             meeting: race.meetingName,
-            raceNumber: race.raceNumber,
             raceName: race.raceName,
+            raceNumber: race.raceNumber,
             countdown: countdown
         )
+    }
+
+    // MARK: - Private Methods
+
+    /// Returns the countdown text configuration for a race
+    /// - Parameter race: The race
+    /// - Returns: Text configuration with visual and accessibility text
+    private func countdownConfiguration(for race: Race) -> TextConfiguration {
+        race.advertisedStart.countdownString(from: currentTime)
     }
 
     /// Returns the category display name
@@ -249,7 +261,7 @@ public final class RacesViewModel {
     ///   - category: The race category
     ///   - withRacingSuffix: Whether to include "racing" suffix
     /// - Returns: Category display name
-    public func categoryDisplayName(for category: RaceCategory, withRacingSuffix: Bool = false) -> String {
+    private func categoryDisplayName(for category: RaceCategory, withRacingSuffix: Bool = false) -> String {
         if withRacingSuffix {
             switch category {
             case .horse: return LocalizedString.categoryHorseRacing
@@ -264,11 +276,9 @@ public final class RacesViewModel {
     /// Returns the accessibility hint for a category chip
     /// - Parameter isSelected: Whether the category is selected
     /// - Returns: Accessibility hint
-    public func categoryAccessibilityHint(isSelected: Bool) -> String {
+    private func categoryAccessibilityHint(isSelected: Bool) -> String {
         isSelected ? LocalizedString.categorySelectedHint : LocalizedString.categoryNotSelectedHint
     }
-
-    // MARK: - Private Methods
 
     /// Schedules a debounced refresh by sending a signal to the refresh channel
     private func scheduleRefresh() {
@@ -277,44 +287,55 @@ public final class RacesViewModel {
         }
     }
 
-    /// Runs the auto-refresh task that schedules refreshes at regular intervals
-    private func runAutoRefresh() async {
-        // Initial refresh
-        scheduleRefresh()
-
-        // Subsequent refreshes
-        while !Task.isCancelled {
-            try? await Task.sleep(for: .seconds(AppConfiguration.refreshInterval))
-            guard !Task.isCancelled else { break }
-            scheduleRefresh()
-        }
-    }
-
-    /// Runs the expiry check task that removes expired races every second
-    private func runExpiryCheck() async {
-        while !Task.isCancelled {
-            try? await Task.sleep(for: .seconds(1))
-            guard !Task.isCancelled else { break }
-            removeExpiredRaces()
-        }
-    }
-
     /// Runs the countdown timer that updates current time every second
+    /// Also checks for expired races and checks if the focused race's status has changed
     private func runCountdownTimer() async {
         while !Task.isCancelled {
             try? await Task.sleep(for: .seconds(1))
             guard !Task.isCancelled else { break }
             currentTime = .now
+
+            // Check for expired races and trigger refresh if found
+            checkForExpiredRaces()
+
+            // Check if focused race's status has changed
+            checkFocusedRaceStatusChange()
         }
     }
 
-    /// Removes races that have expired (started more than 60 seconds ago)
-    private func removeExpiredRaces() {
-        let previousCount = races.count
-        races.removeAll { $0.isExpired }
+    /// Checks if the focused race's status has changed and increments counter if so
+    private func checkFocusedRaceStatusChange() {
+        guard let focusedId = focusedRaceId,
+              let focusedRace = races.first(where: { $0.raceId == focusedId }) else {
+            previousFocusedRaceStatus = nil
+            return
+        }
 
-        // If we dropped below 5 races, schedule a refresh
-        if races.count < AppConfiguration.maxRacesToDisplay && races.count < previousCount {
+        // Calculate current status
+        let isUrgent = isCountdownUrgent(for: focusedRace)
+        let interval = focusedRace.advertisedStart.timeIntervalSince(currentTime)
+        let hasStarted = interval < 0
+
+        let currentStatus = (isUrgent: isUrgent, hasStarted: hasStarted)
+
+        // Check if status changed from previous check
+        if let previousStatus = previousFocusedRaceStatus {
+            if previousStatus.isUrgent != currentStatus.isUrgent ||
+               previousStatus.hasStarted != currentStatus.hasStarted {
+                // Status changed - increment counter to notify view
+                focusedRaceStatusChangeCounter = (focusedRaceStatusChangeCounter + 1) % 2
+            }
+        }
+
+        // Update previous status
+        previousFocusedRaceStatus = currentStatus
+    }
+
+    /// Checks for expired races and triggers refresh if any are found
+    /// Does not remove races directly - lets the refresh fetch new data
+    private func checkForExpiredRaces() {
+        // Check if any races have expired (started more than 60 seconds ago)
+        if races.contains(where: { $0.isExpired }) {
             scheduleRefresh()
         }
     }
