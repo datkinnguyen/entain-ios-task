@@ -21,26 +21,33 @@ This document outlines the coding standards and best practices for the Next To G
 ## Code Structure
 
 ### Type Definitions
-- Always add a newline after a type definition (protocol, class, struct) and before the closing brace
-- **Exception:** Enums with only cases and no computed properties or functions do not need extra newlines
+
+**When to add newlines:**
+- Add a newline after the opening brace and before the closing brace if the type contains:
+  - Methods or functions
+  - Computed properties
+  - Multiple sections (e.g., properties + methods)
+
+**When NOT to add newlines:**
+- Do not add newlines if the type contains ONLY:
+  - Stored properties (struct/class with only `let`/`var` declarations)
+  - Enum cases (no computed properties or methods)
 
 ```swift
-// Correct
+// ✅ Correct - stored properties only (no newlines)
 public struct Race: Decodable {
-
     public let raceId: String
     public let raceName: String
-
 }
 
-// Correct - enum with only cases
+// ✅ Correct - enum cases only (no newlines)
 public enum RaceCategory: String {
     case greyhound
     case harness
     case horse
 }
 
-// Correct - enum with computed properties needs newlines
+// ✅ Correct - has computed properties (needs newlines)
 public enum RaceCategory: String {
 
     case greyhound
@@ -48,8 +55,28 @@ public enum RaceCategory: String {
     case horse
 
     public var id: String {
+        rawValue
+    }
+
+}
+
+// ✅ Correct - has methods (needs newlines)
+public struct Race: Decodable {
+
+    public let raceId: String
+    public let raceName: String
+
+    public func isExpired(at date: Date) -> Bool {
         // implementation
     }
+
+}
+
+// ❌ Incorrect - stored properties only should NOT have newlines
+public struct Race: Decodable {
+
+    public let raceId: String
+    public let raceName: String
 
 }
 ```
