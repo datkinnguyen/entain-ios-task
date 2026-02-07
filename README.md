@@ -6,12 +6,13 @@ A native iOS app that displays the next 5 upcoming races with category filtering
 
 - ✅ Display next 5 upcoming races sorted by start time (with secondary sorting by category)
 - ✅ Category filtering (Horse, Harness, Greyhound) with real-time API refresh
+- ✅ Custom SF Symbols using Neds brand icons for racing categories
 - ✅ Auto-refresh every 60 seconds with debounced API calls
 - ✅ Countdown timer updating every second with smooth transitions
 - ✅ Auto-remove races 60 seconds after start
 - ✅ Real-time race expiry checking
 - ✅ SwiftUI user interface with adaptive layouts
-- ✅ Full accessibility support (VoiceOver, Dynamic Type, ReduceMotion)
+- ✅ Full accessibility support (VoiceOver, Dynamic Type)
 
 ## Highlights
 
@@ -26,6 +27,13 @@ A native iOS app that displays the next 5 upcoming races with category filtering
 - **No text truncation**: All text wraps properly at any Dynamic Type size
 - **Responsive design**: Works seamlessly from iPhone SE to iPad
 
+### 🎨 Custom SF Symbols
+- **Brand Consistency**: Custom SF Symbols created using the same icons from the Neds website and iOS app
+- **Native Integration**: SF Symbols automatically adapt to Dynamic Type sizes and rendering modes
+- **Three Racing Categories**: Horse, Harness, and Greyhound racing symbols in vector format (SVG)
+- **SwiftUI Optimized**: Works seamlessly with `.renderingMode(.template)` for dynamic theming
+- **Scalable**: Vector-based symbols maintain quality at any size
+
 ### ♿️ Accessibility First
 - **VoiceOver**: Comprehensive labels, hints, and announcements for all UI elements
   - **Smart Status Announcements**: Auto-announces when a focused race changes status (normal → starts soon → started)
@@ -34,7 +42,7 @@ A native iOS app that displays the next 5 upcoming races with category filtering
 - **Dynamic Type**: Full support from -3 to +12 text sizes with adaptive layouts
   - **Automatic Layout Switching**: Seamlessly switches from horizontal to vertical layout at accessibility1+ text sizes
   - **No Truncation**: All text wraps properly at any size, ensuring content is never cut off
-- **ReduceMotion**: Respects system animation preferences
+- **ReduceMotion**: Not specifically implemented. This is a simple app with minimal animations (only subtle button press effects). The animations used are already very subtle and do not involve heavy motion that would require special treatment for users with motion sensitivity.
 - **Color Contrast**: WCAG AA compliant (4.5:1 for text, 3:1 for UI)
 - **Touch Targets**: All interactive elements meet 44x44pt minimum
 
@@ -262,7 +270,7 @@ All documentation is located in the `Documentation/` folder:
 - [x] Task #7: SwiftLint integration with Swift 6 concurrency rules
 - [x] GitHub Actions CI/CD pipeline
 - [x] Comprehensive test coverage (61+ unit tests passing)
-- [x] Full accessibility support (VoiceOver, Dynamic Type, ReduceMotion)
+- [x] Full accessibility support (VoiceOver, Dynamic Type)
 - [x] Documentation (Architecture, Testing, Contributing, Coding Guidelines, Accessibility)
 - [x] Adaptive layouts for all screen sizes and text sizes
 - [x] Smart sorting (primary by time, secondary by category)

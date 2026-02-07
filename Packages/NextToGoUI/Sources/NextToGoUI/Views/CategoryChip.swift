@@ -57,7 +57,6 @@ public struct CategoryChip: View {
                 .clipShape(RoundedRectangle(cornerRadius: RaceLayout.chipCornerRadius))
         }
         .buttonStyle(.plain)
-        .reducedMotionTransaction()
         .accessibilityConfiguration(
             label: "\(category.accessibleLabel) racing",
             hint: isSelected ? "Selected, tap to deselect" : "Not selected, tap to select",
