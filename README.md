@@ -6,6 +6,7 @@ A native iOS app that displays the next 5 upcoming races with category filtering
 
 - ✅ Display next 5 upcoming races sorted by start time (with secondary sorting by category)
 - ✅ Category filtering (Horse, Harness, Greyhound) with real-time API refresh
+- ✅ Custom SF Symbols using Neds brand icons for racing categories
 - ✅ Auto-refresh every 60 seconds with debounced API calls
 - ✅ Countdown timer updating every second with smooth transitions
 - ✅ Auto-remove races 60 seconds after start
@@ -25,6 +26,13 @@ A native iOS app that displays the next 5 upcoming races with category filtering
 - **Vertical layout**: Automatically switches at accessibility1+ text size
 - **No text truncation**: All text wraps properly at any Dynamic Type size
 - **Responsive design**: Works seamlessly from iPhone SE to iPad
+
+### 🎨 Custom SF Symbols
+- **Brand Consistency**: Custom SF Symbols created using the same icons from the Neds website and iOS app
+- **Native Integration**: SF Symbols automatically adapt to Dynamic Type sizes and rendering modes
+- **Three Racing Categories**: Horse, Harness, and Greyhound racing symbols in vector format (SVG)
+- **SwiftUI Optimized**: Works seamlessly with `.renderingMode(.template)` for dynamic theming
+- **Scalable**: Vector-based symbols maintain quality at any size
 
 ### ♿️ Accessibility First
 - **VoiceOver**: Comprehensive labels, hints, and announcements for all UI elements
