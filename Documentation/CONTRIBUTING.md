@@ -195,38 +195,16 @@ Before creating any PR, you MUST:
 
 ## Coding Standards
 
-### Follow the Coding Guidelines
-Read and follow [CODING_GUIDELINES.md](./CODING_GUIDELINES.md) for:
+**All code must follow [CODING_GUIDELINES.md](./CODING_GUIDELINES.md)** for:
+- Swift 6 concurrency patterns (actors, Sendable, @MainActor)
+- SwiftUI architecture (@Observable, property wrappers, ViewModels)
 - Code structure and formatting
-- Localisation rules
-- Testing standards
-- PR best practices
-- Architecture patterns
+- Localisation rules (UK/AU English)
+- Testing standards (Swift Testing framework)
+- Performance optimisation patterns
+- PR requirements and best practices
 
-### Key Standards
-
-**Swift 6 Concurrency:**
-- Use `actor` for thread-safe types
-- Mark types as `Sendable` when appropriate
-- Use `@MainActor` for UI types
-- Use `async/await` for asynchronous code
-
-**SwiftUI:**
-- Use `@Observable` instead of `ObservableObject`
-- Use `@State` instead of `@StateObject`
-- Keep views small and focused
-- Extract reusable components
-
-**Localisation:**
-- ALL user-facing text must be localised
-- Use UK/AU English spelling
-- Use `NSLocalizedString` with descriptive keys
-
-**Testing:**
-- Use Swift Testing framework (not XCTest)
-- Target ≥80% code coverage
-- Always use exact error types in tests
-- Add `.serialized` trait for shared mutable state
+This is our single source of truth for all coding conventions.
 
 ## Testing
 
