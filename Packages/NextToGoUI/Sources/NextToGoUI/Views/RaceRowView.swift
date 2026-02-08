@@ -57,7 +57,6 @@ public struct RaceRowView: View {
         HStack(alignment: .center, spacing: RaceLayout.spacingM) {
             categoryIconView
 
-            // Meeting info and race details
             VStack(alignment: .leading, spacing: RaceLayout.spacingXS) {
                 meetingNameText()
                 raceNameText()
@@ -74,7 +73,6 @@ public struct RaceRowView: View {
         HStack(alignment: .center, spacing: RaceLayout.spacingM) {
             categoryIconView
 
-            // Meeting info, race number, and countdown
             VStack(alignment: .leading, spacing: RaceLayout.spacingXS) {
                 meetingNameText(fullWidth: true)
                 raceNameText(fullWidth: true)
