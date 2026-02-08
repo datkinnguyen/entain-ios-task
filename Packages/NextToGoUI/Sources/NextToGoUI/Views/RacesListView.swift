@@ -166,7 +166,6 @@ public struct RacesListView: View {
                 )
                 .buttonStyle(.borderedProminent)
                 .controlSize(.large)
-                .accessibilityLabel(config.retryAccessibilityLabel)
             }
         )
         .frame(maxWidth: .infinity, maxHeight: .infinity)

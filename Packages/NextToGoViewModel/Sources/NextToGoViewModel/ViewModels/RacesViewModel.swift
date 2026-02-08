@@ -65,20 +65,17 @@ public final class RacesViewModel {
         public let message: String
         public let iconName: String
         public let retryButtonText: String
-        public let retryAccessibilityLabel: String
 
         public init(
             title: String,
             message: String,
             iconName: String,
-            retryButtonText: String,
-            retryAccessibilityLabel: String
+            retryButtonText: String
         ) {
             self.title = title
             self.message = message
             self.iconName = iconName
             self.retryButtonText = retryButtonText
-            self.retryAccessibilityLabel = retryAccessibilityLabel
         }
     }
 
@@ -197,8 +194,7 @@ extension RacesViewModel {
             title: LocalizedString.errorTitle,
             message: error.localizedDescription,
             iconName: "exclamationmark.triangle.fill",
-            retryButtonText: LocalizedString.errorRetry,
-            retryAccessibilityLabel: LocalizedString.errorRetry
+            retryButtonText: LocalizedString.errorRetry
         )
     }
 
