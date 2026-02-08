@@ -9,7 +9,6 @@
 /* MARK: - Empty States */
 "empty.title" = "No races available";
 "empty.message" = "Try selecting different categories";
-"empty.accessibility" = "No races available. Try selecting different categories.";
 
 /* MARK: - Error States */
 "error.title" = "Something went wrong";

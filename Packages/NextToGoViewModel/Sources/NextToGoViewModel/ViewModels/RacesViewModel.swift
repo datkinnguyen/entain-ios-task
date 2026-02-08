@@ -188,7 +188,7 @@ extension RacesViewModel {
             title: LocalizedString.emptyTitle,
             message: LocalizedString.emptyMessage,
             iconName: "flag.checkered",
-            accessibilityLabel: LocalizedString.emptyAccessibility
+            accessibilityLabel: "\(LocalizedString.emptyTitle). \(LocalizedString.emptyMessage)."
         )
     }
 

@@ -16,7 +16,6 @@ enum LocalizedString {
 
     static let emptyTitle = localised("empty.title")
     static let emptyMessage = localised("empty.message")
-    static let emptyAccessibility = localised("empty.accessibility")
 
     // MARK: - Error States
 
