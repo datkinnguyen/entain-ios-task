@@ -28,7 +28,7 @@ extension RaceCategory {
     }
 
     /// The accessibility label for this category without "racing" suffix (e.g., "Horse")
-    public var categoryAccessibilityLabel: String {
+    public var accessibilityLabel: String {
         switch self {
         case .horse:
             return LocalizedString.categoryHorseAccessibility
