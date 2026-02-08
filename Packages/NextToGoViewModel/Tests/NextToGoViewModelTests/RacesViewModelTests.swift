@@ -172,7 +172,7 @@ struct RacesViewModelTests {
         let races = [expiredRace, futureRace]
         let repository = MockRaceRepository()
 
-        await confirmation("fetchNextRaces called at least twice", expectedCount: 2...) { fetchCalled in
+        await confirmation("fetchNextRaces called exactly twice", expectedCount: 2) { fetchCalled in
             repository.fetchNextRacesHandler = { _, _ in
                 fetchCalled()
                 return races
@@ -188,8 +188,8 @@ struct RacesViewModelTests {
             viewModel.startTasks()
 
             // Wait for countdown timer to detect expired race and trigger refresh
-            // Timer runs every 1 second, debounce is 500ms, so wait ~2 seconds
-            try? await Task.sleep(for: .seconds(2))
+            // Timer runs every 1 second, debounce is 500ms, so wait ~1.5 seconds
+            try? await Task.sleep(for: .milliseconds(1500))
 
             viewModel.stopTasks()
         }
