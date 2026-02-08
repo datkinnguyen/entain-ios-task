@@ -33,13 +33,8 @@ final class DependencyContainer {
 
     /// Creates a new dependency container with default production dependencies.
     init() {
-        // Initialise API client
         self.apiClient = APIClient()
-
-        // Initialise repository with API client
         self.repository = RaceRepositoryImpl(apiClient: apiClient)
-
-        // Initialise view model with repository
         self.racesViewModel = RacesViewModel(repository: repository)
     }
 

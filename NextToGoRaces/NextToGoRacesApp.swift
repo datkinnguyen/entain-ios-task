@@ -20,7 +20,6 @@ struct NextToGoRacesApp: App {
         WindowGroup {
             RacesListView(viewModel: container.racesViewModel)
                 .task {
-                    // Start background tasks when view appears
                     container.racesViewModel.startTasks()
                 }
         }

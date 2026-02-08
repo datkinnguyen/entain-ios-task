@@ -32,7 +32,6 @@ public struct RacesListView: View {
     public var body: some View {
         NavigationStack {
             ZStack {
-                // Full-height grey background
                 RaceColors.listBackground
                     .ignoresSafeArea()
 
@@ -183,7 +182,6 @@ public struct RacesListView: View {
         // Use a small delay to ensure the state is updated before refocusing
         Task { @MainActor in
             try? await Task.sleep(for: .milliseconds(500))
-            // Reset focus to first race if the list changed
             if !newRaces.isEmpty && oldRaces != newRaces {
                 focusedRaceId = newRaces.first?.raceId
                 viewModel.focusedRaceId = newRaces.first?.raceId

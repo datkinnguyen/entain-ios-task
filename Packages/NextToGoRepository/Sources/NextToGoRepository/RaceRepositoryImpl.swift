@@ -27,10 +27,9 @@ public actor RaceRepositoryImpl: RaceRepositoryProtocol {
         let apiCount = count * apiFetchMultiplier
         let endpoint = APIEndpoint.nextRaces(count: apiCount)
 
-        // Fetch data from API
         let response: RaceResponse = try await apiClient.fetch(endpoint)
 
-        // Filter races by category (client-side filtering)
+        // Filter races by category (client-side filtering since API doesn't support it)
         // Empty categories means "all categories"
         // Note: Races with unknown categories are already filtered out during decoding
         let validRaces: [Race]
@@ -54,7 +53,6 @@ public actor RaceRepositoryImpl: RaceRepositoryProtocol {
                 return lhs.advertisedStart < rhs.advertisedStart
             }
 
-        // Cap the results to the requested count
         return Array(activeRaces.prefix(count))
     }
 }

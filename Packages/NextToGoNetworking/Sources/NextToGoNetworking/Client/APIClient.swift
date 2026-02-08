@@ -27,7 +27,6 @@ public actor APIClient {
             self.urlSession = URLSession(configuration: configuration)
         }
 
-        // Configure decoder
         self.decoder = JSONDecoder()
     }
 
@@ -36,16 +35,13 @@ public actor APIClient {
     /// - Returns: The decoded response of type T
     /// - Throws: APIError if the request fails or decoding fails
     public func fetch<T: Decodable & Sendable>(_ endpoint: APIEndpoint) async throws -> T {
-        // Build URL from endpoint
         guard let url = endpoint.buildURL(baseURL: baseURL) else {
             throw APIError.invalidURL
         }
 
-        // Create request
         var request = URLRequest(url: url)
         request.httpMethod = endpoint.method
 
-        // Perform request
         let (data, response): (Data, URLResponse)
         do {
             (data, response) = try await urlSession.data(for: request)
@@ -53,7 +49,6 @@ public actor APIClient {
             throw APIError.networkError(error)
         }
 
-        // Validate response
         guard let httpResponse = response as? HTTPURLResponse else {
             throw APIError.invalidResponse(statusCode: 0)
         }
@@ -62,7 +57,6 @@ public actor APIClient {
             throw APIError.invalidResponse(statusCode: httpResponse.statusCode)
         }
 
-        // Decode response
         do {
             return try decoder.decode(T.self, from: data)
         } catch {
