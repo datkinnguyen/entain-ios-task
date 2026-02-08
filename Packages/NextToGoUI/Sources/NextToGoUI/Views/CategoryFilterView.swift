@@ -1,4 +1,5 @@
 import NextToGoCore
+import NextToGoRepository
 import NextToGoViewModel
 import SwiftUI
 
@@ -37,6 +38,7 @@ public struct CategoryFilterView: View {
                     CategoryChip(
                         category: category,
                         isSelected: isSelected,
+                        accessibilityLabel: viewModel.categoryAccessibilityLabel(for: category),
                         accessibilityHint: viewModel.categoryAccessibilityHint(isSelected: isSelected)
                     ) {
                         toggleCategory(category)
@@ -66,28 +68,28 @@ public struct CategoryFilterView: View {
 
 #Preview("All Selected") {
     @Previewable @State var selectedCategories: Set<RaceCategory> = Set(RaceCategory.allCases)
-    let mockRepository = MockRaceRepository()
+    let mockRepository = createSuccessMockRepository()
     let viewModel = RacesViewModel(repository: mockRepository)
     CategoryFilterView(selectedCategories: $selectedCategories, viewModel: viewModel)
 }
 
 #Preview("Horse Selected") {
     @Previewable @State var selectedCategories: Set<RaceCategory> = [.horse]
-    let mockRepository = MockRaceRepository()
+    let mockRepository = createSuccessMockRepository()
     let viewModel = RacesViewModel(repository: mockRepository)
     CategoryFilterView(selectedCategories: $selectedCategories, viewModel: viewModel)
 }
 
 #Preview("Multiple Selected") {
     @Previewable @State var selectedCategories: Set<RaceCategory> = [.horse, .greyhound]
-    let mockRepository = MockRaceRepository()
+    let mockRepository = createSuccessMockRepository()
     let viewModel = RacesViewModel(repository: mockRepository)
     CategoryFilterView(selectedCategories: $selectedCategories, viewModel: viewModel)
 }
 
 #Preview("None Selected") {
     @Previewable @State var selectedCategories: Set<RaceCategory> = []
-    let mockRepository = MockRaceRepository()
+    let mockRepository = createSuccessMockRepository()
     let viewModel = RacesViewModel(repository: mockRepository)
     CategoryFilterView(selectedCategories: $selectedCategories, viewModel: viewModel)
 }

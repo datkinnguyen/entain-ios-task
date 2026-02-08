@@ -1,4 +1,5 @@
 import NextToGoCore
+import NextToGoRepository
 import NextToGoViewModel
 import SwiftUI
 
@@ -139,7 +140,7 @@ public struct RaceRowView: View {
         category: .horse,
         advertisedStart: Date.now.addingTimeInterval(600)
     )
-    let mockRepository = MockRaceRepository()
+    let mockRepository = createSuccessMockRepository()
     let viewModel = RacesViewModel(repository: mockRepository)
     return RaceRowView(race: race, viewModel: viewModel)
         .padding()
@@ -154,7 +155,7 @@ public struct RaceRowView: View {
         category: .greyhound,
         advertisedStart: Date.now.addingTimeInterval(240)
     )
-    let mockRepository = MockRaceRepository()
+    let mockRepository = createSuccessMockRepository()
     let viewModel = RacesViewModel(repository: mockRepository)
     return RaceRowView(race: race, viewModel: viewModel)
         .padding()
@@ -169,7 +170,7 @@ public struct RaceRowView: View {
         category: .harness,
         advertisedStart: Date.now.addingTimeInterval(-90)
     )
-    let mockRepository = MockRaceRepository()
+    let mockRepository = createSuccessMockRepository()
     let viewModel = RacesViewModel(repository: mockRepository)
     return RaceRowView(race: race, viewModel: viewModel)
         .padding()
@@ -184,7 +185,7 @@ public struct RaceRowView: View {
         category: .horse,
         advertisedStart: Date.now.addingTimeInterval(420)
     )
-    let mockRepository = MockRaceRepository()
+    let mockRepository = createSuccessMockRepository()
     let viewModel = RacesViewModel(repository: mockRepository)
     return RaceRowView(race: race, viewModel: viewModel)
         .padding()

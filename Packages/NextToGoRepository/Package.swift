@@ -5,7 +5,7 @@ let package = Package(
     name: "NextToGoRepository",
     platforms: [
         .iOS(.v18),
-        .macOS(.v12)
+        .macOS(.v15)
     ],
     products: [
         .library(

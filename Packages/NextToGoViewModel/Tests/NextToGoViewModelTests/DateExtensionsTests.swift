@@ -1,5 +1,5 @@
 import Foundation
-@testable import NextToGoCore
+@testable import NextToGoViewModel
 import Testing
 
 @Suite("Date Extensions Tests")

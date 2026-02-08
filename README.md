@@ -185,6 +185,7 @@ All documentation in [`Documentation/`](./Documentation/) folder:
 - Race details screen
 - International or AU/NZ filter (matching official Neds app)
 - Show more race card details (matching official Neds app)
+- Network connection monitoring: Automatically retry failed requests when internet connection is restored (useful for timeout/offline scenarios)
 
 ---
 

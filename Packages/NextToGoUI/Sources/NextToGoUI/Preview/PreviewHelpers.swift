@@ -1,83 +1,41 @@
 import Foundation
 import NextToGoCore
+import NextToGoRepository
+import NextToGoViewModel
 
 // MARK: - Preview Helpers
 
-/// Mock repository for SwiftUI previews and development.
-///
-/// This actor provides thread-safe mock data for previewing UI components.
-/// Only included in preview builds, not production code.
-actor MockRaceRepository: RaceRepositoryProtocol {
-
-    // MARK: - Properties
-
-    private let races: [Race]
-    private let shouldDelay: Bool
-
-    // MARK: - Initialisation
-
-    /// Creates a mock race repository.
-    ///
-    /// - Parameters:
-    ///   - races: Optional array of races to return (uses defaults if nil)
-    ///   - shouldDelay: Whether to simulate network delay
-    init(races: [Race]? = nil, shouldDelay: Bool = false) {
-        self.shouldDelay = shouldDelay
-        self.races = races ?? Self.defaultMockRaces
+/// Creates a mock repository configured for success scenarios in previews.
+func createSuccessMockRepository() -> MockRaceRepository {
+    let mock = MockRaceRepository()
+    mock.fetchNextRacesHandler = { count, _ in
+        Array(MockRaceRepository.defaultPreviewRaces.prefix(count))
     }
+    return mock
+}
 
-    // MARK: - RaceRepositoryProtocol
+/// Creates a mock repository configured for empty scenarios in previews.
+func createEmptyMockRepository() -> MockRaceRepository {
+    let mock = MockRaceRepository()
+    mock.fetchNextRacesHandler = { _, _ in [] }
+    return mock
+}
 
-    func fetchNextRaces(count: Int, categories: Set<RaceCategory>) async throws -> [Race] {
-        if shouldDelay {
-            try? await Task.sleep(for: .seconds(2))
-        }
-        return Array(races.prefix(count))
+/// Creates a mock repository configured for error scenarios in previews.
+func createErrorMockRepository() -> MockRaceRepository {
+    let mock = MockRaceRepository()
+    mock.fetchNextRacesHandler = { _, _ in
+        throw MockRaceRepository.MockError.networkUnavailable
     }
+    return mock
+}
 
-    // MARK: - Mock Data
-
-    private static let defaultMockRaces: [Race] = [
-        Race(
-            raceId: "1",
-            raceName: "Melbourne Cup",
-            raceNumber: 7,
-            meetingName: "Flemington",
-            category: .horse,
-            advertisedStart: Date.now.addingTimeInterval(600)
-        ),
-        Race(
-            raceId: "2",
-            raceName: "Final Sprint",
-            raceNumber: 3,
-            meetingName: "Wentworth Park",
-            category: .greyhound,
-            advertisedStart: Date.now.addingTimeInterval(240)
-        ),
-        Race(
-            raceId: "3",
-            raceName: "Trotters Special",
-            raceNumber: 5,
-            meetingName: "Menangle",
-            category: .harness,
-            advertisedStart: Date.now.addingTimeInterval(420)
-        ),
-        Race(
-            raceId: "4",
-            raceName: "Derby Stakes",
-            raceNumber: 8,
-            meetingName: "Randwick",
-            category: .horse,
-            advertisedStart: Date.now.addingTimeInterval(900)
-        ),
-        Race(
-            raceId: "5",
-            raceName: "Night Race",
-            raceNumber: 2,
-            meetingName: "Sandown Park",
-            category: .greyhound,
-            advertisedStart: Date.now.addingTimeInterval(150)
-        )
-    ]
-
+/// Creates a mock repository configured with delayed responses in previews.
+func createDelayedMockRepository() -> MockRaceRepository {
+    let mock = MockRaceRepository()
+    mock.fetchNextRacesHandler = { count, _ in
+        try? await Task.sleep(for: .seconds(2))
+        return Array(MockRaceRepository.defaultPreviewRaces.prefix(count))
+    }
+    return mock
 }

@@ -45,15 +45,15 @@ enum LocalizedString {
 
     static let raceNumberPrefix = localised("race.number.prefix")
 
-    // MARK: - Category
+    // MARK: - Category Accessibility Labels
 
-    static let categoryHorse = localised("category.horse")
-    static let categoryHarness = localised("category.harness")
-    static let categoryGreyhound = localised("category.greyhound")
+    static let categoryHorseAccessibility = localised("category.horse.accessibility")
+    static let categoryHarnessAccessibility = localised("category.harness.accessibility")
+    static let categoryGreyhoundAccessibility = localised("category.greyhound.accessibility")
 
-    static let categoryHorseRacing = localised("category.horse.racing")
-    static let categoryHarnessRacing = localised("category.harness.racing")
-    static let categoryGreyhoundRacing = localised("category.greyhound.racing")
+    static let categoryHorseRacingAccessibility = localised("category.horse.racing.accessibility")
+    static let categoryHarnessRacingAccessibility = localised("category.harness.racing.accessibility")
+    static let categoryGreyhoundRacingAccessibility = localised("category.greyhound.racing.accessibility")
 
     static let categoryFiltersLabel = localised("category.filters.label")
     static let categorySelectedHint = localised("category.selected.hint")

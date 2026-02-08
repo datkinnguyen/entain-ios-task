@@ -15,14 +15,16 @@ let package = Package(
     ],
     dependencies: [
         .package(path: "../NextToGoCore"),
-        .package(path: "../NextToGoViewModel")
+        .package(path: "../NextToGoViewModel"),
+        .package(path: "../NextToGoRepository")
     ],
     targets: [
         .target(
             name: "NextToGoUI",
             dependencies: [
                 "NextToGoCore",
-                "NextToGoViewModel"
+                "NextToGoViewModel",
+                "NextToGoRepository"
             ],
             resources: [
                 .process("Resources")
