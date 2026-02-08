@@ -16,13 +16,11 @@ enum LocalizedString {
 
     static let emptyTitle = localised("empty.title")
     static let emptyMessage = localised("empty.message")
-    static let emptyAccessibility = localised("empty.accessibility")
 
     // MARK: - Error States
 
     static let errorTitle = localised("error.title")
     static let errorRetry = localised("error.retry")
-    static let errorRetryAccessibility = localised("error.retry.accessibility")
 
     // MARK: - Countdown
 

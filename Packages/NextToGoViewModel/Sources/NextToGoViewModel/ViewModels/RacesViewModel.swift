@@ -51,13 +51,11 @@ public final class RacesViewModel {
         public let title: String
         public let message: String
         public let iconName: String
-        public let accessibilityLabel: String
 
-        public init(title: String, message: String, iconName: String, accessibilityLabel: String) {
+        public init(title: String, message: String, iconName: String) {
             self.title = title
             self.message = message
             self.iconName = iconName
-            self.accessibilityLabel = accessibilityLabel
         }
     }
 
@@ -67,20 +65,17 @@ public final class RacesViewModel {
         public let message: String
         public let iconName: String
         public let retryButtonText: String
-        public let retryAccessibilityLabel: String
 
         public init(
             title: String,
             message: String,
             iconName: String,
-            retryButtonText: String,
-            retryAccessibilityLabel: String
+            retryButtonText: String
         ) {
             self.title = title
             self.message = message
             self.iconName = iconName
             self.retryButtonText = retryButtonText
-            self.retryAccessibilityLabel = retryAccessibilityLabel
         }
     }
 
@@ -187,8 +182,7 @@ extension RacesViewModel {
         EmptyConfiguration(
             title: LocalizedString.emptyTitle,
             message: LocalizedString.emptyMessage,
-            iconName: "flag.checkered",
-            accessibilityLabel: LocalizedString.emptyAccessibility
+            iconName: "flag.checkered"
         )
     }
 
@@ -200,8 +194,7 @@ extension RacesViewModel {
             title: LocalizedString.errorTitle,
             message: error.localizedDescription,
             iconName: "exclamationmark.triangle.fill",
-            retryButtonText: LocalizedString.errorRetry,
-            retryAccessibilityLabel: LocalizedString.errorRetryAccessibility
+            retryButtonText: LocalizedString.errorRetry
         )
     }
 
@@ -237,16 +230,7 @@ extension RacesViewModel {
     /// - Parameter race: The race
     /// - Returns: Complete accessibility label with natural-sounding countdown
     public func raceAccessibilityLabel(for race: Race) -> String {
-        let categoryName: String
-        switch race.category {
-        case .horse:
-            categoryName = LocalizedString.categoryHorseRacingAccessibility
-        case .harness:
-            categoryName = LocalizedString.categoryHarnessRacingAccessibility
-        case .greyhound:
-            categoryName = LocalizedString.categoryGreyhoundRacingAccessibility
-        }
-
+        let categoryName = race.category.racingAccessibilityLabel
         let interval = race.advertisedStart.timeIntervalSince(currentTime)
         let config = countdownConfiguration(for: race)
 
@@ -273,20 +257,6 @@ extension RacesViewModel {
 // MARK: - Category Display
 
 extension RacesViewModel {
-
-    /// Returns the accessibility label for a category chip
-    /// - Parameter category: The race category
-    /// - Returns: Accessibility label (e.g., "Horse", "Harness", "Greyhound")
-    public func categoryAccessibilityLabel(for category: RaceCategory) -> String {
-        switch category {
-        case .horse:
-            return LocalizedString.categoryHorseAccessibility
-        case .harness:
-            return LocalizedString.categoryHarnessAccessibility
-        case .greyhound:
-            return LocalizedString.categoryGreyhoundAccessibility
-        }
-    }
 
     /// Returns the accessibility hint for a category chip
     /// - Parameter isSelected: Whether the category is selected

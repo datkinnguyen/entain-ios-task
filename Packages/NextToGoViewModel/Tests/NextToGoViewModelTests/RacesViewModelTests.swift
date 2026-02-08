@@ -1,5 +1,5 @@
 import Foundation
-@testable import NextToGoCore
+import NextToGoCore
 import NextToGoRepository
 @testable import NextToGoViewModel
 import Testing
