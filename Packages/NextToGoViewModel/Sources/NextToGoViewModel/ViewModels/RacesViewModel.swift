@@ -142,8 +142,20 @@ extension RacesViewModel {
         refreshChannel = AsyncChannel<Void>()
     }
 
+    /// Schedules a debounced refresh by sending a signal to the refresh channel.
+    /// Safe to call multiple times - debounce prevents excessive API calls.
+    /// Preferred method for external callers (e.g., UI retry buttons).
+    public func scheduleRefresh() {
+        Task { [refreshChannel] in
+            await refreshChannel.send(())
+        }
+    }
+
     /// Manually refreshes the race data
-    public func refreshRaces() async {
+    ///
+    /// Note: External callers should use `scheduleRefresh()` instead to benefit from debouncing.
+    /// This method is internal and called by the debounce handler.
+    func refreshRaces() async {
         isLoading = true
         error = nil
 
@@ -311,16 +323,6 @@ private extension RacesViewModel {
     /// - Returns: Text configuration with visual and accessibility text
     func countdownConfiguration(for race: Race) -> TextConfiguration {
         race.advertisedStart.countdownString(from: currentTime)
-    }
-
-    /// Schedules a debounced refresh by sending a signal to the refresh channel
-    ///
-    /// This method is safe to call multiple times - the debounce handler will process signals
-    /// after a delay, preventing excessive API calls.
-    func scheduleRefresh() {
-        Task { [refreshChannel] in
-            await refreshChannel.send(())
-        }
     }
 
     /// Checks for expired races and triggers refresh if any are found

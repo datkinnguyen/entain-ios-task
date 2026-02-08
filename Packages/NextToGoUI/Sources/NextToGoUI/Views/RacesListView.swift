@@ -158,15 +158,14 @@ public struct RacesListView: View {
             actions: {
                 Button(
                     action: {
-                        Task {
-                            await viewModel.refreshRaces()
-                        }
+                        viewModel.scheduleRefresh()
                     },
                     label: {
                         Text(config.retryButtonText)
                     }
                 )
                 .buttonStyle(.borderedProminent)
+                .controlSize(.large)
                 .accessibilityLabel(config.retryAccessibilityLabel)
             }
         )
@@ -216,9 +215,7 @@ public struct RacesListView: View {
 #Preview("Loading State") {
     let mockRepository = MockRaceRepository(shouldDelay: true)
     let viewModel = RacesViewModel(repository: mockRepository)
-    Task {
-        await viewModel.refreshRaces()
-    }
+    viewModel.scheduleRefresh()
     return RacesListView(viewModel: viewModel)
 }
 
