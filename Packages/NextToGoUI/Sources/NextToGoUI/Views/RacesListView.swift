@@ -225,6 +225,13 @@ public struct RacesListView: View {
     return RacesListView(viewModel: viewModel)
 }
 
+#Preview("Error State") {
+    let mockRepository = MockRaceRepository(shouldThrowError: true)
+    let viewModel = RacesViewModel(repository: mockRepository)
+    viewModel.scheduleRefresh()
+    return RacesListView(viewModel: viewModel)
+}
+
 #Preview("Dark Mode") {
     let mockRepository = MockRaceRepository()
     let viewModel = RacesViewModel(repository: mockRepository)
