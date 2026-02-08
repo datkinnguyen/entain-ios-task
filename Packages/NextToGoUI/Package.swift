@@ -5,7 +5,7 @@ let package = Package(
     name: "NextToGoUI",
     platforms: [
         .iOS(.v18),
-        .macOS(.v14)
+        .macOS(.v15)
     ],
     products: [
         .library(

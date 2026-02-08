@@ -60,7 +60,7 @@ open NextToGoRaces.xcodeproj
 # Run tests: ⌘U
 ```
 
-**Requirements:** iOS 18.0+ | Xcode 16.2+ | Swift 6.0+ | macOS 14.0+
+**Requirements:** iOS 18.0+ | Xcode 16.2+ | Swift 6.0+ | macOS 15.0+
 
 ---
 
@@ -136,11 +136,13 @@ See [`Documentation/TESTING.md`](./Documentation/TESTING.md) for testing strateg
 ## 📋 Assumptions & Design Decisions
 
 ### API Limitation: No Category Filtering
-The v1 API (`/rest/v1/racing/?method=nextraces`) does not support filtering by `category_ids`.
+The v1 API (`/rest/v1/racing/?method=nextraces`) does not support filtering by `category_ids`. 
+I've tried with several formats and none worked 😅:
+- `&category_id=<ID1>&category_id=<ID2>`
+- `&category_ids=<ID1>,<ID2>`
+- `&category_ids=%5B%22<ID1>%22%2C%22<ID2>%22%5D` (the URL-encoded version of `category_ids=["<ID1>", "<ID2>"]<id1>%22%2C%22<ID2>%22%5D`). **Note**: The official Neds uses v2 api which supports this, sadly it's not the same for v1.
 
-**Workaround:** Fetch 2x races (10 instead of 5) and filter client-side to increase likelihood of having 5 items. This approach is **totally dependent on data from the backend** and is currently **limited by API capability**. May occasionally show <5 races for single-category filters until next refresh.
-
-**Note:** Official Neds app uses v2 API with native category filtering support.
+**Workaround:** Fetch 2x races (10 instead of 5) and filter client-side to increase likelihood of having 5 items, but **an important note** is that the app might still show < 5 races depending on backend responses as this is limited by API support.
 
 ### UI Design Philosophy
 **This implementation prioritises technical capability demonstration over exact visual parity with the official app.**
@@ -150,7 +152,7 @@ The v1 API (`/rest/v1/racing/?method=nextraces`) does not support filtering by `
 - ✅ Complete accessibility (VoiceOver, VoiceControl, colour contrast)
 - ✅ Dark Mode support
 - ✅ Adaptive layouts (horizontal ↔ vertical based on text size)
-- ✅ No content truncation (height-dynamic rows show all information)
+- ✅ No content truncation (height-dynamic rows show all information). This is a deliberate decision because this app doesn't have a Detail screen where content if truncated in the list, user can see in the Detail screen.
 
 The UI showcases iOS development best practices and accessibility implementation rather than replicating the exact visual design of the production app. Fields displayed and styling may differ from the official Neds app.
 
@@ -165,7 +167,7 @@ All documentation in [`Documentation/`](./Documentation/) folder:
 - **[TESTING.md](./Documentation/TESTING.md)** - Testing strategy and guide
 - **[CONTRIBUTING.md](./Documentation/CONTRIBUTING.md)** - PR workflow and contribution guidelines
 - **[IMPLEMENTATION_PLAN.md](./Documentation/IMPLEMENTATION_PLAN.md)** - Complete implementation plan (12 tasks)
-
+- **[ACCESSIBILITY_COMPLIANCE_REPORT.md](./Documentation/ACCESSIBILITY_COMPLIANCE_REPORT.md)** - Accessibility Compliance Audit Report
 ---
 
 ## 🎯 Project Status

@@ -5,7 +5,7 @@ Thank you for contributing to the Next To Go iOS racing app! This guide will hel
 ## Getting Started
 
 ### Prerequisites
-- macOS 14.0+
+- macOS 15.0+
 - Xcode 16.2+
 - Swift 6.0+
 - Git

@@ -572,7 +572,7 @@ ChildView(scrollOffset: scrollOffset)
 "countdown.started" = "started";
 "countdown.ago" = "ago";
 
-// Code (WRONG - concatenation doesn't localize well)
+// Code (WRONG - concatenation doesn't localise well)
 "\(LocalizedString.countdownStarted) \(time) \(LocalizedString.countdownAgo)"
 // Result: "started 5 minutes ago"
 ```
