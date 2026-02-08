@@ -221,7 +221,7 @@ public final class RacesViewModel {
     /// - Parameter race: The race
     /// - Returns: Complete accessibility label with natural-sounding countdown
     public func raceAccessibilityLabel(for race: Race) -> String {
-        let categoryName = categoryDisplayName(for: race.category, withRacingSuffix: true)
+        let categoryName = race.category.racingAccessibilityLabel
         let interval = race.advertisedStart.timeIntervalSince(currentTime)
         let config = countdownConfiguration(for: race)
 
@@ -254,23 +254,6 @@ public final class RacesViewModel {
     /// - Returns: Text configuration with visual and accessibility text
     private func countdownConfiguration(for race: Race) -> TextConfiguration {
         race.advertisedStart.countdownString(from: currentTime)
-    }
-
-    /// Returns the category display name
-    /// - Parameters:
-    ///   - category: The race category
-    ///   - withRacingSuffix: Whether to include "racing" suffix
-    /// - Returns: Category display name
-    private func categoryDisplayName(for category: RaceCategory, withRacingSuffix: Bool = false) -> String {
-        if withRacingSuffix {
-            switch category {
-            case .horse: return LocalizedString.categoryHorseRacing
-            case .harness: return LocalizedString.categoryHarnessRacing
-            case .greyhound: return LocalizedString.categoryGreyhoundRacing
-            }
-        } else {
-            return category.accessibleLabel
-        }
     }
 
     /// Returns the accessibility hint for a category chip
