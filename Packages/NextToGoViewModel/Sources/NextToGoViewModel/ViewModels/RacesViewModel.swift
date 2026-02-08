@@ -51,13 +51,11 @@ public final class RacesViewModel {
         public let title: String
         public let message: String
         public let iconName: String
-        public let accessibilityLabel: String
 
-        public init(title: String, message: String, iconName: String, accessibilityLabel: String) {
+        public init(title: String, message: String, iconName: String) {
             self.title = title
             self.message = message
             self.iconName = iconName
-            self.accessibilityLabel = accessibilityLabel
         }
     }
 
@@ -187,8 +185,7 @@ extension RacesViewModel {
         EmptyConfiguration(
             title: LocalizedString.emptyTitle,
             message: LocalizedString.emptyMessage,
-            iconName: "flag.checkered",
-            accessibilityLabel: "\(LocalizedString.emptyTitle). \(LocalizedString.emptyMessage)."
+            iconName: "flag.checkered"
         )
     }
 

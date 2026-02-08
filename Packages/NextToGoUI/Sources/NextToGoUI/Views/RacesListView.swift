@@ -144,7 +144,6 @@ public struct RacesListView: View {
             }
         )
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .accessibilityLabel(config.accessibilityLabel)
     }
 
     private func errorStateView(for error: Error) -> some View {
