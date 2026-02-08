@@ -128,7 +128,10 @@ struct RacesViewModelTests {
 
         let finalFetchCount = await repository.fetchCount
         // Should only have ONE additional fetch despite 4 rapid triggers
-        #expect(finalFetchCount == initialFetchCount + 1, "Debounce should consolidate multiple rapid triggers into single fetch")
+        #expect(
+            finalFetchCount == initialFetchCount + 1,
+            "Debounce should consolidate multiple rapid triggers into single fetch"
+        )
 
         viewModel.stopTasks()
     }
