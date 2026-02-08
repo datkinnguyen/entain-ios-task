@@ -24,13 +24,13 @@
 /* MARK: - Race Display */
 "race.number.prefix" = "R";
 
-/* MARK: - Category Labels */
-"category.horse" = "Horse";
-"category.harness" = "Harness";
-"category.greyhound" = "Greyhound";
-"category.horse.racing" = "Horse racing";
-"category.harness.racing" = "Harness racing";
-"category.greyhound.racing" = "Greyhound racing";
+/* MARK: - Category Accessibility Labels */
+"category.horse.accessibility" = "Horse";
+"category.harness.accessibility" = "Harness";
+"category.greyhound.accessibility" = "Greyhound";
+"category.horse.racing.accessibility" = "Horse racing";
+"category.harness.racing.accessibility" = "Harness racing";
+"category.greyhound.racing.accessibility" = "Greyhound racing";
 
 /* MARK: - Category Accessibility */
 "category.filters.label" = "Race category filters";

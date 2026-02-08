@@ -221,7 +221,17 @@ public final class RacesViewModel {
     /// - Parameter race: The race
     /// - Returns: Complete accessibility label with natural-sounding countdown
     public func raceAccessibilityLabel(for race: Race) -> String {
-        let categoryName = categoryDisplayName(for: race.category, withRacingSuffix: true)
+        // Get category accessibility label with "racing" suffix for race context
+        let categoryName: String
+        switch race.category {
+        case .horse:
+            categoryName = LocalizedString.categoryHorseRacingAccessibility
+        case .harness:
+            categoryName = LocalizedString.categoryHarnessRacingAccessibility
+        case .greyhound:
+            categoryName = LocalizedString.categoryGreyhoundRacingAccessibility
+        }
+
         let interval = race.advertisedStart.timeIntervalSince(currentTime)
         let config = countdownConfiguration(for: race)
 
@@ -256,27 +266,18 @@ public final class RacesViewModel {
         race.advertisedStart.countdownString(from: currentTime)
     }
 
-    /// Returns the category display name
-    /// - Parameters:
-    ///   - category: The race category
-    ///   - withRacingSuffix: Whether to include "racing" suffix
-    /// - Returns: Category display name
-    private func categoryDisplayName(for category: RaceCategory, withRacingSuffix: Bool = false) -> String {
+    /// Returns the accessibility label for a category chip
+    /// - Parameter category: The race category
+    /// - Returns: Accessibility label (e.g., "Horse", "Harness", "Greyhound")
+    public func categoryAccessibilityLabel(for category: RaceCategory) -> String {
         switch category {
         case .horse:
-            return withRacingSuffix ? LocalizedString.categoryHorseRacing : LocalizedString.categoryHorse
+            return LocalizedString.categoryHorseAccessibility
         case .harness:
-            return withRacingSuffix ? LocalizedString.categoryHarnessRacing : LocalizedString.categoryHarness
+            return LocalizedString.categoryHarnessAccessibility
         case .greyhound:
-            return withRacingSuffix ? LocalizedString.categoryGreyhoundRacing : LocalizedString.categoryGreyhound
+            return LocalizedString.categoryGreyhoundAccessibility
         }
-    }
-
-    /// Returns the accessibility label for a category
-    /// - Parameter category: The race category
-    /// - Returns: Accessibility label
-    public func categoryAccessibilityLabel(for category: RaceCategory) -> String {
-        categoryDisplayName(for: category, withRacingSuffix: false)
     }
 
     /// Returns the accessibility hint for a category chip
