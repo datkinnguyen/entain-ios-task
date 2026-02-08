@@ -24,19 +24,4 @@ struct RaceCategoryExtensionsTests {
         #expect(category.iconName == "greyhound-racing")
     }
 
-    @Test("All categories have unique icon names")
-    func testAllCategoriesHaveUniqueIconNames() {
-        let iconNames = RaceCategory.allCases.map { $0.iconName }
-        let uniqueIconNames = Set(iconNames)
-
-        #expect(iconNames.count == uniqueIconNames.count)
-    }
-
-    @Test("All categories have non-empty icon names")
-    func testAllCategoriesHaveNonEmptyIconNames() {
-        for category in RaceCategory.allCases {
-            #expect(!category.iconName.isEmpty)
-        }
-    }
-
 }

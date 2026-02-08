@@ -20,7 +20,6 @@ import Synchronization
 ///     throw NetworkError.timeout
 /// }
 /// ```
-@available(macOS 15.0, iOS 18.0, *)
 public final class MockRaceRepository: RaceRepositoryProtocol, Sendable {
 
     // MARK: - Type Aliases
