@@ -1,7 +1,7 @@
 import Foundation
 import NextToGoCore
-import NextToGoViewModel
 import NextToGoRepository
+import NextToGoViewModel
 
 // MARK: - Preview Helpers
 

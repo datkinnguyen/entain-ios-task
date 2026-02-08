@@ -1,6 +1,6 @@
 import NextToGoCore
-import NextToGoViewModel
 import NextToGoRepository
+import NextToGoViewModel
 import SwiftUI
 
 /// A horizontal scrollable view of category filter chips.

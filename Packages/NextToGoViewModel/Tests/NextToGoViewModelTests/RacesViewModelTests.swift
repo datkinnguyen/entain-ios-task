@@ -1,7 +1,7 @@
 import Foundation
 @testable import NextToGoCore
-@testable import NextToGoViewModel
 import NextToGoRepository
+@testable import NextToGoViewModel
 import Testing
 
 @Suite("RacesViewModel Tests")
@@ -209,5 +209,3 @@ struct RacesViewModelTests {
     }
 
 }
-
-

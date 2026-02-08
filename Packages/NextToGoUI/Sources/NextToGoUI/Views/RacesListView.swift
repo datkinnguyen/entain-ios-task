@@ -1,6 +1,6 @@
 import NextToGoCore
-import NextToGoViewModel
 import NextToGoRepository
+import NextToGoViewModel
 import SwiftUI
 
 /// The main view displaying the list of upcoming races with category filtering.

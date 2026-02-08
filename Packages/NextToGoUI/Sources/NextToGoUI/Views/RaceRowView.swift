@@ -1,6 +1,6 @@
 import NextToGoCore
-import NextToGoViewModel
 import NextToGoRepository
+import NextToGoViewModel
 import SwiftUI
 
 /// A row view displaying a race card with icon, meeting info, race number, and countdown.
