@@ -84,48 +84,12 @@ public final class RacesViewModel {
         }
     }
 
-    // MARK: - Display Strings
-
-    /// Navigation title for the races list
-    public var navigationTitle: String { LocalizedString.navigationTitle }
-
-    /// Loading message
-    public var loadingMessage: String { LocalizedString.loadingRaces }
-
-    /// Empty state configuration
-    public var emptyConfiguration: EmptyConfiguration {
-        EmptyConfiguration(
-            title: LocalizedString.emptyTitle,
-            message: LocalizedString.emptyMessage,
-            iconName: "flag.checkered",
-            accessibilityLabel: LocalizedString.emptyAccessibility
-        )
-    }
-
-    /// Error state configuration
-    /// - Parameter error: The error that occurred
-    /// - Returns: Configuration for displaying the error
-    public func errorConfiguration(for error: Error) -> ErrorConfiguration {
-        ErrorConfiguration(
-            title: LocalizedString.errorTitle,
-            message: error.localizedDescription,
-            iconName: "exclamationmark.triangle.fill",
-            retryButtonText: LocalizedString.errorRetry,
-            retryAccessibilityLabel: LocalizedString.errorRetryAccessibility
-        )
-    }
-
     // MARK: - Dependencies
 
     private let repository: RaceRepositoryProtocol
 
-    // Background tasks managed by TaskGroup
     @ObservationIgnored private var backgroundTask: Task<Void, Never>?
-
-    // Channel for debounced refresh signals
     @ObservationIgnored private var refreshChannel = AsyncChannel<Void>()
-
-    // Track previous status of focused race to detect changes
     @ObservationIgnored private var previousFocusedRaceStatus: (isUrgent: Bool, hasStarted: Bool)?
 
     // MARK: - Initialisation
@@ -137,7 +101,11 @@ public final class RacesViewModel {
         self.repository = repository
     }
 
-    // MARK: - Public Methods
+}
+
+// MARK: - Lifecycle
+
+extension RacesViewModel {
 
     /// Starts all background tasks (countdown timer and debounce handling)
     public func startTasks() {
@@ -193,7 +161,50 @@ public final class RacesViewModel {
         isLoading = false
     }
 
-    // MARK: - Race Display Methods
+}
+
+// MARK: - Display Strings
+
+extension RacesViewModel {
+
+    /// Navigation title for the races list
+    public var navigationTitle: String {
+        LocalizedString.navigationTitle
+    }
+
+    /// Loading message
+    public var loadingMessage: String {
+        LocalizedString.loadingRaces
+    }
+
+    /// Empty state configuration
+    public var emptyConfiguration: EmptyConfiguration {
+        EmptyConfiguration(
+            title: LocalizedString.emptyTitle,
+            message: LocalizedString.emptyMessage,
+            iconName: "flag.checkered",
+            accessibilityLabel: LocalizedString.emptyAccessibility
+        )
+    }
+
+    /// Error state configuration
+    /// - Parameter error: The error that occurred
+    /// - Returns: Configuration for displaying the error
+    public func errorConfiguration(for error: Error) -> ErrorConfiguration {
+        ErrorConfiguration(
+            title: LocalizedString.errorTitle,
+            message: error.localizedDescription,
+            iconName: "exclamationmark.triangle.fill",
+            retryButtonText: LocalizedString.errorRetry,
+            retryAccessibilityLabel: LocalizedString.errorRetryAccessibility
+        )
+    }
+
+}
+
+// MARK: - Race Display
+
+extension RacesViewModel {
 
     /// Returns the race number display string (e.g., "R7")
     /// - Parameter race: The race
@@ -257,14 +268,11 @@ public final class RacesViewModel {
         )
     }
 
-    // MARK: - Private Methods
+}
 
-    /// Returns the countdown text configuration for a race
-    /// - Parameter race: The race
-    /// - Returns: Text configuration with visual and accessibility text
-    private func countdownConfiguration(for race: Race) -> TextConfiguration {
-        race.advertisedStart.countdownString(from: currentTime)
-    }
+// MARK: - Category Display
+
+extension RacesViewModel {
 
     /// Returns the accessibility label for a category chip
     /// - Parameter category: The race category
@@ -292,31 +300,37 @@ public final class RacesViewModel {
         LocalizedString.categoryFiltersLabel
     }
 
+}
+
+// MARK: - Private Helpers
+
+private extension RacesViewModel {
+
+    /// Returns the countdown text configuration for a race
+    /// - Parameter race: The race
+    /// - Returns: Text configuration with visual and accessibility text
+    func countdownConfiguration(for race: Race) -> TextConfiguration {
+        race.advertisedStart.countdownString(from: currentTime)
+    }
+
     /// Schedules a debounced refresh by sending a signal to the refresh channel
-    private func scheduleRefresh() {
+    func scheduleRefresh() {
         Task {
             await refreshChannel.send(())
         }
     }
 
-    /// Runs the countdown timer that updates current time every second
-    /// Also checks for expired races and checks if the focused race's status has changed
-    private func runCountdownTimer() async {
-        while !Task.isCancelled {
-            try? await Task.sleep(for: .seconds(1))
-            guard !Task.isCancelled else { break }
-            currentTime = .now
-
-            // Check for expired races and trigger refresh if found
-            checkForExpiredRaces()
-
-            // Check if focused race's status has changed
-            checkFocusedRaceStatusChange()
+    /// Checks for expired races and triggers refresh if any are found
+    /// Does not remove races directly - lets the refresh fetch new data
+    func checkForExpiredRaces() {
+        // Check if any races have expired (started more than 60 seconds ago)
+        if races.contains(where: { $0.isExpired }) {
+            scheduleRefresh()
         }
     }
 
     /// Checks if the focused race's status has changed and increments counter if so
-    private func checkFocusedRaceStatusChange() {
+    func checkFocusedRaceStatusChange() {
         guard let focusedId = focusedRaceId,
               let focusedRace = races.first(where: { $0.raceId == focusedId }) else {
             previousFocusedRaceStatus = nil
@@ -343,17 +357,30 @@ public final class RacesViewModel {
         previousFocusedRaceStatus = currentStatus
     }
 
-    /// Checks for expired races and triggers refresh if any are found
-    /// Does not remove races directly - lets the refresh fetch new data
-    private func checkForExpiredRaces() {
-        // Check if any races have expired (started more than 60 seconds ago)
-        if races.contains(where: { $0.isExpired }) {
-            scheduleRefresh()
+}
+
+// MARK: - Background Tasks
+
+private extension RacesViewModel {
+
+    /// Runs the countdown timer that updates current time every second
+    /// Also checks for expired races and checks if the focused race's status has changed
+    func runCountdownTimer() async {
+        while !Task.isCancelled {
+            try? await Task.sleep(for: .seconds(1))
+            guard !Task.isCancelled else { break }
+            currentTime = .now
+
+            // Check for expired races and trigger refresh if found
+            checkForExpiredRaces()
+
+            // Check if focused race's status has changed
+            checkFocusedRaceStatusChange()
         }
     }
 
     /// Runs the debounce handler that processes all refresh signals with debouncing
-    private func runDebounceHandler() async {
+    func runDebounceHandler() async {
         // Use AsyncAlgorithms' debounce to handle all refresh signals
         let debouncedSignals = refreshChannel.debounce(
             for: .milliseconds(AppConfiguration.debounceDelay)
