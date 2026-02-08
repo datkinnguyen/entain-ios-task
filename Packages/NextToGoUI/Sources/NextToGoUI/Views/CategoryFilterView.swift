@@ -37,6 +37,7 @@ public struct CategoryFilterView: View {
                     CategoryChip(
                         category: category,
                         isSelected: isSelected,
+                        accessibilityLabel: viewModel.categoryAccessibilityLabel(for: category),
                         accessibilityHint: viewModel.categoryAccessibilityHint(isSelected: isSelected)
                     ) {
                         toggleCategory(category)

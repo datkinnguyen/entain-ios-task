@@ -13,6 +13,7 @@ actor MockRaceRepository: RaceRepositoryProtocol {
 
     private let races: [Race]
     private let shouldDelay: Bool
+    private let shouldThrowError: Bool
 
     // MARK: - Initialisation
 
@@ -21,8 +22,10 @@ actor MockRaceRepository: RaceRepositoryProtocol {
     /// - Parameters:
     ///   - races: Optional array of races to return (uses defaults if nil)
     ///   - shouldDelay: Whether to simulate network delay
-    init(races: [Race]? = nil, shouldDelay: Bool = false) {
+    ///   - shouldThrowError: Whether to throw an error when fetching
+    init(races: [Race]? = nil, shouldDelay: Bool = false, shouldThrowError: Bool = false) {
         self.shouldDelay = shouldDelay
+        self.shouldThrowError = shouldThrowError
         self.races = races ?? Self.defaultMockRaces
     }
 
@@ -32,7 +35,22 @@ actor MockRaceRepository: RaceRepositoryProtocol {
         if shouldDelay {
             try? await Task.sleep(for: .seconds(2))
         }
+
+        if shouldThrowError {
+            throw MockError.networkUnavailable
+        }
+
         return Array(races.prefix(count))
+    }
+
+    // MARK: - Error Types
+
+    enum MockError: LocalizedError {
+        case networkUnavailable
+
+        var errorDescription: String? {
+            "Unable to connect to the server. Please check your internet connection and try again."
+        }
     }
 
     // MARK: - Mock Data

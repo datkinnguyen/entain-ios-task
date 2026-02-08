@@ -19,30 +19,6 @@ public enum RaceCategory: String, Codable, CaseIterable, Sendable {
         }
     }
 
-    /// The custom icon name for this category from Assets catalog
-    public var iconName: String {
-        switch self {
-        case .greyhound:
-            return "greyhound-racing"
-        case .harness:
-            return "harness-racing"
-        case .horse:
-            return "horse-racing"
-        }
-    }
-
-    /// The accessible label for this category (used in VoiceOver)
-    public var accessibleLabel: String {
-        switch self {
-        case .greyhound:
-            return "Greyhound Racing"
-        case .harness:
-            return "Harness Racing"
-        case .horse:
-            return "Horse Racing"
-        }
-    }
-
     /// Initialize from a category ID
     /// - Parameter id: The category UUID string
     /// - Returns: The matching RaceCategory, or nil if the ID is not recognised (unsupported categories are ignored)
