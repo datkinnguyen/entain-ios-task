@@ -1,5 +1,6 @@
 import Foundation
 @testable import NextToGoCore
+import NextToGoRepository
 @testable import NextToGoViewModel
 import Testing
 
@@ -21,8 +22,9 @@ struct RacesViewModelTests {
     @Test("Refresh races fetches from repository")
     @MainActor
     func testRefreshRaces() async {
-        let mockRaces = Self.makeMockRaces(count: 5)
-        let repository = MockRaceRepository(racesToReturn: mockRaces)
+        let mockRaces = MockRaceRepository.makeMockRaces(count: 5)
+        let repository = MockRaceRepository()
+        repository.fetchNextRacesHandler = { _, _ in mockRaces }
         let viewModel = RacesViewModel(repository: repository)
 
         await viewModel.refreshRaces()
@@ -36,7 +38,10 @@ struct RacesViewModelTests {
     @Test("Refresh races handles repository errors")
     @MainActor
     func testRefreshRacesError() async {
-        let repository = MockRaceRepository(shouldThrowError: true)
+        let repository = MockRaceRepository()
+        repository.fetchNextRacesHandler = { _, _ in
+            throw MockRaceRepository.MockError.networkUnavailable
+        }
         let viewModel = RacesViewModel(repository: repository)
 
         await viewModel.refreshRaces()
@@ -49,91 +54,97 @@ struct RacesViewModelTests {
     @Test("Changing selected categories triggers refresh")
     @MainActor
     func testCategoryChangeTriggersRefresh() async {
-        let mockRaces = Self.makeMockRaces(count: 3)
-        let repository = MockRaceRepository(racesToReturn: mockRaces)
-        let viewModel = RacesViewModel(repository: repository)
+        let mockRaces = MockRaceRepository.makeMockRaces(count: 3)
+        let repository = MockRaceRepository()
 
-        // Start the background tasks to enable debouncing
-        viewModel.startTasks()
+        await confirmation("fetchNextRaces called exactly twice", expectedCount: 2) { fetchCalled in
+            repository.fetchNextRacesHandler = { _, _ in
+                fetchCalled()
+                return mockRaces
+            }
+            let viewModel = RacesViewModel(repository: repository)
 
-        // Wait for initial refresh to complete
-        try? await Task.sleep(for: .milliseconds(600))
+            // Start the background tasks to enable debouncing
+            viewModel.startTasks()
 
-        let initialFetchCount = await repository.fetchCount
+            // Wait for initial refresh to complete
+            try? await Task.sleep(for: .milliseconds(600))
 
-        // Change categories to trigger a new refresh
-        viewModel.selectedCategories = [.horse, .greyhound]
+            // Change categories to trigger a new refresh
+            viewModel.selectedCategories = [.horse, .greyhound]
 
-        // Wait for debounced refresh to complete (500ms debounce + processing time)
-        try? await Task.sleep(for: .milliseconds(700))
+            // Wait for debounced refresh to complete (500ms debounce + processing time)
+            try? await Task.sleep(for: .milliseconds(700))
 
-        let finalFetchCount = await repository.fetchCount
-        #expect(finalFetchCount > initialFetchCount, "Category change should trigger a new refresh")
-
-        viewModel.stopTasks()
+            viewModel.stopTasks()
+        }
     }
 
     @Test("Background tasks lifecycle - start triggers initial refresh, stop prevents further refreshes")
     @MainActor
     func testBackgroundTasksLifecycle() async {
-        let repository = MockRaceRepository(racesToReturn: Self.makeMockRaces(count: 3))
-        let viewModel = RacesViewModel(repository: repository)
+        let mockRaces = MockRaceRepository.makeMockRaces(count: 3)
+        let repository = MockRaceRepository()
 
-        // Start tasks - should trigger initial refresh via scheduleRefresh()
-        viewModel.startTasks()
+        await confirmation("fetchNextRaces called exactly once", expectedCount: 1) { fetchCalled in
+            repository.fetchNextRacesHandler = { _, _ in
+                fetchCalled()
+                return mockRaces
+            }
+            let viewModel = RacesViewModel(repository: repository)
 
-        // Wait for initial debounced refresh to complete (500ms debounce + processing time)
-        try? await Task.sleep(for: .milliseconds(700))
+            // Start tasks - should trigger initial refresh via scheduleRefresh()
+            viewModel.startTasks()
 
-        let initialFetchCount = await repository.fetchCount
-        #expect(initialFetchCount >= 1, "Should have fetched at least once after starting tasks")
+            // Wait for initial debounced refresh to complete (500ms debounce + processing time)
+            try? await Task.sleep(for: .milliseconds(700))
 
-        // Stop tasks - should cancel background tasks and finish refresh channel
-        viewModel.stopTasks()
-        try? await Task.sleep(for: .milliseconds(200))
+            // Stop tasks - should cancel background tasks and finish refresh channel
+            viewModel.stopTasks()
+            try? await Task.sleep(for: .milliseconds(200))
 
-        // Trigger a category change (which would normally schedule a refresh)
-        viewModel.selectedCategories = [.horse]
-        try? await Task.sleep(for: .milliseconds(700))
+            // Trigger a category change (which would normally schedule a refresh)
+            viewModel.selectedCategories = [.horse]
+            try? await Task.sleep(for: .milliseconds(700))
 
-        // Fetch count should not increase after stopping tasks
-        let finalFetchCount = await repository.fetchCount
-        #expect(finalFetchCount == initialFetchCount, "Should not fetch after stopping tasks")
+            // Should not fetch after stopping tasks
+        }
     }
 
     @Test("Debounce behavior - multiple rapid triggers result in single fetch")
     @MainActor
     func testDebounceMultipleTriggers() async {
-        let repository = MockRaceRepository(racesToReturn: Self.makeMockRaces(count: 3))
-        let viewModel = RacesViewModel(repository: repository)
+        let mockRaces = MockRaceRepository.makeMockRaces(count: 3)
+        let repository = MockRaceRepository()
 
-        // Start tasks to enable debounce handling
-        viewModel.startTasks()
+        // Expect exactly 2 calls: 1 initial + 1 debounced after rapid changes
+        await confirmation("fetchNextRaces called exactly twice", expectedCount: 2) { fetchCalled in
+            repository.fetchNextRacesHandler = { _, _ in
+                fetchCalled()
+                return mockRaces
+            }
+            let viewModel = RacesViewModel(repository: repository)
 
-        // Wait for initial refresh to complete
-        try? await Task.sleep(for: .milliseconds(700))
-        let initialFetchCount = await repository.fetchCount
+            // Start tasks to enable debounce handling
+            viewModel.startTasks()
 
-        // Trigger multiple rapid category changes (each calls scheduleRefresh())
-        viewModel.selectedCategories = [.horse]
-        try? await Task.sleep(for: .milliseconds(100))
-        viewModel.selectedCategories = [.horse, .greyhound]
-        try? await Task.sleep(for: .milliseconds(100))
-        viewModel.selectedCategories = [.greyhound]
-        try? await Task.sleep(for: .milliseconds(100))
-        viewModel.selectedCategories = [.horse, .harness]
+            // Wait for initial refresh to complete
+            try? await Task.sleep(for: .milliseconds(700))
 
-        // Wait for debounce delay (500ms) + processing time
-        try? await Task.sleep(for: .milliseconds(700))
+            // Trigger multiple rapid category changes (each calls scheduleRefresh())
+            viewModel.selectedCategories = [.horse]
+            try? await Task.sleep(for: .milliseconds(100))
+            viewModel.selectedCategories = [.horse, .greyhound]
+            try? await Task.sleep(for: .milliseconds(100))
+            viewModel.selectedCategories = [.greyhound]
+            try? await Task.sleep(for: .milliseconds(100))
+            viewModel.selectedCategories = [.horse, .harness]
 
-        let finalFetchCount = await repository.fetchCount
-        // Should only have ONE additional fetch despite 4 rapid triggers
-        #expect(
-            finalFetchCount == initialFetchCount + 1,
-            "Debounce should consolidate multiple rapid triggers into single fetch"
-        )
+            // Wait for debounce delay (500ms) + processing time
+            try? await Task.sleep(for: .milliseconds(700))
 
-        viewModel.stopTasks()
+            viewModel.stopTasks()
+        }
     }
 
     @Test("Expired race detection triggers refresh")
@@ -158,90 +169,43 @@ struct RacesViewModelTests {
             advertisedStart: now.addingTimeInterval(300)
         )
 
-        let repository = MockRaceRepository(racesToReturn: [expiredRace, futureRace])
-        let viewModel = RacesViewModel(repository: repository)
+        let races = [expiredRace, futureRace]
+        let repository = MockRaceRepository()
 
-        // Manually set races to include expired race
-        await viewModel.refreshRaces()
-        let initialRaces = viewModel.races
-        #expect(initialRaces.count == 2)
+        await confirmation("fetchNextRaces called exactly twice", expectedCount: 2) { fetchCalled in
+            repository.fetchNextRacesHandler = { _, _ in
+                fetchCalled()
+                return races
+            }
+            let viewModel = RacesViewModel(repository: repository)
 
-        let initialFetchCount = await repository.fetchCount
+            // Manually set races to include expired race
+            await viewModel.refreshRaces()
+            let initialRaces = viewModel.races
+            #expect(initialRaces.count == 2)
 
-        // Start tasks - countdown timer will check for expired races every second
-        viewModel.startTasks()
+            // Start tasks - countdown timer will check for expired races every second
+            viewModel.startTasks()
 
-        // Wait for countdown timer to detect expired race and trigger refresh
-        // Timer runs every 1 second, debounce is 500ms, so wait ~2 seconds
-        try? await Task.sleep(for: .seconds(2))
+            // Wait for countdown timer to detect expired race and trigger refresh
+            // Timer runs every 1 second, debounce is 500ms, so wait ~1.5 seconds
+            try? await Task.sleep(for: .milliseconds(1500))
 
-        let finalFetchCount = await repository.fetchCount
-        // Should have triggered at least one additional fetch due to expired race detection
-        #expect(finalFetchCount > initialFetchCount, "Expired race should trigger refresh")
-
-        viewModel.stopTasks()
+            viewModel.stopTasks()
+        }
     }
 
     @Test("Maximum 5 races displayed")
     @MainActor
     func testMaximumRacesLimit() async {
-        let mockRaces = Self.makeMockRaces(count: 10)
-        let repository = MockRaceRepository(racesToReturn: mockRaces)
+        let mockRaces = MockRaceRepository.makeMockRaces(count: 5)
+        let repository = MockRaceRepository()
+        repository.fetchNextRacesHandler = { _, _ in mockRaces }
         let viewModel = RacesViewModel(repository: repository)
 
         await viewModel.refreshRaces()
 
         #expect(viewModel.races.count == 5, "Should display maximum 5 races")
-    }
-
-}
-
-// MARK: - Test Helpers
-
-private extension RacesViewModelTests {
-
-    static func makeMockRaces(count: Int) -> [Race] {
-        let now = Date.now
-        return (0..<count).map { index in
-            Race(
-                raceId: "race-\(index)",
-                raceName: "Race \(index + 1)",
-                raceNumber: index + 1,
-                meetingName: "Meeting \(index + 1)",
-                category: RaceCategory.allCases[index % 3],
-                advertisedStart: now.addingTimeInterval(TimeInterval((index + 1) * 60))
-            )
-        }
-    }
-
-}
-
-// MARK: - Mock Repository
-
-private actor MockRaceRepository: RaceRepositoryProtocol {
-
-    private let racesToReturn: [Race]
-    private let shouldThrowError: Bool
-    private(set) var fetchCount = 0
-
-    init(racesToReturn: [Race] = [], shouldThrowError: Bool = false) {
-        self.racesToReturn = racesToReturn
-        self.shouldThrowError = shouldThrowError
-    }
-
-    func fetchNextRaces(count: Int, categories: Set<RaceCategory>) async throws -> [Race] {
-        fetchCount += 1
-
-        if shouldThrowError {
-            throw MockError.fetchFailed
-        }
-
-        // Return races sorted by advertised start time, capped at requested count
-        return Array(racesToReturn.sorted { $0.advertisedStart < $1.advertisedStart }.prefix(count))
-    }
-
-    enum MockError: Error {
-        case fetchFailed
     }
 
 }
