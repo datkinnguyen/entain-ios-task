@@ -1,5 +1,6 @@
 import NextToGoCore
 import NextToGoViewModel
+import NextToGoRepository
 import SwiftUI
 
 /// The main view displaying the list of upcoming races with category filtering.
@@ -207,34 +208,29 @@ public struct RacesListView: View {
 // MARK: - Previews
 
 #Preview("With Races") {
-    let mockRepository = MockRaceRepository()
-    let viewModel = RacesViewModel(repository: mockRepository)
-    return RacesListView(viewModel: viewModel)
+    let viewModel = RacesViewModel(repository: createSuccessMockRepository())
+    RacesListView(viewModel: viewModel)
 }
 
 #Preview("Loading State") {
-    let mockRepository = MockRaceRepository(shouldDelay: true)
-    let viewModel = RacesViewModel(repository: mockRepository)
-    viewModel.scheduleRefresh()
-    return RacesListView(viewModel: viewModel)
+    let viewModel = RacesViewModel(repository: createDelayedMockRepository())
+    RacesListView(viewModel: viewModel)
+        .onAppear { viewModel.scheduleRefresh() }
 }
 
 #Preview("Empty State") {
-    let mockRepository = MockRaceRepository(races: [])
-    let viewModel = RacesViewModel(repository: mockRepository)
-    return RacesListView(viewModel: viewModel)
+    let viewModel = RacesViewModel(repository: createEmptyMockRepository())
+    RacesListView(viewModel: viewModel)
 }
 
 #Preview("Error State") {
-    let mockRepository = MockRaceRepository(shouldThrowError: true)
-    let viewModel = RacesViewModel(repository: mockRepository)
-    viewModel.scheduleRefresh()
-    return RacesListView(viewModel: viewModel)
+    let viewModel = RacesViewModel(repository: createErrorMockRepository())
+    RacesListView(viewModel: viewModel)
+        .onAppear { viewModel.scheduleRefresh() }
 }
 
 #Preview("Dark Mode") {
-    let mockRepository = MockRaceRepository()
-    let viewModel = RacesViewModel(repository: mockRepository)
-    return RacesListView(viewModel: viewModel)
+    let viewModel = RacesViewModel(repository: createSuccessMockRepository())
+    RacesListView(viewModel: viewModel)
         .preferredColorScheme(.dark)
 }

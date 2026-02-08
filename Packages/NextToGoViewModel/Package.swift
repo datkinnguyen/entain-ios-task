@@ -16,6 +16,7 @@ let package = Package(
     ],
     dependencies: [
         .package(path: "../NextToGoCore"),
+        .package(path: "../NextToGoRepository"),
         .package(url: "https://github.com/apple/swift-async-algorithms.git", from: "1.0.0")
     ],
     targets: [
@@ -34,7 +35,10 @@ let package = Package(
         ),
         .testTarget(
             name: "NextToGoViewModelTests",
-            dependencies: ["NextToGoViewModel"],
+            dependencies: [
+                "NextToGoViewModel",
+                "NextToGoRepository"
+            ],
             swiftSettings: [
                 .swiftLanguageMode(.v6)
             ]

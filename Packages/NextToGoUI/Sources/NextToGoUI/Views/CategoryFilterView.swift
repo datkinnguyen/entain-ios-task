@@ -1,5 +1,6 @@
 import NextToGoCore
 import NextToGoViewModel
+import NextToGoRepository
 import SwiftUI
 
 /// A horizontal scrollable view of category filter chips.
@@ -67,28 +68,28 @@ public struct CategoryFilterView: View {
 
 #Preview("All Selected") {
     @Previewable @State var selectedCategories: Set<RaceCategory> = Set(RaceCategory.allCases)
-    let mockRepository = MockRaceRepository()
+    let mockRepository = createSuccessMockRepository()
     let viewModel = RacesViewModel(repository: mockRepository)
     CategoryFilterView(selectedCategories: $selectedCategories, viewModel: viewModel)
 }
 
 #Preview("Horse Selected") {
     @Previewable @State var selectedCategories: Set<RaceCategory> = [.horse]
-    let mockRepository = MockRaceRepository()
+    let mockRepository = createSuccessMockRepository()
     let viewModel = RacesViewModel(repository: mockRepository)
     CategoryFilterView(selectedCategories: $selectedCategories, viewModel: viewModel)
 }
 
 #Preview("Multiple Selected") {
     @Previewable @State var selectedCategories: Set<RaceCategory> = [.horse, .greyhound]
-    let mockRepository = MockRaceRepository()
+    let mockRepository = createSuccessMockRepository()
     let viewModel = RacesViewModel(repository: mockRepository)
     CategoryFilterView(selectedCategories: $selectedCategories, viewModel: viewModel)
 }
 
 #Preview("None Selected") {
     @Previewable @State var selectedCategories: Set<RaceCategory> = []
-    let mockRepository = MockRaceRepository()
+    let mockRepository = createSuccessMockRepository()
     let viewModel = RacesViewModel(repository: mockRepository)
     CategoryFilterView(selectedCategories: $selectedCategories, viewModel: viewModel)
 }
