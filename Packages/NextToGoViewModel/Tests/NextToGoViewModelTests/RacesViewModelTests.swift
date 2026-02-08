@@ -57,7 +57,7 @@ struct RacesViewModelTests {
         let mockRaces = MockRaceRepository.makeMockRaces(count: 3)
         let repository = MockRaceRepository()
 
-        await confirmation("fetchNextRaces called at least twice", expectedCount: 2...) { fetchCalled in
+        await confirmation("fetchNextRaces called exactly twice", expectedCount: 2) { fetchCalled in
             repository.fetchNextRacesHandler = { _, _ in
                 fetchCalled()
                 return mockRaces
