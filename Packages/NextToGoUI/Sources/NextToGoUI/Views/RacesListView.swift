@@ -138,6 +138,7 @@ public struct RacesListView: View {
         return ContentUnavailableView(
             label: {
                 Label(config.title, systemImage: config.iconName)
+                    .accessibilityAddTraits(.isHeader)
             },
             description: {
                 Text(config.message)
@@ -151,6 +152,7 @@ public struct RacesListView: View {
         return ContentUnavailableView(
             label: {
                 Label(config.title, systemImage: config.iconName)
+                    .accessibilityAddTraits(.isHeader)
             },
             description: {
                 Text(config.message)
