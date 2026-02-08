@@ -1,12 +1,13 @@
 import Foundation
 import NextToGoCore
+import Synchronization
 
 // MARK: - Mock Race Repository
 
 /// Handler-based mock repository for testing and previews.
 ///
-/// This class provides a flexible approach to mocking the RaceRepositoryProtocol.
-/// Set the handler closure for each method to control behavior.
+/// This class provides a thread-safe approach to mocking the RaceRepositoryProtocol
+/// using Swift 6's Mutex for type-safe synchronization.
 ///
 /// ## Usage
 /// ```swift
@@ -19,7 +20,12 @@ import NextToGoCore
 ///     throw NetworkError.timeout
 /// }
 /// ```
-public final class MockRaceRepository: RaceRepositoryProtocol, @unchecked Sendable {
+public final class MockRaceRepository: RaceRepositoryProtocol, Sendable {
+
+    // MARK: - Type Aliases
+
+    /// Handler type for fetchNextRaces method.
+    public typealias FetchNextRacesHandler = @Sendable (Int, Set<RaceCategory>) async throws -> [Race]
 
     // MARK: - Error Types
 
@@ -38,11 +44,17 @@ public final class MockRaceRepository: RaceRepositoryProtocol, @unchecked Sendab
         }
     }
 
-    // MARK: - Handlers
+    // MARK: - Thread-Safe Storage
+
+    private let _fetchNextRacesHandler: Mutex<FetchNextRacesHandler?>
 
     /// Handler for fetchNextRaces method.
     /// If not set, calling fetchNextRaces will throw MockError.handlerNotSet.
-    public var fetchNextRacesHandler: (@Sendable (Int, Set<RaceCategory>) async throws -> [Race])?
+    /// Thread-safe access protected by Mutex.
+    public var fetchNextRacesHandler: FetchNextRacesHandler? {
+        get { _fetchNextRacesHandler.withLock { $0 } }
+        set { _fetchNextRacesHandler.withLock { $0 = newValue } }
+    }
 
     // MARK: - Initialisation
 
@@ -50,7 +62,9 @@ public final class MockRaceRepository: RaceRepositoryProtocol, @unchecked Sendab
     ///
     /// You must set the appropriate handlers before calling protocol methods,
     /// or they will throw MockError.handlerNotSet.
-    public init() {}
+    public init() {
+        self._fetchNextRacesHandler = Mutex(nil)
+    }
 
     // MARK: - RaceRepositoryProtocol
 
