@@ -262,15 +262,21 @@ public final class RacesViewModel {
     ///   - withRacingSuffix: Whether to include "racing" suffix
     /// - Returns: Category display name
     private func categoryDisplayName(for category: RaceCategory, withRacingSuffix: Bool = false) -> String {
-        if withRacingSuffix {
-            switch category {
-            case .horse: return LocalizedString.categoryHorseRacing
-            case .harness: return LocalizedString.categoryHarnessRacing
-            case .greyhound: return LocalizedString.categoryGreyhoundRacing
-            }
-        } else {
-            return category.accessibleLabel
+        switch category {
+        case .horse:
+            return withRacingSuffix ? LocalizedString.categoryHorseRacing : LocalizedString.categoryHorse
+        case .harness:
+            return withRacingSuffix ? LocalizedString.categoryHarnessRacing : LocalizedString.categoryHarness
+        case .greyhound:
+            return withRacingSuffix ? LocalizedString.categoryGreyhoundRacing : LocalizedString.categoryGreyhound
         }
+    }
+
+    /// Returns the accessibility label for a category
+    /// - Parameter category: The race category
+    /// - Returns: Accessibility label
+    public func categoryAccessibilityLabel(for category: RaceCategory) -> String {
+        categoryDisplayName(for: category, withRacingSuffix: false)
     }
 
     /// Returns the accessibility hint for a category chip
