@@ -182,6 +182,7 @@ All documentation in [`Documentation/`](./Documentation/) folder:
 - [x] UI polish and edge case testing
 
 ### 💡 Future Enhancements (Out of Scope)
+- Adopt Liquid Glass UI design system (iOS 26+) for modern, fluid appearance with adaptive transparency and tinting
 - Race details screen
 - International or AU/NZ filter (matching official Neds app)
 - Show more race card details (matching official Neds app)
