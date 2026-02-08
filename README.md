@@ -39,7 +39,7 @@ A native iOS app displaying the next 5 upcoming races with category filtering, s
 - 🎨 **Adaptive Layouts**: Auto-switches horizontal ↔ vertical layout based on text size, height-dynamic rows
 - 🏗️ **Clean Architecture**: 5 modular packages (Core → Networking → Repository → ViewModel → UI)
 - ⚡️ **Swift 6 Concurrency**: Actor-based networking, complete data race safety at compile time
-- 🧪 **Well Tested**: 65/65 tests passing (100%), comprehensive mock infrastructure
+- 🧪 **Well Tested**: 69/69 tests passing (100%), comprehensive mock infrastructure
 - 🔄 **CI/CD**: Automated testing and build verification on every PR
 
 **Custom SF Symbols** using official Neds brand icons for racing categories.
@@ -85,7 +85,7 @@ open NextToGoRaces.xcodeproj
 - **Every change reviewed via Pull Request** - no direct commits to main
 - **Manual PR approval required** - human review ensures production quality
 - **Automated CI/CD** on GitHub Actions validates all changes
-- **Comprehensive testing** - 65 unit tests covering all domain logic
+- **Comprehensive testing** - 69 unit tests covering all domain logic
 
 This approach ensures **high-quality, production-ready code** while leveraging AI for rapid development.
 
@@ -118,11 +118,11 @@ See [`Documentation/ARCHITECTURE.md`](./Documentation/ARCHITECTURE.md) for detai
 
 ## 🧪 Testing & CI/CD
 
-**Test Coverage:** 65/65 tests passing (100%)
+**Test Coverage:** 69/69 tests passing (100%)
 - NextToGoCore: 9/9 tests
 - NextToGoNetworking: 23/23 tests
 - NextToGoRepository: 7/7 tests
-- NextToGoViewModel: 26/26 tests
+- NextToGoViewModel: 30/30 tests
 
 **CI/CD Pipeline:** [![CI Status](https://github.com/datkinnguyen/entain-ios-task/actions/workflows/pr-tests.yml/badge.svg)](https://github.com/datkinnguyen/entain-ios-task/actions)
 - Automated testing on every PR
@@ -174,7 +174,7 @@ All documentation in [`Documentation/`](./Documentation/) folder:
 - [x] 5 modular Swift packages with clean architecture
 - [x] Full feature implementation (filtering, countdown, auto-refresh, debouncing)
 - [x] Comprehensive accessibility support (VoiceOver, Dynamic Type)
-- [x] 65 unit tests (100% passing)
+- [x] 69 unit tests (100% passing)
 - [x] SwiftLint integration (0 violations)
 - [x] GitHub Actions CI/CD pipeline
 - [x] Complete documentation
