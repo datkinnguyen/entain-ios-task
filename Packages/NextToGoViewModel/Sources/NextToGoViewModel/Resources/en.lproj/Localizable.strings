@@ -13,7 +13,6 @@
 /* MARK: - Error States */
 "error.title" = "Something went wrong";
 "error.retry" = "Retry";
-"error.retry.accessibility" = "Retry loading races";
 
 /* MARK: - Countdown Accessibility */
 "countdown.started" = "started";

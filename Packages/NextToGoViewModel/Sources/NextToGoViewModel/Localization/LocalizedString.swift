@@ -21,7 +21,6 @@ enum LocalizedString {
 
     static let errorTitle = localised("error.title")
     static let errorRetry = localised("error.retry")
-    static let errorRetryAccessibility = localised("error.retry.accessibility")
 
     // MARK: - Countdown
 

@@ -201,7 +201,7 @@ extension RacesViewModel {
             message: error.localizedDescription,
             iconName: "exclamationmark.triangle.fill",
             retryButtonText: LocalizedString.errorRetry,
-            retryAccessibilityLabel: LocalizedString.errorRetryAccessibility
+            retryAccessibilityLabel: LocalizedString.errorRetry
         )
     }
 
