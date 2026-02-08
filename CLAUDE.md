@@ -41,7 +41,7 @@ When generating, modifying, or reviewing code:
 This includes but is not limited to:
 - Code style and formatting
 - Architecture patterns
-- Localization practices
+- Localisation practices
 - Accessibility guidelines
 - Testing conventions
 - Security practices

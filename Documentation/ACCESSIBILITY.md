@@ -91,8 +91,8 @@ All colour combinations meet WCAG AA standards:
 - **Unselected Chips:** Uses `Color.secondary` for automatic high contrast
 - **Selected Chips:** White on orange/red (>4.5:1)
 - **Countdown Urgent:** Dark red `rgb(0.6, 0.1, 0.1)` on light background (>4.5:1)
-- **Meeting Name:** Primary text color (system-managed contrast)
-- **Location Text:** Secondary text color (system-managed contrast)
+- **Meeting Name:** Primary text colour (system-managed contrast)
+- **Location Text:** Secondary text colour (system-managed contrast)
 
 #### Testing Colour Contrast
 
