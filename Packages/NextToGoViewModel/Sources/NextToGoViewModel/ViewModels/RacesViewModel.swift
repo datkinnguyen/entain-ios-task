@@ -314,8 +314,13 @@ private extension RacesViewModel {
     }
 
     /// Schedules a debounced refresh by sending a signal to the refresh channel
+    ///
+    /// This method is safe to call multiple times - the debounce handler will process signals
+    /// after a delay, preventing excessive API calls.
     func scheduleRefresh() {
-        Task {
+        // ✅ Capture only refreshChannel, not self - avoids retain cycles
+        // Multiple calls are safe - debounce handler processes signals after delay
+        Task { [refreshChannel] in
             await refreshChannel.send(())
         }
     }
